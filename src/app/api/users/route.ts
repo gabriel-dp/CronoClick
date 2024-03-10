@@ -33,7 +33,6 @@ export async function POST(request: Request) {
 		const conflict = await dataConflict(null, username, email);
 		if (conflict) return conflict;
 
-		// create a new user
 		const user = await prisma.user.create({
 			data: {
 				username,

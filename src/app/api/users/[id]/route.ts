@@ -57,7 +57,6 @@ export async function PUT(request: Request, { params }: paramsUser) {
 		const conflict = await dataConflict(id, username, email);
 		if (conflict) return conflict;
 
-		// update user data
 		const user = await prisma.user.update({
 			where: { id: id },
 			data: {

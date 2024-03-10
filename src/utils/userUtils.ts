@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hash } from "bcrypt";
+import { compare, hash } from "bcrypt";
 import { User } from "@prisma/client";
 import z from "zod";
 
@@ -14,7 +14,9 @@ const userValidation = z.object({
 		.min(8, "Password must have at least 8 characters ")
 });
 
-export const validatedFields = (body: User) => {
+export const validatedFields = (
+	body: User
+): Pick<User, "username" | "email" | "password"> => {
 	const fields = userValidation.parse(body);
 	return fields;
 };
@@ -23,7 +25,7 @@ export const dataConflict = async (
 	id: string | null,
 	username: string,
 	email: string
-) => {
+): Promise<NextResponse | null> => {
 	// check if username already exists
 	const existingUserByUsername = await prisma.user.findUnique({
 		where: { username }
@@ -51,14 +53,26 @@ export const dataConflict = async (
 			{ status: 409 }
 		);
 	}
+
+	return null;
 };
 
-export const encrypt = async (value: string) => {
+export const encrypt = async (value: string): Promise<string> => {
 	const encryptedValue = await hash(value, 10);
 	return encryptedValue;
 };
 
-export const removePassword = (user: User | null) => {
+export const compareEncrypted = async (
+	value: string,
+	encrypted: string
+): Promise<boolean> => {
+	const match = await compare(value, encrypted);
+	return match;
+};
+
+export const removePassword = (
+	user: User | null
+): Omit<User, "password"> | null => {
 	if (!user) return null;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

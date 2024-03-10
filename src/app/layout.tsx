@@ -7,11 +7,7 @@ export const metadata: Metadata = {
 	description: "Project in progress"
 };
 
-export default function RootLayout({
-	children
-}: {
-	children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: React.PropsWithChildren) {
 	return (
 		<html lang="en">
 			<body>

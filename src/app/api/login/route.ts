@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { compare } from "bcrypt";
 
 import prisma from "@/lib/prisma";
-import { removePassword } from "@/utils/userUtils";
+import { compareEncrypted, removePassword } from "@/utils/userUtils";
 
 export const POST = async (request: Request) => {
 	try {
@@ -16,7 +15,7 @@ export const POST = async (request: Request) => {
 			);
 		}
 
-		const passwordMatch = await compare(password, user.password);
+		const passwordMatch = await compareEncrypted(password, user.password);
 		if (!passwordMatch) {
 			return NextResponse.json(
 				{ error: "Credentials does not match" },
