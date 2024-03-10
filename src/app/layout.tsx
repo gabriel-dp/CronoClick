@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+import { AppProvider } from "@/contexts";
 
 export const metadata: Metadata = {
 	title: "TecWeb",
@@ -10,12 +9,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
 	children
-}: Readonly<{
+}: {
 	children: React.ReactNode;
-}>) {
+}) {
 	return (
 		<html lang="en">
-			<body className={inter.className}>{children}</body>
+			<body>
+				<AppProvider>{children}</AppProvider>
+			</body>
 		</html>
 	);
 }
