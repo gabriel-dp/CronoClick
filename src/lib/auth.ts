@@ -14,19 +14,17 @@ export const nextAuthOptions: NextAuthOptions = {
 				if (!credentials?.username || !credentials?.password)
 					return null;
 
-				const response = await fetch(
-					"http://localhost:3000/api/login",
-					{
-						method: "POST",
-						headers: {
-							"Content-type": "application/json"
-						},
-						body: JSON.stringify({
-							username: credentials.username,
-							password: credentials.password
-						})
-					}
-				);
+				const BASE_URL = process.env.NEXTAUTH_URL;
+				const response = await fetch(`${BASE_URL}/api/login`, {
+					method: "POST",
+					headers: {
+						"Content-type": "application/json"
+					},
+					body: JSON.stringify({
+						username: credentials.username,
+						password: credentials.password
+					})
+				});
 				const user = await response.json();
 
 				if (user && response.ok) {
