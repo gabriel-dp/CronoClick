@@ -3,8 +3,9 @@
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+
+import { login } from "@/utils/authActions";
+import { exitAuth } from "@/utils/redirects";
 
 import { Button, Form, Input } from "./styles";
 
@@ -15,28 +16,19 @@ const signInSchema = z.object({
 type SignInSchema = z.infer<typeof signInSchema>;
 
 export default function SignInForm() {
-	const router = useRouter();
-
 	const { register, handleSubmit } = useForm<SignInSchema>({
 		resolver: zodResolver(signInSchema)
 	});
 
-	const handleSignInAttempt = async (data: SignInSchema) => {
-		const result = await signIn("credentials", {
-			username: data.username,
-			password: data.password,
-			redirect: false
-		});
-
-		console.log(result);
-
-		if (result?.error) {
-			//console.log(result.error);
+	async function handleSignInAttempt(data: SignInSchema) {
+		const success = await login(data.username, data.password);
+		if (!success) {
+			console.log("LOGIN ERROR");
 			return;
 		}
 
-		router.replace("/");
-	};
+		exitAuth();
+	}
 
 	return (
 		<Form onSubmit={handleSubmit(handleSignInAttempt)}>

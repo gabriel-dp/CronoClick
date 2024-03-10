@@ -1,3 +1,5 @@
+import { logout } from "@/utils/authActions";
+import { redirectSignIn } from "@/utils/redirects";
 import { useSession } from "@/contexts/session/useSession";
 import Button from "@/components/ui/Button";
 
@@ -7,10 +9,14 @@ export default async function Home() {
 	return (
 		<main>
 			<h1>TecWeb</h1>
-			{session && (
+			{session ? (
 				<>
 					<p>{JSON.stringify(session)}</p>
-					<Button />
+					<Button onClick={logout} text="logout" />
+				</>
+			) : (
+				<>
+					<Button onClick={redirectSignIn} text="login" />
 				</>
 			)}
 		</main>

@@ -1,18 +1,18 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { ButtonComponent } from "./styles";
 
-export default function Button() {
-	const router = useRouter();
+interface ButtonProps {
+	text: string;
+	onClick?: () => Promise<void> | void;
+}
 
-	async function logout() {
-		await signOut({
-			redirect: false
-		});
-
-		router.replace("/sign-in");
+export default function Button(props: ButtonProps) {
+	async function handleClick() {
+		if (props.onClick) await props.onClick();
 	}
 
-	return <button onClick={logout}>logout</button>;
+	return (
+		<ButtonComponent onClick={handleClick}>{props.text}</ButtonComponent>
+	);
 }
