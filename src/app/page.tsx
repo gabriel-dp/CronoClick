@@ -12,11 +12,11 @@ export default async function Home() {
 			{session ? (
 				<>
 					<p>{JSON.stringify(session)}</p>
-					<Button onClick={logout} text="logout" />
+					<Button onClick={logout}>logout</Button>
 				</>
 			) : (
 				<>
-					<Button onClick={redirectSignIn} text="login" />
+					<Button onClick={redirectSignIn}>login</Button>
 				</>
 			)}
 		</main>

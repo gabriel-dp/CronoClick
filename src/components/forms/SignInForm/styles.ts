@@ -28,16 +28,3 @@ export const Input = styled.input`
 	border: 1px solid ${(props) => props.theme.dark};
 	text-overflow: ellipsis;
 `;
-
-export const Button = styled.button`
-	padding: 0.5rem;
-	border-radius: 100rem;
-	background: ${(props) => props.theme.primary};
-	color: ${(props) => props.theme.primaryText};
-	border: none;
-	cursor: pointer;
-
-	&:hover {
-		background: ${(props) => props.theme.primaryHighlight};
-	}
-`;
