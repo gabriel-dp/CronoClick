@@ -2,7 +2,7 @@
 
 import { signIn, signOut } from "next-auth/react";
 
-import { redirectSignIn } from "./redirects";
+import { redirectSignIn } from "@/utils/redirects";
 
 export async function login(
 	username: string,

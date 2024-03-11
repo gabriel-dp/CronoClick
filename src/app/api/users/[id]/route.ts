@@ -1,13 +1,9 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 
 import prisma from "@/lib/prisma";
-import {
-	dataConflict,
-	encrypt,
-	removePassword,
-	validatedFields
-} from "@/utils/userUtils";
+import { encrypt, removePassword, validatedFields } from "@/utils/userUtils";
 
 type paramsUser = { params: { id: string } };
 
@@ -18,6 +14,13 @@ export async function GET(request: Request, { params }: paramsUser) {
 		const user = await prisma.user.findUnique({
 			where: { id: id }
 		});
+
+		if (!user) {
+			return NextResponse.json(
+				{ message: "User does not exist" },
+				{ status: 422 }
+			);
+		}
 
 		return NextResponse.json(
 			{ user: removePassword(user) },
@@ -41,6 +44,12 @@ export async function DELETE(request: Request, { params }: paramsUser) {
 			{ status: 200 }
 		);
 	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			if (error.code === "P2025") {
+				const message = `User does not exist`;
+				return NextResponse.json({ error, message }, { status: 422 });
+			}
+		}
 		return NextResponse.json({ error }, { status: 500 });
 	}
 }
@@ -52,10 +61,6 @@ export async function PUT(request: Request, { params }: paramsUser) {
 		const { username, password, email } = validatedFields(
 			await request.json()
 		);
-
-		// check if data conflicts
-		const conflict = await dataConflict(id, username, email);
-		if (conflict) return conflict;
 
 		const user = await prisma.user.update({
 			where: { id: id },
@@ -71,9 +76,19 @@ export async function PUT(request: Request, { params }: paramsUser) {
 			{ status: 200 }
 		);
 	} catch (error) {
-		if (error instanceof ZodError) {
-			return NextResponse.json({ error }, { status: 400 });
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			if (error.code === "P2002") {
+				const target = error.meta?.target;
+				const message = `Unique constraint violation, check the field '${target}'`;
+				return NextResponse.json({ error, message }, { status: 422 });
+			}
+		} else if (error instanceof ZodError) {
+			return NextResponse.json(
+				{ error, message: "Invalid fields" },
+				{ status: 400 }
+			);
 		}
+
 		return NextResponse.json({ error }, { status: 500 });
 	}
 }

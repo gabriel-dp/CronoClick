@@ -1,9 +1,6 @@
-import { NextResponse } from "next/server";
 import { compare, hash } from "bcrypt";
 import { User } from "@prisma/client";
 import z from "zod";
-
-import prisma from "@/lib/prisma";
 
 const userValidation = z.object({
 	username: z.string().min(1, "Username is required").max(100),
@@ -21,40 +18,14 @@ export const validatedFields = (
 	return fields;
 };
 
-export const dataConflict = async (
-	id: string | null,
-	username: string,
-	email: string
-): Promise<NextResponse | null> => {
-	// check if username already exists
-	const existingUserByUsername = await prisma.user.findUnique({
-		where: { username }
-	});
-	if (existingUserByUsername && existingUserByUsername?.id != id) {
-		return NextResponse.json(
-			{
-				user: null,
-				message: "There is already a user with this username"
-			},
-			{ status: 409 }
-		);
-	}
+export const removePassword = (
+	user: User | null
+): Omit<User, "password"> | null => {
+	if (!user) return null;
 
-	// check if email already exists
-	const existingUserByEmail = await prisma.user.findUnique({
-		where: { email }
-	});
-	if (existingUserByEmail && existingUserByEmail?.id != id) {
-		return NextResponse.json(
-			{
-				user: null,
-				message: "There is already an user with this email"
-			},
-			{ status: 409 }
-		);
-	}
-
-	return null;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { password: _, ...userWithoutPassword } = user;
+	return userWithoutPassword;
 };
 
 export const encrypt = async (value: string): Promise<string> => {
@@ -68,14 +39,4 @@ export const compareEncrypted = async (
 ): Promise<boolean> => {
 	const match = await compare(value, encrypted);
 	return match;
-};
-
-export const removePassword = (
-	user: User | null
-): Omit<User, "password"> | null => {
-	if (!user) return null;
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { password: _, ...userWithoutPassword } = user;
-	return userWithoutPassword;
 };
