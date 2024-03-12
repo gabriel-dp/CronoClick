@@ -15,10 +15,12 @@ export const nextAuthOptions: NextAuthOptions = {
 					return null;
 
 				const BASE_URL = process.env.NEXTAUTH_URL;
+				const API_KEY = process.env.API_KEY;
 				const response = await fetch(`${BASE_URL}/api/login`, {
 					method: "POST",
 					headers: {
-						"Content-type": "application/json"
+						"Content-type": "application/json",
+						Authorization: `Bearer ${API_KEY}`
 					},
 					body: JSON.stringify({
 						username: credentials.username,
@@ -36,6 +38,11 @@ export const nextAuthOptions: NextAuthOptions = {
 	],
 	pages: {
 		signIn: "/sign-in"
+	},
+	session: {
+		strategy: "jwt",
+		maxAge: 60 * 60 * 24 * 30, // 30 days
+		updateAge: 60 * 60 * 24 // 1 day
 	},
 	callbacks: {
 		async jwt({ token, user }) {
