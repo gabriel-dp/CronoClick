@@ -2,10 +2,8 @@ import { NextResponse } from "next/server";
 
 import { isAuthorized } from "@/utils/authUtils";
 
-const API_WHITELIST = ["auth"];
-
 export const config = {
-	matcher: [`/api/((?!${API_WHITELIST.join("|")}).*)`]
+	matcher: "/api/((?!auth).*)" // matches all '/api/...' routes except '/api/auth/...'
 };
 
 export function middleware() {
