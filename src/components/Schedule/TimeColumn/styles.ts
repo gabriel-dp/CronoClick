@@ -5,6 +5,8 @@ import styled from "styled-components";
 export const ColumnContainer = styled.div.attrs({ className: "time" })`
 	height: 100%;
 	font-size: 0.75rem;
+	background-color: ${(props) => props.theme.background};
+	z-index: 1;
 
 	display: flex;
 	flex-direction: column;

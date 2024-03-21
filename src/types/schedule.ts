@@ -16,8 +16,9 @@ export interface Time {
 export interface Subject {
 	id: Id;
 	name: string;
+	color: string;
 	times: Time[];
-	teachersId: Id[];
+	teachers: string[];
 }
 
 export interface Class
@@ -28,4 +29,9 @@ export interface Schedule {
 	id: Id;
 	name: string;
 	subjects: Subject[];
+}
+
+export interface DayClasses {
+	day: string;
+	items: Class[];
 }
