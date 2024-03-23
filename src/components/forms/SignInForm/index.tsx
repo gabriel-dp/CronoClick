@@ -6,7 +6,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { login } from "@/utils/authActions";
-import { exitAuth } from "@/utils/redirects";
+import { exitAuth } from "@/utils/redirectActions";
 import Button from "@/components/ui/Button";
 
 import { Form, Input } from "./styles";

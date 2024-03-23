@@ -4,7 +4,7 @@ import { DayContainer, GridContainer, IntervalLine, TimeSpan } from "./styles";
 import ClassCard from "./ClassCard";
 
 interface GridProps {
-	subjectsDays: Class[][];
+	weekClasses: Class[][];
 	start: number;
 	end: number;
 	interval: number;
@@ -20,18 +20,18 @@ export default function Grid(props: GridProps) {
 
 	return (
 		<GridContainer>
-			{props.subjectsDays.map((classes, day) => (
+			{props.weekClasses.map((dayClasses, day) => (
 				<DayContainer key={day}>
 					{Array.from({ length: intervals }, (_, i) => (
-						<IntervalLine key={i} />
+						<IntervalLine key={`${day}-${i}`} />
 					))}
-					{classes.map((clasa) => (
+					{dayClasses.map((dayClass) => (
 						<TimeSpan
-							key={clasa.start + clasa.id}
-							startPercentage={percentageRatio(clasa.start)}
-							endPercentage={percentageRatio(clasa.end)}
+							key={dayClass.start + dayClass.id}
+							$startPercentage={percentageRatio(dayClass.start)}
+							$endPercentage={percentageRatio(dayClass.end)}
 						>
-							<ClassCard class={clasa} />
+							<ClassCard class={dayClass} />
 						</TimeSpan>
 					))}
 				</DayContainer>

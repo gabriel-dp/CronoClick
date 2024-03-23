@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-export function timeSafeEqual(a: string, b: string): boolean {
+function timeSafeEqual(a: string, b: string): boolean {
 	const bufA = Buffer.from(a);
 	const bufB = Buffer.from(b);
 

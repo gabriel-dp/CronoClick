@@ -1,6 +1,6 @@
 type TimeFormat = "HH:MM" | "HH:MM XM";
 
-function pad(value: number, size: number) {
+export function pad(value: number, size: number): string {
 	let str = value.toString();
 	while (str.length < size) str = "0" + str;
 	return str;
@@ -15,18 +15,14 @@ export const formatMinutesToTime = (
 		return "";
 	}
 
-	let hours = Math.floor(totalMinutes / 60);
+	const hours = Math.floor(totalMinutes / 60);
 	const minutes = totalMinutes - 60 * hours;
 
-	const time = `${pad(hours, 2)}:${pad(minutes, 2)}`;
 	if (format == "HH:MM") {
-		return time;
+		return `${pad(hours, 2)}:${pad(minutes, 2)}`;
 	}
 
-	let sufix = "AM";
-	if (hours > 12) {
-		hours -= 12;
-		sufix = "PM";
-	}
-	return `${pad(hours, 2)}:${pad(minutes, 2)} ${sufix}`;
+	const sufix = hours > 12 ? "PM" : "AM";
+	const hours12 = hours > 12 ? hours - 12 : hours;
+	return `${pad(hours12, 2)}:${pad(minutes, 2)} ${sufix}`;
 };

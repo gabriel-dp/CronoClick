@@ -40,15 +40,15 @@ export const IntervalLine = styled.hr`
 `;
 
 interface TimeSpanProps {
-	startPercentage: number;
-	endPercentage: number;
+	$startPercentage: number;
+	$endPercentage: number;
 }
 
 export const TimeSpan = styled.div<TimeSpanProps>`
 	width: 90%;
-	height: ${(props) => props.endPercentage - props.startPercentage}%;
+	height: ${(props) => props.$endPercentage - props.$startPercentage}%;
 	position: absolute;
-	top: ${(props) => props.startPercentage}%;
+	top: ${(props) => props.$startPercentage}%;
 	left: 50%;
 	transform: translateX(-50%);
 `;

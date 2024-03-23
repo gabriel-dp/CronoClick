@@ -2,7 +2,7 @@ import { Class, DayClasses } from "@/types/schedule";
 
 import DaysRow from "./DaysRow";
 import TimeColumn from "./TimeColumn";
-import ClassGrid from "./ClassGrid";
+import ClassesGrid from "./ClassesGrid";
 import { ScheduleContainer } from "./styles";
 
 const MIN_START = 0;
@@ -17,17 +17,17 @@ export default function Schedule(props: ScheduleProps) {
 	const DEFAULT_START = 8 * 60;
 	const MIN_DIFF = 9 * 60;
 
-	// Finds the earliest start and the latest end
-	const { start, end, days, subjectsDays } = props.week.reduce<{
+	// Get data from week
+	const { start, end, days, weekClasses } = props.week.reduce<{
 		start: number;
 		end: number;
 		days: string[];
-		subjectsDays: Class[][];
+		weekClasses: Class[][];
 	}>(
-		(acc, dayClasses) => {
-			acc.days.push(dayClasses.day);
-			acc.subjectsDays.push(dayClasses.items);
-			dayClasses.items.forEach((item) => {
+		(acc, cur) => {
+			acc.days.push(cur.day);
+			acc.weekClasses.push(cur.items);
+			cur.items.forEach((item) => {
 				if (item.start < acc.start) {
 					acc.start = item.start;
 				}
@@ -38,9 +38,10 @@ export default function Schedule(props: ScheduleProps) {
 
 			return acc;
 		},
-		{ start: MAX_END, end: MIN_START, days: [], subjectsDays: [] }
+		{ start: MAX_END, end: MIN_START, days: [], weekClasses: [] }
 	);
 
+	// Set schedule start and end times
 	const startFloor =
 		start != MAX_END
 			? Math.floor(start / INTERVAL) * INTERVAL
@@ -53,8 +54,8 @@ export default function Schedule(props: ScheduleProps) {
 			<div className="empty"></div>
 			<DaysRow days={days} />
 			<TimeColumn start={startFloor} end={endCeil} interval={INTERVAL} />
-			<ClassGrid
-				subjectsDays={subjectsDays}
+			<ClassesGrid
+				weekClasses={weekClasses}
 				start={startFloor}
 				end={endCeil}
 				interval={INTERVAL}

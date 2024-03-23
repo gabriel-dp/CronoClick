@@ -1,10 +1,10 @@
 import { NextAuthSessionProvider } from "./session";
 import { ThemeProvider } from "./theme";
 
-export function AppProvider(props: { children: React.ReactNode }) {
+export function AppProvider({ children }: React.PropsWithChildren) {
 	return (
 		<NextAuthSessionProvider>
-			<ThemeProvider>{props.children}</ThemeProvider>
+			<ThemeProvider>{children}</ThemeProvider>
 		</NextAuthSessionProvider>
 	);
 }

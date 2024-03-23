@@ -1,6 +1,6 @@
 import { useSession } from "@/contexts/session/useSession";
 import { logout } from "@/utils/authActions";
-import { redirectSignIn } from "@/utils/redirects";
+import { redirectSignIn } from "@/utils/redirectActions";
 import Button from "@/components/ui/Button";
 
 export default async function Home() {
