@@ -1,4 +1,4 @@
-import { Class } from "@/types/schedule";
+import { Class } from "@/types/classes";
 
 import { CardContainer } from "./styles";
 
@@ -7,12 +7,10 @@ interface ClassCardProps {
 }
 
 export default function ClassCard(props: ClassCardProps) {
-	const teachers: string = props.class.teachers?.join(", ");
-
 	return (
-		<CardContainer>
+		<CardContainer $color={props.class.color}>
 			<p className="title">{props.class.name}</p>
-			<p className="teachers">{teachers}</p>
+			<p className="teacher">{props.class.teacher}</p>
 		</CardContainer>
 	);
 }

@@ -1,4 +1,4 @@
-import { Class, DayClasses } from "@/types/schedule";
+import { Class, DayClasses } from "@/types/classes";
 
 import DaysRow from "./DaysRow";
 import TimeColumn from "./TimeColumn";
@@ -31,8 +31,8 @@ export default function Schedule(props: ScheduleProps) {
 				if (item.start < acc.start) {
 					acc.start = item.start;
 				}
-				if (item.end > acc.end) {
-					acc.end = item.end;
+				if (item.start + item.duration > acc.end) {
+					acc.end = item.start + item.duration;
 				}
 			});
 

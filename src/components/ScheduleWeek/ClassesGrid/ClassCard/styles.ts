@@ -2,13 +2,17 @@
 
 import styled from "styled-components";
 
-export const CardContainer = styled.div`
+interface CardContainerProps {
+	$color: string;
+}
+
+export const CardContainer = styled.div<CardContainerProps>`
 	width: 100%;
 	height: 100%;
 	padding: 0.75rem;
 	border-radius: 0.75rem;
 	text-align: center;
-	background-color: lightblue;
+	background-color: ${(props) => props.$color};
 	border: 1px solid gray;
 	font-size: 0.75rem;
 	overflow: hidden;
@@ -24,6 +28,6 @@ export const CardContainer = styled.div`
 		// white-space: nowrap;
 	}
 
-	.teachers {
+	.teacher {
 	}
 `;

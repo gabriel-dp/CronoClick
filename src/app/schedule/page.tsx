@@ -1,109 +1,88 @@
-import { Class, DayClasses } from "@/types/schedule";
-import Schedule from "@/components/Schedule";
+import { Schedule } from "@/types/schedules";
+import { DayClasses } from "@/types/classes";
+import { decodeValue } from "@/utils/daysUtils";
+import ScheduleWeek from "@/components/ScheduleWeek";
 
-const week: DayClasses[] = [
-	{
-		day: "SEG",
-		items: [
-			{
-				start: 10 * 60,
-				end: 12 * 60,
-				name: "Teoria de Linguagens",
-				teachers: ["Vinícius Durelli"]
-			} as Class,
-			{
-				start: 13 * 60,
-				end: 15 * 60,
-				name: "Computação Gráfica",
-				teachers: ["???"]
-			} as Class
-		]
-	},
-	{
-		day: "TER",
-		items: [
-			{
-				start: 8 * 60,
-				end: 10 * 60,
-				name: "Tecnologias Web",
-				teachers: ["Matheus Viana"]
-			} as Class,
-			{
-				start: 10 * 60,
-				end: 12 * 60,
-				name: "Pesquisa Operacional",
-				teachers: ["Guilherme Pena"]
-			} as Class,
-			{
-				start: 13 * 60,
-				end: 15 * 60,
-				name: "Inteligência Artificial",
-				teachers: ["Edimilson Batista"]
-			} as Class,
-			{
-				start: 15 * 60,
-				end: 17 * 60,
-				name: "Engenharia de Software",
-				teachers: ["Elisa Tuler"]
-			} as Class
-		]
-	},
-	{
-		day: "QUA",
-		items: [
-			{
-				start: 10 * 60,
-				end: 12 * 60,
-				name: "Teoria de Linguagens",
-				teachers: ["Vinícius Durelli"]
-			} as Class,
-			{
-				start: 13 * 60,
-				end: 15 * 60,
-				name: "Computação Gráfica",
-				teachers: ["???"]
-			} as Class
-		]
-	},
-	{
-		day: "QUI",
-		items: [
-			{
-				start: 8 * 60,
-				end: 10 * 60,
-				name: "Tecnologias Web",
-				teachers: ["Matheus Viana"]
-			} as Class,
-			{
-				start: 10 * 60,
-				end: 12 * 60,
-				name: "Pesquisa Operacional",
-				teachers: ["Guilherme Pena"]
-			} as Class,
-			{
-				start: 13 * 60,
-				end: 15 * 60,
-				name: "Inteligência Artificial",
-				teachers: ["Edimilson Batista"]
-			} as Class,
-			{
-				start: 15 * 60,
-				end: 17 * 60,
-				name: "Engenharia de Software",
-				teachers: ["Elisa Tuler"]
-			} as Class
-		]
-	},
-	{
-		day: "SEX",
-		items: []
-	}
-];
+const SCHEDULE_SAMPLE: Schedule = {
+	id: "a",
+	name: "meu nome",
+	subjects: [
+		{
+			id: "b",
+			name: "tecweb",
+			teacher: "matheus",
+			color: "#54afff",
+			times: [
+				{
+					days: 8 + 2,
+					start: 620,
+					duration: 100
+				}
+			],
+			tasks: []
+		},
+		{
+			id: "c",
+			name: "teste",
+			teacher: "???",
+			color: "#ffa0df",
+			times: [
+				{
+					days: 16 + 4,
+					start: 620,
+					duration: 100
+				},
+				{
+					days: 10,
+					start: 730,
+					duration: 60
+				}
+			],
+			tasks: []
+		}
+	]
+};
 
 export default function SchedulePage() {
+	// Define week structure
+	const days: string[] = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""];
+	const initialWeek: DayClasses[] = days.map((day) => ({
+		day,
+		items: []
+	}));
+
+	// Convert subjects into classes
+	const { fullWeek } = SCHEDULE_SAMPLE.subjects.reduce<{
+		fullWeek: DayClasses[];
+	}>(
+		(acc, cur) => {
+			cur.times.forEach((time) => {
+				const decodedWeek = decodeValue(time.days);
+				decodedWeek.forEach((day, i) => {
+					if (day) {
+						initialWeek[i].items.push({
+							id: cur.id,
+							name: cur.name,
+							teacher: cur.teacher,
+							color: cur.color,
+							start: time.start,
+							duration: time.duration
+						});
+					}
+				});
+			});
+
+			return acc;
+		},
+		{ fullWeek: initialWeek }
+	);
+
+	// Adjust week days
+	const week = fullWeek.filter((singleDay) => singleDay.day.length > 0);
+
 	return (
 		<>
-			<Schedule week={week} />
+			<ScheduleWeek week={week} />
 		</>
 	);
 }

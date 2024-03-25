@@ -1,4 +1,4 @@
-import { Class } from "@/types/schedule";
+import { Class } from "@/types/classes";
 
 import { DayContainer, GridContainer, IntervalLine, TimeSpan } from "./styles";
 import ClassCard from "./ClassCard";
@@ -29,7 +29,9 @@ export default function Grid(props: GridProps) {
 						<TimeSpan
 							key={dayClass.start + dayClass.id}
 							$startPercentage={percentageRatio(dayClass.start)}
-							$endPercentage={percentageRatio(dayClass.end)}
+							$endPercentage={percentageRatio(
+								dayClass.start + dayClass.duration
+							)}
 						>
 							<ClassCard class={dayClass} />
 						</TimeSpan>
