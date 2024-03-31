@@ -21,7 +21,7 @@ export const ScheduleContainer = styled.div`
 
 		position: sticky;
 		left: 0;
-		z-index: 2;
+		z-index: 1;
 	}
 
 	.time {
