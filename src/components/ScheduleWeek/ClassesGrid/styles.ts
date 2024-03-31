@@ -22,15 +22,9 @@ export const DayContainer = styled.div`
 	&::before {
 		content: "";
 		position: absolute;
-		inset: -0.5rem 0;
+		inset: -0.25rem 0;
 
-		border-left: 1px solid gray;
-	}
-
-	&:last-child {
-		&::before {
-			border-right: 1px solid gray;
-		}
+		border-right: 1px solid gray;
 	}
 `;
 

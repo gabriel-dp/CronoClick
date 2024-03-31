@@ -5,24 +5,40 @@ import styled from "styled-components";
 export const ScheduleContainer = styled.div`
 	width: min(100%, 60rem);
 	height: 30rem;
-	padding: 1rem;
-	padding-bottom: 2rem;
+	padding: 1rem 0;
 	margin: auto;
 	overflow-x: auto;
 
 	display: grid;
-	grid-template-columns: min-content minmax(30rem, 1fr);
+	grid-template-columns: min-content minmax(40rem, 1fr);
 	grid-template-rows: min-content 1fr;
 
 	.empty {
-		background-color: ${(props) => props.theme.background};
+		width: 100%;
+		height: 100%;
+		background: ${(props) => props.theme.background};
+		border-right: 1px dashed gray;
+
+		position: sticky;
+		left: 0;
+		z-index: 2;
 	}
 
 	.time {
-		padding-right: 1rem;
+		padding: 0 1rem;
+		border-right: 1px solid gray;
+
+		position: sticky;
+		left: 0;
+		z-index: 1;
 	}
 
 	.days {
 		padding-bottom: 0.5rem;
+		padding-right: 1rem;
+	}
+
+	.grid {
+		padding-right: 1rem;
 	}
 `;

@@ -17,7 +17,7 @@ interface ScheduleProps {
 export default function Schedule(props: ScheduleProps) {
 	const INTERVAL = 60;
 	const DEFAULT_START = 8 * 60;
-	const MIN_DIFF = 5 * 60;
+	const MIN_DIFF = 4 * 60;
 
 	// Get data from week
 	const { start, end, days, weekClasses } = props.week.reduce<{

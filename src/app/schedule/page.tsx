@@ -1,54 +1,13 @@
 "use client";
 
-import { Schedule } from "@/types/schedules";
 import { DayClasses } from "@/types/classes";
 import { useSchedule } from "@/hooks/useSchedule";
 import { decodeValue } from "@/utils/daysUtils";
 import ScheduleWeek from "@/components/ScheduleWeek";
 import ScheduleControl from "@/components/ScheduleControl";
 
-const SCHEDULE_SAMPLE: Schedule = {
-	id: "a",
-	name: "meu nome",
-	subjects: [
-		{
-			id: "b",
-			name: "tecweb",
-			teacher: "matheus",
-			color: "#54afff",
-			times: [
-				{
-					days: 8 + 2,
-					start: 620,
-					duration: 100
-				}
-			],
-			tasks: []
-		},
-		{
-			id: "c",
-			name: "teste",
-			teacher: "???",
-			color: "#ffa0df",
-			times: [
-				{
-					days: 16 + 4,
-					start: 620,
-					duration: 100
-				},
-				{
-					days: 10,
-					start: 730,
-					duration: 90
-				}
-			],
-			tasks: []
-		}
-	]
-};
-
 export default function SchedulePage() {
-	const { schedule, ...controls } = useSchedule(SCHEDULE_SAMPLE);
+	const { schedule, ...controls } = useSchedule();
 
 	// Define week structure
 	const days: string[] = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""];
