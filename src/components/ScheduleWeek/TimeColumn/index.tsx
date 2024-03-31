@@ -15,10 +15,7 @@ export default function TimeColumn(props: TimeColumnProps) {
 		<ColumnContainer>
 			{Array.from({ length: intervals }, (_, i) => (
 				<TimeContainer key={i}>
-					{formatMinutesToTime(
-						props.start + props.interval * i,
-						"HH:MM"
-					)}
+					{formatMinutesToTime(props.start + props.interval * i)}
 				</TimeContainer>
 			))}
 		</ColumnContainer>
