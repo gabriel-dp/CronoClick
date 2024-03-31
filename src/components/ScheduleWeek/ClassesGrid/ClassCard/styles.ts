@@ -23,7 +23,7 @@ export const CardContainer = styled.div<CardContainerProps>`
 
 	.title {
 		font-weight: bold;
-		padding: 0.75rem 0;
+		padding: 0.75rem;
 		padding-bottom: 0;
 		// overflow: hidden;
 		// text-overflow: ellipsis;
