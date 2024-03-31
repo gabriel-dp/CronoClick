@@ -1,8 +1,10 @@
 import { Subject, Time } from "@/types/schedules";
 
-export interface Class
-	extends Pick<Subject, "id" | "name" | "teacher" | "color">,
-		Pick<Time, "start" | "duration"> {}
+export type SubjectClass = Pick<Subject, "id" | "name" | "teacher" | "color">;
+
+export interface Class extends Pick<Time, "start" | "duration"> {
+	subject: SubjectClass;
+}
 
 export interface DayClasses {
 	day: string;

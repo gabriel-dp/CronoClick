@@ -4,9 +4,9 @@ import { useState } from "react";
 import { ButtonComponent } from "./styles";
 
 interface ButtonProps extends React.PropsWithChildren {
-	type?: "submit";
 	onClick?: () => Promise<void> | void;
 	loading?: boolean;
+	type?: "submit";
 }
 
 export default function Button(props: ButtonProps) {
@@ -24,7 +24,7 @@ export default function Button(props: ButtonProps) {
 	const state = props.loading ?? loading;
 
 	return (
-		<ButtonComponent onClick={handleClick} type={props.type}>
+		<ButtonComponent onClick={handleClick} type={props.type ?? "button"}>
 			{!state ? props.children : "loading"}
 		</ButtonComponent>
 	);

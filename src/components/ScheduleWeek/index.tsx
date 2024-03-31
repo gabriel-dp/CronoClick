@@ -1,4 +1,5 @@
 import { Class, DayClasses } from "@/types/classes";
+import { ScheduleControlI } from "@/hooks/useSchedule";
 
 import DaysRow from "./DaysRow";
 import TimeColumn from "./TimeColumn";
@@ -10,12 +11,13 @@ const MAX_END = 24 * 60;
 
 interface ScheduleProps {
 	week: DayClasses[];
+	controls: ScheduleControlI;
 }
 
 export default function Schedule(props: ScheduleProps) {
 	const INTERVAL = 60;
 	const DEFAULT_START = 8 * 60;
-	const MIN_DIFF = 9 * 60;
+	const MIN_DIFF = 5 * 60;
 
 	// Get data from week
 	const { start, end, days, weekClasses } = props.week.reduce<{
@@ -59,6 +61,7 @@ export default function Schedule(props: ScheduleProps) {
 				start={startFloor}
 				end={endCeil}
 				interval={INTERVAL}
+				controls={props.controls}
 			/>
 		</ScheduleContainer>
 	);

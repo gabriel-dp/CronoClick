@@ -1,7 +1,11 @@
+"use client";
+
 import { Schedule } from "@/types/schedules";
 import { DayClasses } from "@/types/classes";
+import { useSchedule } from "@/hooks/useSchedule";
 import { decodeValue } from "@/utils/daysUtils";
 import ScheduleWeek from "@/components/ScheduleWeek";
+import ScheduleControl from "@/components/ScheduleControl";
 
 const SCHEDULE_SAMPLE: Schedule = {
 	id: "a",
@@ -35,7 +39,7 @@ const SCHEDULE_SAMPLE: Schedule = {
 				{
 					days: 10,
 					start: 730,
-					duration: 60
+					duration: 90
 				}
 			],
 			tasks: []
@@ -44,6 +48,8 @@ const SCHEDULE_SAMPLE: Schedule = {
 };
 
 export default function SchedulePage() {
+	const { schedule, ...controls } = useSchedule(SCHEDULE_SAMPLE);
+
 	// Define week structure
 	const days: string[] = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""];
 	const initialWeek: DayClasses[] = days.map((day) => ({
@@ -52,7 +58,7 @@ export default function SchedulePage() {
 	}));
 
 	// Convert subjects into classes
-	const { fullWeek } = SCHEDULE_SAMPLE.subjects.reduce<{
+	const { fullWeek } = schedule.subjects.reduce<{
 		fullWeek: DayClasses[];
 	}>(
 		(acc, cur) => {
@@ -61,12 +67,14 @@ export default function SchedulePage() {
 				decodedWeek.forEach((day, i) => {
 					if (day) {
 						initialWeek[i].items.push({
-							id: cur.id,
-							name: cur.name,
-							teacher: cur.teacher,
-							color: cur.color,
 							start: time.start,
-							duration: time.duration
+							duration: time.duration,
+							subject: {
+								id: cur.id,
+								name: cur.name,
+								teacher: cur.teacher,
+								color: cur.color
+							}
 						});
 					}
 				});
@@ -82,7 +90,8 @@ export default function SchedulePage() {
 
 	return (
 		<>
-			<ScheduleWeek week={week} />
+			<ScheduleControl controls={controls} />
+			<ScheduleWeek week={week} controls={controls} />
 		</>
 	);
 }

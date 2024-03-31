@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 export const ScheduleContainer = styled.div`
 	width: min(100%, 60rem);
-	height: 40rem;
+	height: 30rem;
 	padding: 1rem;
 	padding-bottom: 2rem;
 	margin: auto;

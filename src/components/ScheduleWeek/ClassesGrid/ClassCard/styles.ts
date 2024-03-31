@@ -9,13 +9,13 @@ interface CardContainerProps {
 export const CardContainer = styled.div<CardContainerProps>`
 	width: 100%;
 	height: 100%;
-	padding: 0.75rem;
 	border-radius: 0.75rem;
 	text-align: center;
 	background-color: ${(props) => props.$color};
 	border: 1px solid gray;
 	font-size: 0.75rem;
 	overflow: hidden;
+	cursor: pointer;
 
 	display: flex;
 	flex-direction: column;
@@ -23,6 +23,8 @@ export const CardContainer = styled.div<CardContainerProps>`
 
 	.title {
 		font-weight: bold;
+		padding: 0.75rem 0;
+		padding-bottom: 0;
 		// overflow: hidden;
 		// text-overflow: ellipsis;
 		// white-space: nowrap;
