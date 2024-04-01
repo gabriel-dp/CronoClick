@@ -9,7 +9,7 @@ interface CardContainerProps {
 export const CardContainer = styled.div<CardContainerProps>`
 	width: 100%;
 	height: 100%;
-	border-radius: 0.75rem;
+	border-radius: 0.5rem;
 	text-align: center;
 	background-color: ${(props) => props.$color};
 	border: 1px solid gray;
