@@ -1,32 +1,3 @@
-:root {
-	--color-background: #eceff1;
-	--color-text: #333333;
-	--color-primary: #36464f;
-	--color-primary-text: #f8f8ff;
-	--color-details: #808080;
-	--color-details-light: #d3d3d3;
-}
-
-body {
-	background-color: var(--color-background);
-}
-
-*,
-*:before,
-*:after {
-	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-	margin: 0;
-	box-sizing: border-box;
-	color: var(--color-text);
-}
-
-.control {
-	width: min(100%, 60rem);
-	margin: 0 auto;
-	padding: 1rem 0;
-	text-align: center;
-}
-
 .schedule {
 	width: min(100%, 70rem);
 	height: clamp(35rem, 100dvh - 5rem, 45rem);
@@ -108,8 +79,8 @@ body {
 }
 
 .classes-grid > .day-column::before {
-	position: absolute;
 	content: "";
+	position: absolute;
 	inset: calc(-0.75rem / 2) 0;
 	z-index: 1;
 

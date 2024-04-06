@@ -1,0 +1,134 @@
+:root {
+	--color-background: #eceff1;
+	--color-text: #333333;
+	--color-primary: #36464f;
+	--color-primary-highlight: #455a64;
+	--color-primary-text: #f8f8ff;
+	--color-details: #808080;
+	--color-details-light: #d3d3d3;
+}
+
+body {
+	background-color: var(--color-background);
+}
+
+*,
+*:before,
+*:after {
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	margin: 0;
+	box-sizing: border-box;
+	color: var(--color-text);
+}
+
+button {
+	padding: 0.5rem 1rem;
+	border-radius: 100rem;
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.25s ease-in-out;
+	background-color: var(--color-primary);
+	color: var(--color-primary-text);
+}
+
+button:hover {
+	background-color: var(--color-primary-highlight);
+}
+
+.background {
+	position: fixed;
+	inset: 0;
+	z-index: 2;
+	backdrop-filter: blur(10px);
+
+	visibility: hidden;
+	opacity: 0;
+	transition: all 0.25s ease-in-out;
+}
+
+.modal {
+	height: min(100% - 5rem, 30rem);
+	width: min(100% - 5rem, 30rem);
+	padding: 2rem 1rem;
+	border-radius: 0.5rem;
+	overflow-y: scroll;
+	background-color: var(--color-background);
+	border: 1px solid var(--color-details);
+	margin: auto;
+
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.modal > .close-button {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+
+	background-color: transparent;
+	color: var(--color-primary);
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.modal h2 {
+	margin: 1rem 0;
+	max-width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: var(--color-primary);
+}
+
+.modal .input {
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.25rem;
+}
+
+.modal .input > input {
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+	border-radius: 100rem;
+	border: 1px solid var(--color-details);
+}
+
+.modal .input > * {
+	max-width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.modal hr {
+	width: 100%;
+	border: 1px solid var(--color-details);
+	border-top: none;
+}
+
+.subject-form {
+	width: min(100%, 15rem);
+	margin: auto;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+.form-row {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.form-row > * {
+	flex: 1;
+}

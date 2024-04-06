@@ -1,0 +1,6 @@
+.control {
+	width: min(100%, 60rem);
+	margin: 0 auto;
+	padding: 1rem 0;
+	text-align: center;
+}

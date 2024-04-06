@@ -4,11 +4,51 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>TecWeb</title>
+		<link rel="stylesheet" href="./globals.css" />
+		<link rel="stylesheet" href="./control.css" />
 		<link rel="stylesheet" href="./schedule.css" />
+		<script>
+			function openModal() {
+				const modalBackground = document.getElementsByClassName("modal")[0].parentElement;
+				modalBackground.style.visibility = "visible";
+				modalBackground.style.opacity = 1;
+			}
+
+			function closeModal() {
+				const modalBackground = document.getElementsByClassName("modal")[0].parentElement;
+				modalBackground.style.visibility = "hidden";
+				modalBackground.style.opacity = 0;
+			}
+		</script>
 	</head>
 	<body>
 		<div class="control">
-			<button onclick="play()">Adicionar disciplina</button>
+			<button class="add-button" onclick="openModal()">Adicionar disciplina</button>
+			<div class="background" onclick="closeModal()">
+				<div class="modal add" onclick="event.stopPropagation()">
+					<button class="close-button" onclick="closeModal()">X</button>
+					<form class="subject-form" action="">
+						<h2>Disciplina</h2>
+						<div class="input">
+							<label for="name">Nome</label>
+							<input type="text" id="name" name="name" />
+						</div>
+						<div class="input">
+							<label for="teacher">Professor</label>
+							<input type="text" id="teacher" name="teacher" />
+						</div>
+						<div class="input">
+							<label for="color">Cor</label>
+							<input type="color" id="color" name="color" />
+						</div>
+						<hr />
+						<div class="form-row">
+							<button>Criar</button>
+							<button>Cancelar</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 		<div class="schedule">
 			<div class="empty"></div>
