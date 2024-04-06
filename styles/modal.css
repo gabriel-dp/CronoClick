@@ -15,11 +15,11 @@
 	top: 50%;
 	transform: translate(-50%, -50%);
 
-	height: min(100% - 5rem, 30rem);
+	height: min(100% - 5rem, 45rem);
 	width: min(100% - 5rem, 30rem);
 	padding: 2rem 1rem;
 	border-radius: 0.5rem;
-	overflow-y: scroll;
+	overflow-y: auto;
 	background-color: var(--color-background);
 	border: 1px solid var(--color-details);
 	margin: auto;
@@ -34,6 +34,7 @@
 	color: var(--color-primary);
 	font-weight: bold;
 	font-size: 1rem;
+	user-select: none;
 }
 
 .modal h2 {

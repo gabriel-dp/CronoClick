@@ -1,6 +1,6 @@
 import { generateInitialWeek, decodeValue } from "./days.js";
 
-export const generateInitialSchedule = () => ({
+export const initialSchedule = {
 	id: "",
 	name: "",
 	subjects: [
@@ -51,7 +51,7 @@ export const generateInitialSchedule = () => ({
 			],
 		},
 	],
-});
+};
 
 export function convertSubjectsToClasses(schedule) {
 	const { fullWeek } = schedule.subjects.reduce(
@@ -117,4 +117,4 @@ export function getWeekData(week) {
 	return { startFloor, endCeil, days, weekClasses, interval: INTERVAL };
 }
 
-export const getAllData = () => getWeekData(convertSubjectsToClasses(generateInitialSchedule()));
+export const getAllData = () => getWeekData(convertSubjectsToClasses(initialSchedule));

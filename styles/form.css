@@ -1,11 +1,15 @@
-.subject-form {
-	width: min(100%, 15rem);
+#subject-form {
+	width: min(100%, 18rem);
 	margin: auto;
 
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 1rem;
+}
+
+#subject-form > * {
+	width: 100%;
 }
 
 .form-row {
@@ -18,4 +22,41 @@
 
 .form-row > * {
 	flex: 1;
+}
+
+.form-list {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form-group {
+	width: 100%;
+	padding: 1rem;
+	border: 1px solid var(--color-details);
+	border-radius: 0.5rem;
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.form-group > .delete-button {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	transform: translate(62.5%, -50%);
+
+	font-size: 0.5rem;
+	aspect-ratio: 1;
+}
+
+.day-input {
+	font-size: 0.75rem;
+
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
 }
