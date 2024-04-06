@@ -1,7 +1,10 @@
 :root {
-	--color-background: ghostwhite;
-	--color-details: gray;
-	--color-details-light: lightgray;
+	--color-background: #eceff1;
+	--color-text: #333333;
+	--color-primary: #36464f;
+	--color-primary-text: #f8f8ff;
+	--color-details: #808080;
+	--color-details-light: #d3d3d3;
 }
 
 body {
@@ -14,6 +17,7 @@ body {
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 	margin: 0;
 	box-sizing: border-box;
+	color: var(--color-text);
 }
 
 .control {
@@ -60,6 +64,7 @@ body {
 
 .times-column > .time {
 	padding: 0 1rem;
+	font-size: 0.75rem;
 }
 
 .days-row {
@@ -72,17 +77,19 @@ body {
 .days-row > .day {
 	width: 100%;
 	text-align: center;
+	padding: 0.5rem 0;
+	font-size: 0.875rem;
 }
 
 .classes-grid {
 	display: flex;
 	flex-direction: row;
+	padding: calc(0.75rem / 2) 0;
 }
 
 .days-row,
 .classes-grid {
 	padding-right: 1rem;
-	padding: 0.5rem 0;
 }
 
 .classes-grid > .day-column {
@@ -103,7 +110,8 @@ body {
 .classes-grid > .day-column::before {
 	position: absolute;
 	content: "";
-	inset: 0;
+	inset: calc(-0.75rem / 2) 0;
+	z-index: 1;
 
 	border-right: 1px solid var(--color-details);
 }
@@ -130,10 +138,12 @@ body {
 }
 
 .class-card > .name {
+	font-size: 0.875rem;
 	font-weight: bold;
 	text-align: center;
 }
 
 .class-card > .teacher {
+	font-size: 0.875rem;
 	text-align: center;
 }
