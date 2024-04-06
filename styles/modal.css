@@ -1,41 +1,4 @@
-:root {
-	--color-background: #eceff1;
-	--color-text: #333333;
-	--color-primary: #36464f;
-	--color-primary-highlight: #455a64;
-	--color-primary-text: #f8f8ff;
-	--color-details: #808080;
-	--color-details-light: #d3d3d3;
-}
-
-body {
-	background-color: var(--color-background);
-}
-
-*,
-*:before,
-*:after {
-	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-	margin: 0;
-	box-sizing: border-box;
-	color: var(--color-text);
-}
-
-button {
-	padding: 0.5rem 1rem;
-	border-radius: 100rem;
-	border: none;
-	cursor: pointer;
-	transition: background-color 0.25s ease-in-out;
-	background-color: var(--color-primary);
-	color: var(--color-primary-text);
-}
-
-button:hover {
-	background-color: var(--color-primary-highlight);
-}
-
-.background {
+.background-modal {
 	position: fixed;
 	inset: 0;
 	z-index: 2;
@@ -47,6 +10,11 @@ button:hover {
 }
 
 .modal {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+
 	height: min(100% - 5rem, 30rem);
 	width: min(100% - 5rem, 30rem);
 	padding: 2rem 1rem;
@@ -55,11 +23,6 @@ button:hover {
 	background-color: var(--color-background);
 	border: 1px solid var(--color-details);
 	margin: auto;
-
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
 }
 
 .modal > .close-button {
@@ -109,26 +72,4 @@ button:hover {
 	width: 100%;
 	border: 1px solid var(--color-details);
 	border-top: none;
-}
-
-.subject-form {
-	width: min(100%, 15rem);
-	margin: auto;
-
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 1rem;
-}
-
-.form-row {
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-}
-
-.form-row > * {
-	flex: 1;
 }

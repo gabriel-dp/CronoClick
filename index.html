@@ -4,27 +4,17 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>TecWeb</title>
-		<link rel="stylesheet" href="./globals.css" />
-		<link rel="stylesheet" href="./control.css" />
-		<link rel="stylesheet" href="./schedule.css" />
-		<script>
-			function openModal() {
-				const modalBackground = document.getElementsByClassName("modal")[0].parentElement;
-				modalBackground.style.visibility = "visible";
-				modalBackground.style.opacity = 1;
-			}
-
-			function closeModal() {
-				const modalBackground = document.getElementsByClassName("modal")[0].parentElement;
-				modalBackground.style.visibility = "hidden";
-				modalBackground.style.opacity = 0;
-			}
-		</script>
+		<link rel="stylesheet" href="./styles/global.css" />
+		<link rel="stylesheet" href="./styles/control.css" />
+		<link rel="stylesheet" href="./styles/schedule.css" />
+		<link rel="stylesheet" href="./styles/modal.css" />
+		<link rel="stylesheet" href="./styles/form.css" />
+		<script src="./scripts/modal.js"></script>
 	</head>
 	<body>
 		<div class="control">
 			<button class="add-button" onclick="openModal()">Adicionar disciplina</button>
-			<div class="background" onclick="closeModal()">
+			<div class="background-modal" onclick="closeModal()">
 				<div class="modal add" onclick="event.stopPropagation()">
 					<button class="close-button" onclick="closeModal()">X</button>
 					<form class="subject-form" action="">

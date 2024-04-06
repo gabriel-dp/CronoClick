@@ -12,21 +12,21 @@
 }
 
 .empty {
-	background-color: inherit;
-	border-right: 1px dashed var(--color-details);
-
 	position: sticky;
 	left: 0;
 	z-index: 1;
+
+	background-color: inherit;
+	border-right: 1px dashed var(--color-details);
 }
 
 .times-column {
-	background-color: inherit;
-	border-right: 1px solid var(--color-details);
-
 	position: sticky;
 	left: 0;
 	z-index: 1;
+
+	background-color: inherit;
+	border-right: 1px solid var(--color-details);
 
 	display: flex;
 	flex-direction: column;
@@ -47,8 +47,8 @@
 
 .days-row > .day {
 	width: 100%;
+	padding-bottom: 0.5rem;
 	text-align: center;
-	padding: 0.5rem 0;
 	font-size: 0.875rem;
 }
 
@@ -82,7 +82,7 @@
 	content: "";
 	position: absolute;
 	inset: calc(-0.75rem / 2) 0;
-	z-index: 1;
+	z-index: 0;
 
 	border-right: 1px solid var(--color-details);
 }

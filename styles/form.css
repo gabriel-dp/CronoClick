@@ -1,0 +1,21 @@
+.subject-form {
+	width: min(100%, 15rem);
+	margin: auto;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+.form-row {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.form-row > * {
+	flex: 1;
+}
