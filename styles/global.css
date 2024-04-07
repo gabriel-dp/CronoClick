@@ -34,3 +34,20 @@ button {
 button:hover {
 	background-color: var(--color-primary-highlight);
 }
+
+::-webkit-scrollbar {
+	scrollbar-gutter: stable;
+	width: 5px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 100rem;
+	background: var(--color-primary);
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-primary-highlight);
+}

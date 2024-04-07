@@ -78,7 +78,6 @@ buttonCancel.addEventListener("click", cancel);
 const occurrencesList = document.getElementsByClassName("form-list")[0];
 
 function removeOccurrence(event) {
-	if (occurrencesList.children.length <= 1) return;
 	const occurrence = event.target.parentElement;
 	occurrencesList.removeChild(occurrence);
 }
