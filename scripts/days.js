@@ -1,5 +1,6 @@
-export const DAYS = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""];
+const DAYS = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""]; // Empty days should not be rendered
 
+// Receives a array of seven boolean values and convert it to numeric bit-equivalent
 export function encodeDays(days) {
 	let sum = 0;
 	for (let i = 0; i < days.length; i++) {
@@ -9,6 +10,7 @@ export function encodeDays(days) {
 	return sum;
 }
 
+// Receives a numeric and convert it to a bit-equivalent array of seven boolean values
 export function decodeValue(value) {
 	const b = Array(7);
 	for (let i = 0; i < 7; i++) {
@@ -18,6 +20,7 @@ export function decodeValue(value) {
 	return b;
 }
 
+// Generate an array of classes in each day
 export const generateInitialWeek = () => {
 	const week = DAYS.map((day) => ({
 		day,

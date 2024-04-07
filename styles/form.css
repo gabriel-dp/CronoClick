@@ -37,6 +37,7 @@
 	border: 1px solid var(--color-details);
 	border-radius: 0.5rem;
 	position: relative;
+	font-size: 0.75rem;
 
 	display: flex;
 	flex-direction: column;

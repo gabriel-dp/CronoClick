@@ -1,7 +1,9 @@
 import { formatTimeToMinutes } from "./times.js";
+import { addSubject } from "./index.js";
 
+// Reset all input values
 function clearForm() {
-	const CLEAR_DELAY = 250; // it should be equal to the modal transition time
+	const CLEAR_DELAY = 250; // delay should be equal to the modal transition time
 	new Promise(() =>
 		setTimeout(() => {
 			document.getElementById("name").value = "";
@@ -12,6 +14,7 @@ function clearForm() {
 	);
 }
 
+// Create new subject based on provided data
 function create() {
 	const name = document.getElementById("name").value;
 	const teacher = document.getElementById("teacher").value;
@@ -34,7 +37,7 @@ function create() {
 
 		newTime.start = formatTimeToMinutes(time.children[1].children[0].children[1].value);
 
-		newTime.duration = time.children[1].children[1].children[1].value;
+		newTime.duration = parseInt(time.children[1].children[1].children[1].value);
 		if (newTime.duration <= 0) {
 			alert("DURAÇÃO MENOR OU IGUAL A ZERO NÃO DÁ NÉ");
 			return;
@@ -55,23 +58,22 @@ function create() {
 		times.push(newTime);
 	}
 
-	const newSubject = { name, teacher, color, times };
-	alert("nova disciplina: \n" + JSON.stringify(newSubject));
-
 	clearForm();
 	closeModal();
+
+	const newSubject = { name, teacher, color, times };
+	addSubject(newSubject);
 }
 
+// Cancel form data
 function cancel() {
 	clearForm();
 	closeModal();
 }
 
-const buttonCreate = document.getElementById("create-button");
-buttonCreate.addEventListener("click", create);
-
-const buttonCancel = document.getElementById("cancel-button");
-buttonCancel.addEventListener("click", cancel);
+// Add action functions to each button
+document.getElementById("create-button").addEventListener("click", create);
+document.getElementById("cancel-button").addEventListener("click", cancel);
 
 //-----
 
@@ -84,9 +86,11 @@ function removeOccurrence(event) {
 
 const DAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 function addOccurrence() {
+	// Create occurrence element
 	const newOccurrence = document.createElement("div");
 	newOccurrence.className = "form-group";
 
+	// Create week days input
 	const daysInput = document.createElement("div");
 	daysInput.className = "form-row";
 	DAYS.forEach((day) => {
@@ -104,6 +108,7 @@ function addOccurrence() {
 	const timeDiv = document.createElement("div");
 	timeDiv.className = "form-row";
 
+	// Create start time input
 	const timeInputDiv = document.createElement("div");
 	timeInputDiv.className = "input";
 	const timeInput = document.createElement("input");
@@ -114,6 +119,7 @@ function addOccurrence() {
 	timeInputDiv.appendChild(timeLabel);
 	timeInputDiv.appendChild(timeInput);
 
+	// Create duration number input
 	const numberInputDiv = document.createElement("div");
 	numberInputDiv.className = "input";
 	const numberInput = document.createElement("input");
@@ -127,16 +133,19 @@ function addOccurrence() {
 	timeDiv.appendChild(timeInputDiv);
 	timeDiv.appendChild(numberInputDiv);
 
+	// Create button to delete occurrence
 	const deleteButton = document.createElement("button");
 	deleteButton.type = "button";
 	deleteButton.className = "delete-button";
 	deleteButton.appendChild(document.createTextNode("X"));
 	deleteButton.addEventListener("click", removeOccurrence);
 
+	// Insert the new occurrence in the list
 	newOccurrence.appendChild(daysInput);
 	newOccurrence.appendChild(timeDiv);
 	newOccurrence.appendChild(deleteButton);
 	occurrencesList.appendChild(newOccurrence);
 }
 
+// Add event to button add the occurrence
 document.getElementById("add-button").addEventListener("click", addOccurrence);
