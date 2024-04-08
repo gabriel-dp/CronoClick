@@ -13,6 +13,7 @@ export const FormContainer = styled.form`
 
 	h1 {
 		font-size: 1.5rem;
+		color: ${(props) => props.theme.primary};
 	}
 
 	hr {

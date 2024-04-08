@@ -35,7 +35,9 @@ export default function Modal(props: ModalProps) {
 		>
 			<ModalContainer onClick={handleModalClick} ref={modalRef}>
 				<CloseButtonContainer>
-					<Button onClick={props.close}>X</Button>
+					<Button className="close-button" onClick={props.close}>
+						X
+					</Button>
 				</CloseButtonContainer>
 				{props.children}
 			</ModalContainer>

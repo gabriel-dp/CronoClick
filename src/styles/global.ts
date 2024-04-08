@@ -24,4 +24,5 @@ export default createGlobalStyle<{ theme: AppTheme }>`
         color: ${(props) => props.theme.text};
         transition: background 0.25s ease-in-out, color 0.25s ease-in-out;
     }
+
 `;

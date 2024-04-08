@@ -33,6 +33,31 @@ export const ModalContainer = styled.div`
 	overflow-y: auto;
 	position: relative;
 	text-align: center;
+
+	.close-button {
+		background: transparent;
+		color: ${(props) => props.theme.primary};
+		font-size: 1rem;
+		font-weight: bold;
+	}
+
+	scrollbar-gutter: stable;
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		border-radius: 100rem;
+		background: ${(props) => props.theme.primary};
+	}
+
+	&::-webkit-scrollbar-thumb:hover {
+		background: ${(props) => props.theme.primaryHighlight};
+	}
 `;
 
 export const CloseButtonContainer = styled.div`
