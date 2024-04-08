@@ -32,7 +32,7 @@ export function convertToSubjectSchema(subject: Subject): SubjectSchema {
 	const { name, teacher, color, times } = subject;
 	const occurrences: OccurrenceSchema[] = times.map((time) => ({
 		days: decodeValue(time.days),
-		start: formatMinutesToTime(time.start),
+		start: formatMinutesToTime(time.start, "24-hour"),
 		duration: time.duration
 	}));
 

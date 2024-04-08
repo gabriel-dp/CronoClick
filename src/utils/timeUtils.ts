@@ -1,19 +1,24 @@
-export function pad(value: number, size: number): string {
-	let str = value.toString();
-	while (str.length < size) str = "0" + str;
-	return str;
-}
-
-export const formatMinutesToTime = (totalMinutes: number): string => {
-	// out of range
+export const formatMinutesToTime = (
+	totalMinutes: number,
+	format?: "12-hour" | "24-hour"
+): string => {
 	if (totalMinutes < 0 || totalMinutes > 60 * 24) {
-		return "";
+		return ""; // out of range
 	}
 
 	const hours = Math.floor(totalMinutes / 60);
 	const minutes = totalMinutes - 60 * hours;
 
-	return `${pad(hours, 2)}:${pad(minutes, 2)}`;
+	const timeLocal = new Date(2024, 0, 1, hours, minutes).toLocaleTimeString(
+		undefined,
+		{
+			hour: "2-digit",
+			minute: "2-digit",
+			hour12: format ? format == "12-hour" : undefined
+		}
+	);
+
+	return timeLocal;
 };
 
 export const formatTimeToMinutes = (time: string) => {

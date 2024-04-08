@@ -159,9 +159,8 @@ export default function SubjectForm(props: SubjectFormProps) {
 					</FormRow>
 					<FormRow>
 						<Input
-							type="text"
+							type="time"
 							label="Início"
-							placeholder="HH:MM"
 							{...register(`occurrences.${i}.start`, {
 								required: true
 							})}

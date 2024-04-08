@@ -13,4 +13,7 @@ export const ColumnContainer = styled.div.attrs({ className: "time" })`
 	justify-content: space-between;
 `;
 
-export const TimeContainer = styled.div``;
+export const TimeContainer = styled.div`
+	white-space: nowrap;
+	text-transform: uppercase;
+`;
