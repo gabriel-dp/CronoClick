@@ -1,5 +1,10 @@
 # CronoClick
 
+`Bárbara Pereira`
+`Gabriel de Paula`
+`Gabriel Souza`
+`Henrique Azevedo`
+
 Your web companion for effortless weekly planning.
 
 Crafted with a user-friendly visual interface, it ealisy organizes your week with an intuitive schedule of activities and a handy to-do list feature.
