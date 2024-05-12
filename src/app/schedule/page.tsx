@@ -5,12 +5,13 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { decodeValue } from "@/utils/daysUtils";
 import ScheduleWeek from "@/components/ScheduleWeek";
 import ScheduleControl from "@/components/ScheduleControl";
+import { LocalDaysNames } from "@/utils/timeUtils";
 
 export default function SchedulePage() {
 	const { schedule, ...controls } = useSchedule();
 
 	// Define week structure
-	const days: string[] = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""];
+	const days: string[] = LocalDaysNames().filter((_, i) => i != 0 && i != 6);
 	const initialWeek: DayClasses[] = days.map((day) => ({
 		day,
 		items: []

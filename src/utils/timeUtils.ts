@@ -1,3 +1,5 @@
+import { useLocale } from "@/hooks/useLocale";
+
 export const formatMinutesToTime = (
 	totalMinutes: number,
 	format?: "12-hour" | "24-hour"
@@ -26,3 +28,18 @@ export const formatTimeToMinutes = (time: string) => {
 	const totalMinutes = parseInt(hours) * 60 + parseInt(minutes);
 	return totalMinutes;
 };
+
+export function LocalDaysNames(): Array<string> {
+	const locale = useLocale();
+	if (locale == "") return [];
+
+	const names = new Array<string>(7)
+		.fill("")
+		.map((_, i) =>
+			new Date(0, 0, i)
+				.toLocaleString(locale, { weekday: "short" })
+				.toUpperCase()
+		);
+
+	return names;
+}
