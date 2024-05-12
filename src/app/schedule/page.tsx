@@ -1,13 +1,31 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
+import { Schedule } from "@/types/schedules";
 import { DayClasses } from "@/types/classes";
 import { useSchedule } from "@/hooks/useSchedule";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { decodeValue } from "@/utils/daysUtils";
-import ScheduleWeek from "@/components/ScheduleWeek";
 import ScheduleControl from "@/components/ScheduleControl";
 
+// Schedule should not be pre-rendered on the server
+const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
+	ssr: false
+});
+
+const generateInitialSchedule = (): Schedule => ({
+	id: "",
+	name: "",
+	subjects: []
+});
+
 export default function SchedulePage() {
-	const { schedule, ...controls } = useSchedule();
+	const [storedSchedule, setStoredSchedule] = useLocalStorage<Schedule>(
+		"cc-schedule",
+		generateInitialSchedule()
+	);
+	const { schedule, ...controls } = useSchedule(storedSchedule);
 
 	// Define week structure
 	const days: string[] = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""];
@@ -47,9 +65,13 @@ export default function SchedulePage() {
 	// Adjust week days
 	const week = fullWeek.filter((singleDay) => singleDay.day.length > 0);
 
+	const saveChanges = () => {
+		setStoredSchedule(schedule);
+	};
+
 	return (
 		<>
-			<ScheduleControl controls={controls} />
+			<ScheduleControl controls={controls} saveChanges={saveChanges} />
 			<ScheduleWeek week={week} controls={controls} />
 		</>
 	);

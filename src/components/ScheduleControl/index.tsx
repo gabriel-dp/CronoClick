@@ -10,17 +10,19 @@ import { ControlBar } from "./styles";
 
 interface ScheduleControlProps {
 	controls: ScheduleControlI;
+	saveChanges: () => void;
 }
 
-export default function ScheduleControl({ controls }: ScheduleControlProps) {
+export default function ScheduleControl(props: ScheduleControlProps) {
 	const addSubjectModal = useModal();
 
 	return (
 		<ControlBar>
 			<Button onClick={addSubjectModal.open}>Adicionar disciplina</Button>
+			<Button onClick={props.saveChanges}>Salvar alterações</Button>
 			<Modal {...addSubjectModal}>
 				<SubjectForm
-					controls={controls}
+					controls={props.controls}
 					finally={addSubjectModal.close}
 				/>
 			</Modal>

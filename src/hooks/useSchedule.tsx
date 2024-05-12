@@ -16,16 +16,8 @@ interface useScheduleReturn extends ScheduleControlI {
 	schedule: Schedule;
 }
 
-const generateInitialSchedule = (): Schedule => ({
-	id: "",
-	name: "",
-	subjects: []
-});
-
-export function useSchedule(initialSchedule?: Schedule): useScheduleReturn {
-	const [schedule, setSchedule] = useState<Schedule>(
-		initialSchedule ?? generateInitialSchedule()
-	);
+export function useSchedule(initialSchedule: Schedule): useScheduleReturn {
+	const [schedule, setSchedule] = useState<Schedule>(initialSchedule);
 
 	const getSubject = (id: Id): Subject | undefined => {
 		return schedule.subjects.find((subject) => subject.id == id);
@@ -65,8 +57,8 @@ export function useSchedule(initialSchedule?: Schedule): useScheduleReturn {
 	};
 
 	return {
-		getSubject,
 		schedule,
+		getSubject,
 		editName,
 		addSubject,
 		removeSubject,
