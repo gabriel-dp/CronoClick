@@ -8,10 +8,12 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { decodeValue } from "@/utils/daysUtils";
 import ScheduleControl from "@/components/ScheduleControl";
+import { LocalDaysNames } from "@/utils/timeUtils";
 
 // Schedule should not be pre-rendered on the server
 const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
-	ssr: false
+	ssr: false,
+	loading: () => <p>Loading Schedule</p>
 });
 
 const generateInitialSchedule = (): Schedule => ({
@@ -28,7 +30,11 @@ export default function SchedulePage() {
 	const { schedule, ...controls } = useSchedule(storedSchedule);
 
 	// Define week structure
-	const days: string[] = ["", "SEG", "TER", "QUA", "QUI", "SEX", ""];
+	const days: string[] = LocalDaysNames().map((day, i) => {
+		if (i != 0 && i != 6) return day;
+		return "";
+	});
+
 	const initialWeek: DayClasses[] = days.map((day) => ({
 		day,
 		items: []
