@@ -6,9 +6,10 @@ import { Schedule } from "@/types/schedules";
 import { DayClasses } from "@/types/classes";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useCloseTabAlert } from "@/hooks/useCloseTabAlert";
 import { decodeValue } from "@/utils/daysUtils";
-import ScheduleControl from "@/components/ScheduleControl";
 import { LocalDaysNames } from "@/utils/timeUtils";
+import ScheduleControl from "@/components/ScheduleControl";
 
 // Schedule should not be pre-rendered on the server
 const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
@@ -28,6 +29,7 @@ export default function SchedulePage() {
 		generateInitialSchedule()
 	);
 	const { schedule, ...controls } = useSchedule(storedSchedule);
+	const { disableCloseAlert } = useCloseTabAlert(schedule);
 
 	// Define week structure
 	const days: string[] = LocalDaysNames().map((day, i) => {
@@ -73,6 +75,7 @@ export default function SchedulePage() {
 
 	const saveChanges = () => {
 		setStoredSchedule(schedule);
+		disableCloseAlert();
 	};
 
 	return (

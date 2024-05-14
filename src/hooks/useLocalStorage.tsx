@@ -1,8 +1,11 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-type useLocalStorageReturn<T> = [value: T, setValue: (newValue: T) => void];
+type useLocalStorageReturn<T> = [
+	value: T,
+	setValue: Dispatch<SetStateAction<T>>
+];
 
 // Limit local storage usage ony for browsers
 const isServer = typeof window == "undefined";
@@ -11,20 +14,17 @@ export function useLocalStorage<T>(
 	key: string,
 	initialValue: T
 ): useLocalStorageReturn<T> {
-	const writeStoredValue = useCallback(
-		(value: T) => {
-			if (isServer) return;
+	const writeStoredValue = (value: T) => {
+		if (isServer) return;
 
-			try {
-				window.localStorage.setItem(key, JSON.stringify(value));
-			} catch (error) {
-				console.warn(`Error writing local storage: ${error}`);
-			}
-		},
-		[key]
-	);
+		try {
+			window.localStorage.setItem(key, JSON.stringify(value));
+		} catch (error) {
+			console.warn(`Error writing local storage: ${error}`);
+		}
+	};
 
-	const readStoredValue = useCallback(() => {
+	const readStoredValue = () => {
 		if (isServer) return undefined;
 
 		try {
@@ -40,17 +40,23 @@ export function useLocalStorage<T>(
 			console.warn(`Error reading local storage: ${error}`);
 			return undefined;
 		}
-	}, [key, initialValue, writeStoredValue]);
+	};
 
 	const [value, setValue] = useState<T>(readStoredValue() ?? initialValue);
 
-	const setStoredValue = useCallback(
-		(newValue: T) => {
-			writeStoredValue(newValue);
-			setValue(newValue);
-		},
-		[writeStoredValue]
-	);
+	const setStoredValue: Dispatch<SetStateAction<T>> = (
+		action: SetStateAction<T>
+	) => {
+		console.log("salvou?");
+		if (typeof action === "function") {
+			const newActionValue = (action as (prevState: T) => T)(value);
+			setValue(newActionValue);
+			writeStoredValue(newActionValue);
+		} else {
+			setValue(action);
+			writeStoredValue(action);
+		}
+	};
 
 	return [value, setStoredValue];
 }
