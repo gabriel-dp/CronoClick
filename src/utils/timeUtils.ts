@@ -37,7 +37,8 @@ export function LocalDaysNames(): Array<string> {
 		for (let i = 0; i < 7; i++) {
 			days[i] = new Date(0, 0, i)
 				.toLocaleString(locale, { weekday: "short" })
-				.toUpperCase();
+				.toUpperCase()
+				.replaceAll(".", "");
 		}
 	}
 
