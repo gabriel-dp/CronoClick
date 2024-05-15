@@ -1,5 +1,3 @@
-import { useLocale } from "@/hooks/useLocale";
-
 export const formatMinutesToTime = (
 	totalMinutes: number,
 	format?: "12-hour" | "24-hour"
@@ -29,10 +27,16 @@ export const formatTimeToMinutes = (time: string) => {
 	return totalMinutes;
 };
 
+function getLocale(): string {
+	if (typeof window == "undefined") return "en"; // Server default language
+	if (navigator.languages != undefined) return navigator.languages[0];
+	return navigator.language;
+}
+
 export function LocalDaysNames(): Array<string> {
 	const days = new Array<string>(7).fill("");
 
-	const locale = useLocale();
+	const locale = getLocale();
 	if (locale != "") {
 		for (let i = 0; i < 7; i++) {
 			days[i] = new Date(0, 0, i)
