@@ -28,7 +28,6 @@ export function useCloseTabAlert<T>(state?: T) {
 	const isFirstRender = useRef(true);
 	useEffect(() => {
 		if (isFirstRender.current == false && state != undefined) {
-			console.log("mudou");
 			enableCloseAlert();
 			return;
 		}

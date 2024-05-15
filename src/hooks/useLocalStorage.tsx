@@ -47,7 +47,6 @@ export function useLocalStorage<T>(
 	const setStoredValue: Dispatch<SetStateAction<T>> = (
 		action: SetStateAction<T>
 	) => {
-		console.log("salvou?");
 		if (typeof action === "function") {
 			const newActionValue = (action as (prevState: T) => T)(value);
 			setValue(newActionValue);
