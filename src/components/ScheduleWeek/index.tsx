@@ -1,3 +1,4 @@
+import { Configs } from "@/types/configs";
 import { Class, DayClasses } from "@/types/classes";
 import { ScheduleControlI } from "@/hooks/useSchedule";
 
@@ -12,6 +13,7 @@ const MAX_END = 24 * 60;
 interface ScheduleProps {
 	week: DayClasses[];
 	controls: ScheduleControlI;
+	configs: Configs;
 }
 
 export default function Schedule(props: ScheduleProps) {

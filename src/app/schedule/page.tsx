@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 
+import { Configs } from "@/types/configs";
 import { Schedule } from "@/types/schedules";
 import { DayClasses } from "@/types/classes";
 import { useSchedule } from "@/hooks/useSchedule";
@@ -23,7 +24,19 @@ const generateInitialSchedule = (): Schedule => ({
 	subjects: []
 });
 
+const generateInitialConfigs = (): Configs => ({
+	firstDayWeek: 0,
+	minimizeTimeSpan: false,
+	weekends: false,
+	timeInterval: 60
+});
+
 export default function SchedulePage() {
+	const [storedConfigs, setStoredConfigs] = useLocalStorage<Configs>(
+		"cc-configs",
+		generateInitialConfigs()
+	);
+
 	const [storedSchedule, setStoredSchedule] = useLocalStorage<Schedule>(
 		"cc-schedule",
 		generateInitialSchedule()
@@ -31,13 +44,8 @@ export default function SchedulePage() {
 	const { schedule, ...controls } = useSchedule(storedSchedule);
 	const { disableCloseAlert } = useCloseTabAlert(schedule);
 
-	// Define week structure
-	const days: string[] = LocalDaysNames().map((day, i) => {
-		if (i != 0 && i != 6) return day;
-		return "";
-	});
-
-	const initialWeek: DayClasses[] = days.map((day) => ({
+	// Set week data structure
+	const initialWeek: DayClasses[] = LocalDaysNames().map((day) => ({
 		day,
 		items: []
 	}));
@@ -78,10 +86,22 @@ export default function SchedulePage() {
 		disableCloseAlert();
 	};
 
+	const updateConfigs = (newConfigs: Configs) => {
+		setStoredConfigs(newConfigs);
+	};
+
 	return (
 		<>
-			<ScheduleControl controls={controls} saveChanges={saveChanges} />
-			<ScheduleWeek week={week} controls={controls} />
+			<ScheduleControl
+				controls={controls}
+				saveChanges={saveChanges}
+				updateConfigs={updateConfigs}
+			/>
+			<ScheduleWeek
+				week={week}
+				controls={controls}
+				configs={storedConfigs}
+			/>
 		</>
 	);
 }

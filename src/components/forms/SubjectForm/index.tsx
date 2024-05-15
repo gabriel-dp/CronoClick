@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -11,8 +12,12 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
 import { MODAL_TRANSITION_TIME_MS } from "@/components/ui/Modal/styles";
-
-import { FormContainer, FormGroup, FormHead, FormRow } from "./styles";
+import {
+	FormContainer,
+	FormGroup,
+	FormHead,
+	FormRow
+} from "@/components/forms/styles";
 
 import {
 	DEFAULT_SUBJECT,
@@ -21,7 +26,6 @@ import {
 	convertToSubjectSchema,
 	subjectZodSchema
 } from "./types";
-import { useEffect } from "react";
 
 const DAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 
@@ -153,6 +157,7 @@ export default function SubjectForm(props: SubjectFormProps) {
 								key={day}
 								label={day}
 								alignment="vertical"
+								small
 								{...register(`occurrences.${i}.days.${j}`)}
 							/>
 						))}
