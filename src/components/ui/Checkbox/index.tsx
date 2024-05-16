@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-import { CheckboxLabel, CheckboxWrapper, InputCheckbox } from "./styles";
+import { CheckboxLabel, InputCheckbox } from "./styles";
 
 interface CheckboxProps extends React.ComponentPropsWithoutRef<"input"> {
 	label: string;
@@ -13,13 +13,10 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function _(
 	ref
 ) {
 	return (
-		<CheckboxWrapper
-			$alignment={alignment ?? "horizontal"}
-			$small={!!small}
-		>
-			<CheckboxLabel $small={!!small}>{label}</CheckboxLabel>
-			<InputCheckbox ref={ref} {...rest} />
-		</CheckboxWrapper>
+		<CheckboxLabel $alignment={alignment ?? "horizontal"} $small={!!small}>
+			{label}
+			<InputCheckbox id={label + ""} ref={ref} {...rest} />
+		</CheckboxLabel>
 	);
 });
 

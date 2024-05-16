@@ -33,7 +33,7 @@ function getLocale(): string {
 	return navigator.language;
 }
 
-export function LocalDaysNames(): Array<string> {
+export function getLocalDaysNames(): Array<string> {
 	const days = new Array<string>(7).fill("");
 
 	const locale = getLocale();

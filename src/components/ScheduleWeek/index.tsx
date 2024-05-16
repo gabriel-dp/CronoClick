@@ -19,24 +19,22 @@ interface ScheduleProps {
 }
 
 export default function Schedule(props: ScheduleProps) {
-	const { timeInterval: interval } = props.configs;
+	const { weekends, minimizeTimeSpan } = props.configs;
+	const interval = parseInt(props.configs.timeInterval);
+	const firstWeekDay = parseInt(props.configs.firstDayWeek);
 
 	// Set minimum interval between start and end
-	const minDiff = props.configs.minimizeTimeSpan
-		? interval
-		: DEFAULT_MIN_DIFF;
+	const minDiff = minimizeTimeSpan ? interval : DEFAULT_MIN_DIFF;
 
 	// Set first day of the week
 	const reorderedWeek = props.week
-		.slice(props.configs.firstDayWeek, 7)
-		.concat(props.week.slice(0, props.configs.firstDayWeek));
+		.slice(firstWeekDay, 7)
+		.concat(props.week.slice(0, firstWeekDay));
 
 	// Remove weekends if necessary
 	const filteredWeek = reorderedWeek.filter(
 		(_, i) =>
-			props.configs.weekends ||
-			(i != (7 - props.configs.firstDayWeek) % 7 &&
-				i != 6 - props.configs.firstDayWeek)
+			weekends || (i != (7 - firstWeekDay) % 7 && i != 6 - firstWeekDay)
 	);
 
 	// Get data from week

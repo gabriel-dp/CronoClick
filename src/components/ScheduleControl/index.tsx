@@ -6,7 +6,7 @@ import { useModal } from "@/hooks/useModal";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import SubjectForm from "@/components/forms/SubjectForm";
-import ScheduleConfigsForm from "@/components/forms/ScheduleConfigsForm";
+import ConfigsForm from "@/components/forms/ConfigsForm";
 
 import { ControlBar } from "./styles";
 
@@ -33,8 +33,8 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 				/>
 			</Modal>
 			<Modal {...configsModal}>
-				<ScheduleConfigsForm
-					initialConfigs={props.configs}
+				<ConfigsForm
+					configs={props.configs}
 					setConfigs={props.setConfigs}
 					finally={configsModal.close}
 				/>

@@ -9,7 +9,7 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useCloseTabAlert } from "@/hooks/useCloseTabAlert";
 import { decodeValue } from "@/utils/daysUtils";
-import { LocalDaysNames } from "@/utils/timeUtils";
+import { getLocalDaysNames } from "@/utils/timeUtils";
 import ScheduleControl from "@/components/ScheduleControl";
 
 // Schedule should not be pre-rendered on the server
@@ -25,10 +25,10 @@ const generateInitialSchedule = (): Schedule => ({
 });
 
 const generateInitialConfigs = (): Configs => ({
-	firstDayWeek: 1,
+	firstDayWeek: "1",
 	minimizeTimeSpan: false,
 	weekends: true,
-	timeInterval: 60
+	timeInterval: "60"
 });
 
 export default function SchedulePage() {
@@ -45,7 +45,7 @@ export default function SchedulePage() {
 	const { disableCloseAlert } = useCloseTabAlert(schedule);
 
 	// Set week data structure
-	const week: DayClasses[] = LocalDaysNames().map((day) => ({
+	const week: DayClasses[] = getLocalDaysNames().map((day) => ({
 		day,
 		items: []
 	}));

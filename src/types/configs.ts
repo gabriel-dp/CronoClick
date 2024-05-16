@@ -1,6 +1,6 @@
 export interface Configs {
 	weekends: boolean;
-	firstDayWeek: number;
+	firstDayWeek: string;
 	minimizeTimeSpan: boolean;
-	timeInterval: number;
+	timeInterval: string;
 }

@@ -2,8 +2,8 @@ import z from "zod";
 
 export const configsSchema = z.object({
 	weekends: z.boolean(),
-	firstDayWeek: z.coerce.number(),
+	firstDayWeek: z.string(),
 	minimizeTimeSpan: z.boolean(),
-	timeInterval: z.coerce.number()
+	timeInterval: z.string()
 });
 export type ConfigsSchema = z.infer<typeof configsSchema>;
