@@ -5,14 +5,14 @@ import { useEffect } from "react";
 import { Configs } from "@/types/configs";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
+import Button from "@/components/ui/Button";
 import { FormContainer } from "@/components/forms/styles";
 
 import { configsSchema, ConfigsSchema } from "./types";
-import Button from "@/components/ui/Button";
 
 interface ScheduleConfigsFormProps {
 	initialConfigs: Configs;
-	updateConfigs: (newConfigs: Configs) => void;
+	setConfigs: (newConfigs: Configs) => void;
 	finally: () => void;
 }
 
@@ -27,7 +27,7 @@ export default function ScheduleConfigsForm(props: ScheduleConfigsFormProps) {
 	}, [reset, props.initialConfigs]);
 
 	function handleChange(configs: ConfigsSchema) {
-		props.updateConfigs(configs);
+		props.setConfigs(configs);
 		props.finally();
 	}
 
@@ -50,7 +50,7 @@ export default function ScheduleConfigsForm(props: ScheduleConfigsFormProps) {
 				{...register("timeInterval")}
 			/>
 			<Checkbox
-				label={"Minimizar intervalo de tempo"}
+				label={"Minimizar cronograma"}
 				alignment="horizontal"
 				{...register("minimizeTimeSpan")}
 			/>

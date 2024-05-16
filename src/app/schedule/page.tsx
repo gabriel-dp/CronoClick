@@ -25,9 +25,9 @@ const generateInitialSchedule = (): Schedule => ({
 });
 
 const generateInitialConfigs = (): Configs => ({
-	firstDayWeek: 0,
+	firstDayWeek: 1,
 	minimizeTimeSpan: false,
-	weekends: false,
+	weekends: true,
 	timeInterval: 60
 });
 
@@ -45,49 +45,36 @@ export default function SchedulePage() {
 	const { disableCloseAlert } = useCloseTabAlert(schedule);
 
 	// Set week data structure
-	const initialWeek: DayClasses[] = LocalDaysNames().map((day) => ({
+	const week: DayClasses[] = LocalDaysNames().map((day) => ({
 		day,
 		items: []
 	}));
 
-	// Convert subjects into classes
-	const { fullWeek } = schedule.subjects.reduce<{
-		fullWeek: DayClasses[];
-	}>(
-		(acc, cur) => {
-			cur.times.forEach((time) => {
-				const decodedWeek = decodeValue(time.days);
-				decodedWeek.forEach((day, i) => {
-					if (day) {
-						initialWeek[i].items.push({
-							start: time.start,
-							duration: time.duration,
-							subject: {
-								id: cur.id,
-								name: cur.name,
-								teacher: cur.teacher,
-								color: cur.color
-							}
-						});
-					}
-				});
+	// Add all subjects in its correct days
+	schedule.subjects.forEach((subject) => {
+		subject.times.forEach((time) => {
+			const decodedTimeDays = decodeValue(time.days);
+			decodedTimeDays.forEach((day, i) => {
+				if (day) {
+					week[i].items.push({
+						start: time.start,
+						duration: time.duration,
+						subject: {
+							id: subject.id,
+							name: subject.name,
+							teacher: subject.teacher,
+							color: subject.color
+						}
+					});
+				}
 			});
+		});
+	});
 
-			return acc;
-		},
-		{ fullWeek: initialWeek }
-	);
-
-	// Adjust week days
-	const week = fullWeek.filter((singleDay) => singleDay.day.length > 0);
-
+	// Function to save the current schedule
 	const saveChanges = () => {
 		setStoredSchedule(schedule);
 		disableCloseAlert();
-	};
-
-	const updateConfigs = (newConfigs: Configs) => {
-		setStoredConfigs(newConfigs);
 	};
 
 	return (
@@ -95,7 +82,8 @@ export default function SchedulePage() {
 			<ScheduleControl
 				controls={controls}
 				saveChanges={saveChanges}
-				updateConfigs={updateConfigs}
+				configs={storedConfigs}
+				setConfigs={setStoredConfigs}
 			/>
 			<ScheduleWeek
 				week={week}

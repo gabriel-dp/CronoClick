@@ -13,7 +13,8 @@ import { ControlBar } from "./styles";
 interface ScheduleControlProps {
 	controls: ScheduleControlI;
 	saveChanges: () => void;
-	updateConfigs: (newConfigs: Configs) => void;
+	configs: Configs;
+	setConfigs: (newConfigs: Configs) => void;
 }
 
 export default function ScheduleControl(props: ScheduleControlProps) {
@@ -33,8 +34,8 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 			</Modal>
 			<Modal {...configsModal}>
 				<ScheduleConfigsForm
-					initialConfigs={{} as Configs}
-					updateConfigs={props.updateConfigs}
+					initialConfigs={props.configs}
+					setConfigs={props.setConfigs}
 					finally={configsModal.close}
 				/>
 			</Modal>
