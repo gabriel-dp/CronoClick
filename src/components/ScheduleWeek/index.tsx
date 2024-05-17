@@ -1,3 +1,4 @@
+import { Configs } from "@/types/configs";
 import { Class, DayClasses } from "@/types/classes";
 import { ScheduleControlI } from "@/hooks/useSchedule";
 
@@ -8,19 +9,36 @@ import { ScheduleContainer } from "./styles";
 
 const MIN_START = 0;
 const MAX_END = 24 * 60;
+const DEFAULT_START = 8 * 60;
+const DEFAULT_MIN_DIFF = 4 * 60;
 
 interface ScheduleProps {
 	week: DayClasses[];
 	controls: ScheduleControlI;
+	configs: Configs;
 }
 
 export default function Schedule(props: ScheduleProps) {
-	const INTERVAL = 60;
-	const DEFAULT_START = 8 * 60;
-	const MIN_DIFF = 4 * 60;
+	const { weekends, minimizeTimeSpan } = props.configs;
+	const interval = parseInt(props.configs.timeInterval);
+	const firstWeekDay = parseInt(props.configs.firstDayWeek);
+
+	// Set minimum interval between start and end
+	const minDiff = minimizeTimeSpan ? interval : DEFAULT_MIN_DIFF;
+
+	// Set first day of the week
+	const reorderedWeek = props.week
+		.slice(firstWeekDay, 7)
+		.concat(props.week.slice(0, firstWeekDay));
+
+	// Remove weekends if necessary
+	const filteredWeek = reorderedWeek.filter(
+		(_, i) =>
+			weekends || (i != (7 - firstWeekDay) % 7 && i != 6 - firstWeekDay)
+	);
 
 	// Get data from week
-	const { start, end, days, weekClasses } = props.week.reduce<{
+	const { start, end, days, weekClasses } = filteredWeek.reduce<{
 		start: number;
 		end: number;
 		days: string[];
@@ -46,21 +64,21 @@ export default function Schedule(props: ScheduleProps) {
 	// Set schedule start and end times
 	const startFloor =
 		start != MAX_END
-			? Math.floor(start / INTERVAL) * INTERVAL
+			? Math.floor(start / interval) * interval
 			: DEFAULT_START;
 	const endCeil =
-		Math.ceil(Math.max(end, startFloor + MIN_DIFF) / INTERVAL) * INTERVAL;
+		Math.ceil(Math.max(end, startFloor + minDiff) / interval) * interval;
 
 	return (
 		<ScheduleContainer>
 			<div className="empty"></div>
 			<DaysRow days={days} />
-			<TimeColumn start={startFloor} end={endCeil} interval={INTERVAL} />
+			<TimeColumn start={startFloor} end={endCeil} interval={interval} />
 			<ClassesGrid
 				weekClasses={weekClasses}
 				start={startFloor}
 				end={endCeil}
-				interval={INTERVAL}
+				interval={interval}
 				controls={props.controls}
 			/>
 		</ScheduleContainer>
