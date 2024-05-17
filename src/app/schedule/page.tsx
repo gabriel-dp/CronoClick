@@ -27,7 +27,7 @@ const generateInitialSchedule = (): Schedule => ({
 const generateInitialConfigs = (): Configs => ({
 	firstDayWeek: "1",
 	minimizeTimeSpan: false,
-	weekends: true,
+	weekends: false,
 	timeInterval: "60"
 });
 
