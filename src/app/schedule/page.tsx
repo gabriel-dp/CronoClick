@@ -8,6 +8,8 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useCloseTabAlert } from "@/hooks/useCloseTabAlert";
 import ScheduleControl from "@/components/ScheduleControl";
+import TaskControl from "@/components/TaskControl";
+import TaskList from "@/components/TaskList";
 
 import {
 	MainContainer,
@@ -25,7 +27,47 @@ const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
 const generateInitialSchedule = (): Schedule => ({
 	id: "",
 	name: "",
-	subjects: []
+	subjects: [
+		{
+			id: "aa",
+			color: "#FF00F0",
+			name: "Teste",
+			tasks: [
+				{
+					id: "1",
+					description: "abuble",
+					name: "Prova 2",
+					submission: "2024-07-27T21:08:44+0000"
+				},
+				{
+					id: "2",
+					description: "abuble",
+					name: "Prova 4",
+					submission: "2024-07-28T21:02:44+0000"
+				},
+				{
+					id: "3",
+					description: "abuble",
+					name: "Prova 3",
+					submission: "2024-07-27T21:08:44+0000"
+				},
+				{
+					id: "4",
+					description: "abuble",
+					name: "Prova 1",
+					submission: "2024-07-27T15:08:44+0000"
+				}
+			],
+			teacher: "",
+			times: [
+				{
+					days: 15,
+					duration: 110,
+					start: 480
+				}
+			]
+		}
+	]
 });
 
 const generateInitialConfigs = (): Configs => ({
@@ -45,6 +87,7 @@ export default function SchedulePage() {
 		"cc-schedule",
 		generateInitialSchedule()
 	);
+
 	const { schedule, ...controls } = useSchedule(storedSchedule);
 	const { disableCloseAlert } = useCloseTabAlert(schedule);
 
@@ -60,9 +103,9 @@ export default function SchedulePage() {
 				<SectionTitle>Cronograma</SectionTitle>
 				<ScheduleControl
 					controls={controls}
-					saveChanges={saveChanges}
 					configs={storedConfigs}
 					setConfigs={setStoredConfigs}
+					saveChanges={saveChanges}
 				/>
 				<ScheduleWeek
 					subjects={schedule.subjects}
@@ -72,7 +115,12 @@ export default function SchedulePage() {
 			</ScheduleContainer>
 			<TasksContainer>
 				<SectionTitle>Tarefas</SectionTitle>
-				<p>tarefas</p>
+				<TaskControl saveChanges={saveChanges} />
+				<TaskList
+					subjects={schedule.subjects}
+					controls={controls}
+					hideFinished={false}
+				/>
 			</TasksContainer>
 		</MainContainer>
 	);

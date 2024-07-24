@@ -12,9 +12,9 @@ import { ControlBar } from "./styles";
 
 interface ScheduleControlProps {
 	controls: ScheduleControlI;
-	saveChanges: () => void;
 	configs: Configs;
 	setConfigs: (newConfigs: Configs) => void;
+	saveChanges: () => void;
 }
 
 export default function ScheduleControl(props: ScheduleControlProps) {
