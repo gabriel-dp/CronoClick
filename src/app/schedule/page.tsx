@@ -4,13 +4,17 @@ import dynamic from "next/dynamic";
 
 import { Configs } from "@/types/configs";
 import { Schedule } from "@/types/schedules";
-import { DayClasses } from "@/types/classes";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useCloseTabAlert } from "@/hooks/useCloseTabAlert";
-import { decodeValue } from "@/utils/daysUtils";
-import { getLocalDaysNames } from "@/utils/timeUtils";
 import ScheduleControl from "@/components/ScheduleControl";
+
+import {
+	MainContainer,
+	ScheduleContainer,
+	SectionTitle,
+	TasksContainer
+} from "./styles";
 
 // Schedule should not be pre-rendered on the server
 const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
@@ -44,33 +48,6 @@ export default function SchedulePage() {
 	const { schedule, ...controls } = useSchedule(storedSchedule);
 	const { disableCloseAlert } = useCloseTabAlert(schedule);
 
-	// Set week data structure
-	const week: DayClasses[] = getLocalDaysNames().map((day) => ({
-		day,
-		items: []
-	}));
-
-	// Add all subjects in its correct days
-	schedule.subjects.forEach((subject) => {
-		subject.times.forEach((time) => {
-			const decodedTimeDays = decodeValue(time.days);
-			decodedTimeDays.forEach((day, i) => {
-				if (day) {
-					week[i].items.push({
-						start: time.start,
-						duration: time.duration,
-						subject: {
-							id: subject.id,
-							name: subject.name,
-							teacher: subject.teacher,
-							color: subject.color
-						}
-					});
-				}
-			});
-		});
-	});
-
 	// Function to save the current schedule
 	const saveChanges = () => {
 		setStoredSchedule(schedule);
@@ -78,18 +55,25 @@ export default function SchedulePage() {
 	};
 
 	return (
-		<>
-			<ScheduleControl
-				controls={controls}
-				saveChanges={saveChanges}
-				configs={storedConfigs}
-				setConfigs={setStoredConfigs}
-			/>
-			<ScheduleWeek
-				week={week}
-				controls={controls}
-				configs={storedConfigs}
-			/>
-		</>
+		<MainContainer>
+			<ScheduleContainer>
+				<SectionTitle>Cronograma</SectionTitle>
+				<ScheduleControl
+					controls={controls}
+					saveChanges={saveChanges}
+					configs={storedConfigs}
+					setConfigs={setStoredConfigs}
+				/>
+				<ScheduleWeek
+					subjects={schedule.subjects}
+					controls={controls}
+					configs={storedConfigs}
+				/>
+			</ScheduleContainer>
+			<TasksContainer>
+				<SectionTitle>Tarefas</SectionTitle>
+				<p>tarefas</p>
+			</TasksContainer>
+		</MainContainer>
 	);
 }
