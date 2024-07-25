@@ -1,7 +1,6 @@
-import { Id, Subject, Task } from "@/types/schedules";
+import { Subject, SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/hooks/useSchedule";
-
-type SubjectTask = Task & { subjectId: Id };
+import { CardList, DayGroup, TaskCard, TaskCardData } from "./styles";
 
 interface TaskListI {
 	subjects: Subject[];
@@ -30,25 +29,33 @@ export default function TaskList(props: TaskListI) {
 	});
 
 	return (
-		<>
+		<CardList>
 			{Object.entries(tasksDays).map(([date, dateTasks]) => {
 				const a = new Date(date);
 				return (
-					<div key={date}>
-						<p>{a.toLocaleDateString()}</p>
+					<DayGroup key={date}>
+						<p className="date">{a.toLocaleDateString()}</p>
 						{dateTasks?.map((task) => {
 							const subject = props.controls.getSubject(
 								task.subjectId
 							);
 							return (
-								<p key={task.id}>
-									{subject?.name} - {task.name}
-								</p>
+								<TaskCard
+									key={task.id}
+									$color={subject?.color ?? "#FFFFFF"}
+								>
+									<TaskCardData>
+										<p className="subject">
+											{subject?.name}
+										</p>
+										<p className="task">{task.name}</p>
+									</TaskCardData>
+								</TaskCard>
 							);
 						})}
-					</div>
+					</DayGroup>
 				);
 			})}
-		</>
+		</CardList>
 	);
 }

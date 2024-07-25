@@ -27,3 +27,5 @@ export interface Task {
 	description: string;
 	submission: string;
 }
+
+export type SubjectTask = Task & { subjectId: Id };
