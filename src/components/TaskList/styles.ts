@@ -3,13 +3,14 @@
 import styled from "styled-components";
 
 export const CardList = styled.div`
-	width: min(100%, 50rem);
-	border: 1px solid red;
+	width: min(100%, 40rem);
+
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
 `;
 
 export const DayGroup = styled.div`
-	padding: 1rem 0;
-
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
@@ -20,7 +21,7 @@ export const DayGroup = styled.div`
 `;
 
 export const TaskCard = styled.div<{ $color: string }>`
-	border: 1px solid;
+	border: 1px solid ${(props) => props.theme.primary};
 	padding: 0.75rem 1rem;
 	border-radius: 0.5rem;
 

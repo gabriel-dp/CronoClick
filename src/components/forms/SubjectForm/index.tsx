@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Id } from "@/types/schedules";
+import { Id, Subject } from "@/types/schedules";
 import { ScheduleControlI } from "@/hooks/useSchedule";
 import { encodeDays } from "@/utils/daysUtils";
 import { formatTimeToMinutes } from "@/utils/timeUtils";
@@ -37,6 +37,8 @@ interface SubjectFormProps {
 }
 
 export default function SubjectForm(props: SubjectFormProps) {
+	const [original, setOriginal] = useState<Subject | undefined>();
+
 	const { control, register, handleSubmit, reset, setError } =
 		useForm<SubjectSchema>({
 			defaultValues: DEFAULT_SUBJECT,
@@ -53,6 +55,8 @@ export default function SubjectForm(props: SubjectFormProps) {
 		if (props.original) {
 			const subject = props.controls.getSubject(props.original);
 			if (!subject) return;
+
+			setOriginal(subject);
 			reset(convertToSubjectSchema(subject));
 		}
 	}, [props.original, props.controls, reset]);
@@ -64,6 +68,7 @@ export default function SubjectForm(props: SubjectFormProps) {
 		new Promise<void>((resolve) =>
 			setTimeout(() => {
 				resolve();
+				setOriginal(undefined);
 				reset(DEFAULT_SUBJECT);
 			}, MODAL_TRANSITION_TIME_MS)
 		);
@@ -93,12 +98,12 @@ export default function SubjectForm(props: SubjectFormProps) {
 			return;
 		}
 
-		const action = !props.original
+		const action = !original
 			? props.controls.addSubject
 			: props.controls.editSubject;
 
 		action({
-			id: props.original ?? data.name,
+			id: original?.id ?? data.name,
 			color: data.color,
 			name: data.name,
 			teacher: data.teacher,
@@ -107,15 +112,15 @@ export default function SubjectForm(props: SubjectFormProps) {
 				start: formatTimeToMinutes(occurrence.start),
 				duration: occurrence.duration
 			})),
-			tasks: []
+			tasks: original?.tasks ?? []
 		});
 
 		closeForm();
 	}
 
 	function handleDelete() {
-		if (props.original) {
-			props.controls.removeSubject(props.original);
+		if (original) {
+			props.controls.removeSubject(original.id);
 		}
 
 		closeForm();
@@ -186,13 +191,9 @@ export default function SubjectForm(props: SubjectFormProps) {
 			</Button>
 			<hr />
 			<FormRow>
-				<Button type="submit">
-					{!props.original ? "Criar" : "Salvar"}
-				</Button>
+				<Button type="submit">{!original ? "Criar" : "Salvar"}</Button>
 				<Button onClick={closeForm}>Cancelar</Button>
-				{props.original && (
-					<Button onClick={handleDelete}>Deletar</Button>
-				)}
+				{original && <Button onClick={handleDelete}>Deletar</Button>}
 			</FormRow>
 		</FormContainer>
 	);

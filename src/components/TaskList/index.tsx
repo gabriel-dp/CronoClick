@@ -22,19 +22,22 @@ export default function TaskList(props: TaskListI) {
 		);
 
 	// Group tasks by the submission date
-	const tasksDays = Object.groupBy(tasks, ({ submission }) => {
-		const date = new Date(submission);
-		date.setHours(0, 0, 0, 0);
-		return date.toISOString();
-	});
+	const tasksDays =
+		tasks.length > 0
+			? Object.groupBy(tasks, ({ submission }) => {
+					const date = new Date(submission);
+					date.setHours(0, 0, 0, 0);
+					return date.toISOString();
+				})
+			: {};
 
 	return (
 		<CardList>
 			{Object.entries(tasksDays).map(([date, dateTasks]) => {
-				const a = new Date(date);
+				const day = new Date(date);
 				return (
 					<DayGroup key={date}>
-						<p className="date">{a.toLocaleDateString()}</p>
+						<p className="date">{day.toLocaleDateString()}</p>
 						{dateTasks?.map((task) => {
 							const subject = props.controls.getSubject(
 								task.subjectId
