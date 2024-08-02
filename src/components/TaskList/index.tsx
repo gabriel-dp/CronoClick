@@ -22,14 +22,19 @@ export default function TaskList(props: TaskListI) {
 		);
 
 	// Group tasks by the submission date
-	const tasksDays =
-		tasks.length > 0
-			? Object.groupBy(tasks, ({ submission }) => {
-					const date = new Date(submission);
-					date.setHours(0, 0, 0, 0);
-					return date.toISOString();
-				})
-			: {};
+	const tasksDays = tasks.reduce<{ [key: string]: SubjectTask[] }>(
+		(acc, cur) => {
+			const date = new Date(cur.submission);
+			date.setHours(0, 0, 0, 0);
+
+			const dateString = date.toISOString();
+			if (!acc[dateString]) acc[dateString] = [];
+			acc[dateString].push(cur);
+
+			return acc;
+		},
+		{}
+	);
 
 	return (
 		<CardList>

@@ -21,7 +21,7 @@ export const DayGroup = styled.div`
 `;
 
 export const TaskCard = styled.div<{ $color: string }>`
-	border: 1px solid ${(props) => props.theme.primary};
+	border: 1px solid ${(props) => props.theme.primary}44;
 	padding: 0.75rem 1rem;
 	border-radius: 0.5rem;
 
@@ -45,10 +45,15 @@ export const TaskCardData = styled.div`
 	flex-direction: column;
 
 	.subject {
+		opacity: 0.5;
 		font-size: 0.75rem;
 	}
 
 	.task {
+		min-height: 1.5rem;
 		font-size: 1rem;
+
+		display: flex;
+		flex-direction: column-reverse;
 	}
 `;
