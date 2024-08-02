@@ -1,5 +1,12 @@
-import { Subject, SubjectTask } from "@/types/schedules";
+import { useState } from "react";
+
+import { Id, Subject, SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/hooks/useSchedule";
+import { useModal } from "@/hooks/useModal";
+import { formatDateStringToLocalString } from "@/utils/timeUtils";
+import Modal from "@/components/ui/Modal";
+import TaskForm from "@/components/forms/TaskForm";
+
 import { CardList, DayGroup, TaskCard, TaskCardData } from "./styles";
 
 interface TaskListI {
@@ -9,6 +16,15 @@ interface TaskListI {
 }
 
 export default function TaskList(props: TaskListI) {
+	const [selectedTask, setSelectedTask] = useState<SubjectTask | null>(null);
+	const editTaskModal = useModal();
+
+	const handleTaskClick = (subjectId: Id, taskId: Id) => {
+		const subject = props.controls.getTask(subjectId, taskId);
+		setSelectedTask(subject ?? null);
+		editTaskModal.open();
+	};
+
 	// Extract all tasks from all subjects
 	const tasks: SubjectTask[] = props.subjects
 		.map((subject) =>
@@ -24,13 +40,8 @@ export default function TaskList(props: TaskListI) {
 	// Group tasks by the submission date
 	const tasksDays = tasks.reduce<{ [key: string]: SubjectTask[] }>(
 		(acc, cur) => {
-			const date = new Date(cur.submission);
-			date.setHours(0, 0, 0, 0);
-
-			const dateString = date.toISOString();
-			if (!acc[dateString]) acc[dateString] = [];
-			acc[dateString].push(cur);
-
+			if (!acc[cur.submission]) acc[cur.submission] = [];
+			acc[cur.submission].push(cur);
 			return acc;
 		},
 		{}
@@ -39,10 +50,11 @@ export default function TaskList(props: TaskListI) {
 	return (
 		<CardList>
 			{Object.entries(tasksDays).map(([date, dateTasks]) => {
-				const day = new Date(date);
 				return (
 					<DayGroup key={date}>
-						<p className="date">{day.toLocaleDateString()}</p>
+						<p className="date">
+							{formatDateStringToLocalString(date)}
+						</p>
 						{dateTasks?.map((task) => {
 							const subject = props.controls.getSubject(
 								task.subjectId
@@ -51,6 +63,9 @@ export default function TaskList(props: TaskListI) {
 								<TaskCard
 									key={task.id}
 									$color={subject?.color ?? "#FFFFFF"}
+									onClick={() =>
+										handleTaskClick(task.subjectId, task.id)
+									}
 								>
 									<TaskCardData>
 										<p className="subject">
@@ -64,6 +79,13 @@ export default function TaskList(props: TaskListI) {
 					</DayGroup>
 				);
 			})}
+			<Modal {...editTaskModal}>
+				<TaskForm
+					controls={props.controls}
+					finally={editTaskModal.close}
+					original={selectedTask ?? undefined}
+				/>
+			</Modal>
 		</CardList>
 	);
 }

@@ -20,8 +20,8 @@ export default function TaskControl(props: TaskControlI) {
 			<Button onClick={props.saveChanges}>Salvar alterações</Button>
 			<Modal {...addTaskModal}>
 				<TaskForm
-					finally={addTaskModal.close}
 					controls={props.controls}
+					finally={addTaskModal.close}
 				/>
 			</Modal>
 		</ControlBar>

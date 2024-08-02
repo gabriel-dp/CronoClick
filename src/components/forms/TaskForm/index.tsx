@@ -1,48 +1,76 @@
-import { useForm } from "react-hook-form";
+"use client";
 
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/hooks/useSchedule";
 import { FormContainer, FormRow } from "@/components/forms/styles";
-import { MODAL_TRANSITION_TIME_MS } from "@/components/ui/Modal/styles";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Textarea from "@/components/ui/Taskarea";
 import Dropdown from "@/components/ui/Dropdown";
 
-import { TaskSchema } from "./types";
+import {
+	convertToTaskSchema,
+	DEFAULT_TASK,
+	TaskSchema,
+	taskZodSchema
+} from "./types";
 
 interface TaskFormProps {
 	controls: ScheduleControlI;
-	finally?: () => void;
+	finally?: (fun?: () => void) => void;
+	original?: SubjectTask;
 }
 
 export default function TaskForm(props: TaskFormProps) {
-	const { handleSubmit, register, reset } = useForm<TaskSchema>();
+	const { handleSubmit, register, reset } = useForm<TaskSchema>({
+		defaultValues: DEFAULT_TASK,
+		resolver: zodResolver(taskZodSchema)
+	});
+
+	// Set initial values if exists
+	useEffect(() => {
+		if (props.original) {
+			reset(convertToTaskSchema(props.original));
+		}
+	}, [props.original, props.controls, reset]);
 
 	function closeForm() {
-		if (props.finally) props.finally();
-
-		// Timeout to reset the form after the transition ends
-		new Promise<void>((resolve) =>
-			setTimeout(() => {
-				resolve();
-				reset();
-			}, MODAL_TRANSITION_TIME_MS)
-		);
+		if (props.finally) props.finally(() => reset(DEFAULT_TASK));
 	}
 
 	function handleSaveData(data: TaskSchema) {
-		props.controls.addTask({
-			id: data.name,
+		const newTask: SubjectTask = {
+			id: props.original?.id ?? data.name,
 			...data
-		});
+		};
+
+		if (!props.original) {
+			props.controls.addTask(newTask);
+		} else {
+			props.controls.editTask(props.original, newTask);
+		}
 
 		closeForm();
 	}
 
-	const subjectOptions: { [key: string]: string } = {};
-	props.controls.getAllSubjects().forEach((subject) => {
-		subjectOptions[subject.id] = subject.name;
-	});
+	function handleDelete() {
+		if (props.original) {
+			props.controls.removeTask(props.original);
+		}
+
+		closeForm();
+	}
+
+	const subjectOptions = props.controls
+		.getAllSubjects()
+		.reduce<{ [key: string]: string }>((acc, cur) => {
+			acc[cur.id] = cur.name;
+			return acc;
+		}, {});
 
 	return (
 		<FormContainer onSubmit={handleSubmit(handleSaveData)}>
@@ -70,8 +98,13 @@ export default function TaskForm(props: TaskFormProps) {
 				{...register("submission")}
 			/>
 			<FormRow>
-				<Button type="submit">Salvar</Button>
+				<Button type="submit">
+					{props.original ? "Salvar" : "Criar"}
+				</Button>
 				<Button onClick={closeForm}>Cancelar</Button>
+				{props.original && (
+					<Button onClick={handleDelete}>Deletar</Button>
+				)}
 			</FormRow>
 		</FormContainer>
 	);

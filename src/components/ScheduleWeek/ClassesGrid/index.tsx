@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Class } from "@/types/classes";
-import { Id } from "@/types/schedules";
+import { Id, Subject } from "@/types/schedules";
 import { useModal } from "@/hooks/useModal";
 import { ScheduleControlI } from "@/hooks/useSchedule";
 import Modal from "@/components/ui/Modal";
@@ -19,11 +19,14 @@ interface GridProps {
 }
 
 export default function Grid(props: GridProps) {
-	const [selectedSubject, setSelectedSubject] = useState<Id | null>(null);
+	const [selectedSubject, setSelectedSubject] = useState<Subject | null>(
+		null
+	);
 	const editSubjectModal = useModal();
 
-	const handleClassClick = (subject: Id) => {
-		setSelectedSubject(subject);
+	const handleClassClick = (id: Id) => {
+		const subject = props.controls.getSubject(id);
+		setSelectedSubject(subject ?? null);
 		editSubjectModal.open();
 	};
 
@@ -62,10 +65,7 @@ export default function Grid(props: GridProps) {
 			<Modal {...editSubjectModal}>
 				<SubjectForm
 					controls={props.controls}
-					finally={() => {
-						editSubjectModal.close();
-						setSelectedSubject(null);
-					}}
+					finally={editSubjectModal.close}
 					original={selectedSubject ?? undefined}
 				/>
 			</Modal>

@@ -48,3 +48,14 @@ export function getLocalDaysNames(): Array<string> {
 
 	return days;
 }
+
+export function formatDateToString(date: Date): string {
+	return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+export function formatDateStringToLocalString(date: string): string {
+	const values: number[] = date.split("-").map((value) => parseInt(value));
+	return new Date(
+		Date.UTC(values[0], values[1] - 1, values[2])
+	).toLocaleDateString(getLocale(), { timeZone: "UTC" });
+}

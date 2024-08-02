@@ -21,9 +21,11 @@ export const DayGroup = styled.div`
 `;
 
 export const TaskCard = styled.div<{ $color: string }>`
-	border: 1px solid ${(props) => props.theme.primary}44;
-	padding: 0.75rem 1rem;
 	border-radius: 0.5rem;
+	padding: 0.75rem 1.25rem;
+	border: 1px solid ${(props) => props.theme.primary}44;
+	cursor: pointer;
+	transition: all 0.125s ease-in-out;
 
 	position: relative;
 	overflow: hidden;
@@ -36,6 +38,16 @@ export const TaskCard = styled.div<{ $color: string }>`
 		bottom: 0;
 		width: 0.375rem;
 		background-color: ${(props) => props.$color};
+		border-right: 1px solid ${(props) => props.theme.primary}22;
+		transition: all 0.125s ease-in-out;
+	}
+
+	&:hover {
+		padding-left: 1.5rem;
+		border-color: ${(props) => props.theme.primary}66;
+		&::before {
+			width: 0.625rem;
+		}
 	}
 `;
 

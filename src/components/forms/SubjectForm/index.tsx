@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Id, Subject } from "@/types/schedules";
+import { Subject } from "@/types/schedules";
 import { ScheduleControlI } from "@/hooks/useSchedule";
 import { encodeDays } from "@/utils/daysUtils";
 import { formatTimeToMinutes } from "@/utils/timeUtils";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
-import { MODAL_TRANSITION_TIME_MS } from "@/components/ui/Modal/styles";
 import {
 	FormContainer,
 	FormGroup,
@@ -31,14 +30,11 @@ const DAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 
 interface SubjectFormProps {
 	controls: ScheduleControlI;
-	finally?: () => void;
-	original?: Id;
-	transition?: number;
+	finally?: (fun?: () => void) => void;
+	original?: Subject;
 }
 
 export default function SubjectForm(props: SubjectFormProps) {
-	const [original, setOriginal] = useState<Subject | undefined>();
-
 	const { control, register, handleSubmit, reset, setError } =
 		useForm<SubjectSchema>({
 			defaultValues: DEFAULT_SUBJECT,
@@ -53,25 +49,12 @@ export default function SubjectForm(props: SubjectFormProps) {
 	// Set initial values if exists
 	useEffect(() => {
 		if (props.original) {
-			const subject = props.controls.getSubject(props.original);
-			if (!subject) return;
-
-			setOriginal(subject);
-			reset(convertToSubjectSchema(subject));
+			reset(convertToSubjectSchema(props.original));
 		}
 	}, [props.original, props.controls, reset]);
 
 	function closeForm() {
-		if (props.finally) props.finally();
-
-		// Timeout to reset the form after the transition ends
-		new Promise<void>((resolve) =>
-			setTimeout(() => {
-				resolve();
-				setOriginal(undefined);
-				reset(DEFAULT_SUBJECT);
-			}, MODAL_TRANSITION_TIME_MS)
-		);
+		if (props.finally) props.finally(() => reset(DEFAULT_SUBJECT));
 	}
 
 	function errorOccurrences(data: SubjectSchema): number | undefined {
@@ -98,29 +81,27 @@ export default function SubjectForm(props: SubjectFormProps) {
 			return;
 		}
 
-		const action = !original
+		const action = !props.original
 			? props.controls.addSubject
 			: props.controls.editSubject;
 
 		action({
-			id: original?.id ?? data.name,
-			color: data.color,
-			name: data.name,
-			teacher: data.teacher,
+			id: props.original?.id ?? data.name,
+			...data,
 			times: data.occurrences.map((occurrence) => ({
 				days: encodeDays(occurrence.days),
 				start: formatTimeToMinutes(occurrence.start),
 				duration: occurrence.duration
 			})),
-			tasks: original?.tasks ?? []
+			tasks: props.original?.tasks ?? []
 		});
 
 		closeForm();
 	}
 
 	function handleDelete() {
-		if (original) {
-			props.controls.removeSubject(original.id);
+		if (props.original) {
+			props.controls.removeSubject(props.original.id);
 		}
 
 		closeForm();
@@ -191,9 +172,13 @@ export default function SubjectForm(props: SubjectFormProps) {
 			</Button>
 			<hr />
 			<FormRow>
-				<Button type="submit">{!original ? "Criar" : "Salvar"}</Button>
+				<Button type="submit">
+					{!props.original ? "Criar" : "Salvar"}
+				</Button>
 				<Button onClick={closeForm}>Cancelar</Button>
-				{original && <Button onClick={handleDelete}>Deletar</Button>}
+				{props.original && (
+					<Button onClick={handleDelete}>Deletar</Button>
+				)}
 			</FormRow>
 		</FormContainer>
 	);

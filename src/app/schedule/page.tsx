@@ -8,8 +8,6 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useCloseTabAlert } from "@/hooks/useCloseTabAlert";
 import ScheduleControl from "@/components/ScheduleControl";
-import TaskControl from "@/components/TaskControl";
-import TaskList from "@/components/TaskList";
 
 import {
 	MainContainer,
@@ -18,56 +16,24 @@ import {
 	TasksContainer
 } from "./styles";
 
-// Schedule should not be pre-rendered on the server
+// Schedule and Tasks should not be pre-rendered on the server
 const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
 	ssr: false,
 	loading: () => <p>Loading Schedule</p>
+});
+const TaskControl = dynamic(() => import("@/components/TaskControl"), {
+	ssr: false,
+	loading: () => <p>Loading Task Controls</p>
+});
+const TaskList = dynamic(() => import("@/components/TaskList"), {
+	ssr: false,
+	loading: () => <p>Loading Tasks</p>
 });
 
 const generateInitialSchedule = (): Schedule => ({
 	id: "",
 	name: "",
-	subjects: [
-		{
-			id: "aa",
-			color: "#FF00F0",
-			name: "Teste",
-			tasks: [
-				{
-					id: "1",
-					description: "abuble",
-					name: "Prova 2",
-					submission: "2024-07-27T21:08:44+0000"
-				},
-				{
-					id: "2",
-					description: "abuble",
-					name: "Prova 4",
-					submission: "2024-07-28T21:02:44+0000"
-				},
-				{
-					id: "3",
-					description: "abuble",
-					name: "Prova 3",
-					submission: "2024-07-27T21:08:44+0000"
-				},
-				{
-					id: "4",
-					description: "abuble",
-					name: "Prova 1",
-					submission: "2024-07-27T15:08:44+0000"
-				}
-			],
-			teacher: "",
-			times: [
-				{
-					days: 15,
-					duration: 110,
-					start: 480
-				}
-			]
-		}
-	]
+	subjects: []
 });
 
 const generateInitialConfigs = (): Configs => ({
@@ -78,14 +44,14 @@ const generateInitialConfigs = (): Configs => ({
 });
 
 export default function SchedulePage() {
-	const [storedConfigs, setStoredConfigs] = useLocalStorage<Configs>(
-		"cc-configs",
-		generateInitialConfigs()
-	);
-
 	const [storedSchedule, setStoredSchedule] = useLocalStorage<Schedule>(
 		"cc-schedule",
 		generateInitialSchedule()
+	);
+
+	const [storedConfigs, setStoredConfigs] = useLocalStorage<Configs>(
+		"cc-configs",
+		generateInitialConfigs()
 	);
 
 	const { schedule, ...controls } = useSchedule(storedSchedule);

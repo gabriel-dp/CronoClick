@@ -18,11 +18,13 @@ export const TextareaLabel = styled.label`
 `;
 
 export const TextareaComponent = styled.textarea`
+	font-size: 0.875rem;
+	height: 3rem;
+	min-height: 2.125rem;
+	max-height: 6rem;
 	width: 100%;
 	border: 1px solid ${(props) => props.theme.dark}AA;
 	padding: 0.5rem 1rem;
 	border-radius: 1rem;
 	resize: vertical;
-	max-height: 6rem;
-	min-height: 2.5rem;
 `;

@@ -13,13 +13,10 @@ import {
 interface ModalProps extends React.PropsWithChildren {
 	isOpen: boolean;
 	close: () => void;
+	closeDelay?: boolean;
 }
 
 export default function Modal(props: ModalProps) {
-	function handleModalClick(e: React.MouseEvent<HTMLDivElement>) {
-		e.stopPropagation(); // Avoids that clicks go through modal
-	}
-
 	// Scrolls modal to top every time that it is open
 	const modalRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
@@ -28,9 +25,13 @@ export default function Modal(props: ModalProps) {
 		}
 	}, [props.isOpen]);
 
+	function handleModalClick(e: React.MouseEvent<HTMLDivElement>) {
+		e.stopPropagation(); // Avoids that clicks go through modal
+	}
+
 	return (
 		<BackgroundFilter
-			onClick={props.close}
+			onClick={() => props.close()}
 			$isOpen={props.isOpen.toString()}
 		>
 			<ModalContainer onClick={handleModalClick} ref={modalRef}>

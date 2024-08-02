@@ -11,9 +11,10 @@ export interface ScheduleControlI {
 	addSubject: (newSubject: Subject) => void;
 	removeSubject: (id: Id) => void;
 	editSubject: (newSubject: Subject) => void;
+	getTask: (subjectId: Id, taskId: Id) => SubjectTask | undefined;
 	addTask: (newTask: SubjectTask) => void;
 	removeTask: (oldTask: SubjectTask) => void;
-	editTask: (newTask: SubjectTask) => void;
+	editTask: (oldTask: SubjectTask, newTask: SubjectTask) => void;
 }
 
 interface useScheduleReturn extends ScheduleControlI {
@@ -62,6 +63,18 @@ export function useSchedule(initialSchedule: Schedule): useScheduleReturn {
 		}));
 	};
 
+	const getTask = (subjectId: Id, taskId: Id): SubjectTask | undefined => {
+		const taskFound = getSubject(subjectId)?.tasks.find(
+			(task) => task.id == taskId
+		);
+		if (!taskFound) return undefined;
+
+		return {
+			subjectId,
+			...taskFound
+		};
+	};
+
 	const addTask = (newTask: SubjectTask) => {
 		setSchedule((prev) => ({
 			...prev,
@@ -89,7 +102,14 @@ export function useSchedule(initialSchedule: Schedule): useScheduleReturn {
 		}));
 	};
 
-	const editTask = (newTask: SubjectTask) => {
+	const editTask = (oldTask: SubjectTask, newTask: SubjectTask) => {
+		// Changes task subject
+		if (oldTask.subjectId != newTask.subjectId) {
+			removeTask(oldTask);
+			addTask(newTask);
+			return;
+		}
+
 		setSchedule((prev) => ({
 			...prev,
 			subjects: prev.subjects.map((subject) => {
@@ -114,6 +134,7 @@ export function useSchedule(initialSchedule: Schedule): useScheduleReturn {
 		addSubject,
 		removeSubject,
 		editSubject,
+		getTask,
 		addTask,
 		removeTask,
 		editTask
