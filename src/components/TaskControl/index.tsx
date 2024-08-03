@@ -8,7 +8,6 @@ import { ControlBar } from "./styles";
 
 interface TaskControlI {
 	controls: ScheduleControlI;
-	saveChanges: () => void;
 }
 
 export default function TaskControl(props: TaskControlI) {
@@ -17,7 +16,6 @@ export default function TaskControl(props: TaskControlI) {
 	return (
 		<ControlBar>
 			<Button onClick={addTaskModal.open}>Adicionar Tarefa</Button>
-			<Button onClick={props.saveChanges}>Salvar alterações</Button>
 			<Modal {...addTaskModal}>
 				<TaskForm
 					controls={props.controls}

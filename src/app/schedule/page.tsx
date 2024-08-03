@@ -81,7 +81,7 @@ export default function SchedulePage() {
 			</ScheduleContainer>
 			<TasksContainer>
 				<SectionTitle>Tarefas</SectionTitle>
-				<TaskControl saveChanges={saveChanges} controls={controls} />
+				<TaskControl controls={controls} />
 				<TaskList
 					subjects={schedule.subjects}
 					controls={controls}
