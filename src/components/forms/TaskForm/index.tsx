@@ -18,6 +18,7 @@ import {
 	TaskSchema,
 	taskZodSchema
 } from "./types";
+import Checkbox from "@/components/ui/Checkbox";
 
 interface TaskFormProps {
 	controls: ScheduleControlI;
@@ -91,12 +92,19 @@ export default function TaskForm(props: TaskFormProps) {
 				placeholder="Descrição do trabalho"
 				{...register("description")}
 			/>
-			<Input
-				type="date"
-				label="Submissão"
-				placeholder="Descrição do trabalho"
-				{...register("submission")}
-			/>
+			<FormRow>
+				<Input
+					type="date"
+					label="Submissão"
+					placeholder="Descrição do trabalho"
+					{...register("submission")}
+				/>
+				<Checkbox
+					label="Completo?"
+					alignment="vertical"
+					{...register("finished")}
+				/>
+			</FormRow>
 			<FormRow>
 				<Button type="submit">
 					{props.original ? "Salvar" : "Criar"}

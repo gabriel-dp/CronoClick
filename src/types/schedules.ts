@@ -26,6 +26,7 @@ export interface Task {
 	name: string;
 	description: string;
 	submission: string;
+	finished: boolean;
 }
 
 export type SubjectTask = Task & { subjectId: Id };

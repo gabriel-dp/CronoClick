@@ -15,6 +15,7 @@ export interface ScheduleControlI {
 	addTask: (newTask: SubjectTask) => void;
 	removeTask: (oldTask: SubjectTask) => void;
 	editTask: (oldTask: SubjectTask, newTask: SubjectTask) => void;
+	toggleFinished: (subjectId: Id, taskId: Id) => void;
 }
 
 interface useScheduleReturn extends ScheduleControlI {
@@ -126,6 +127,24 @@ export function useSchedule(initialSchedule: Schedule): useScheduleReturn {
 		}));
 	};
 
+	const toggleFinished = (subjectId: Id, taskId: Id) => {
+		setSchedule((prev) => ({
+			...prev,
+			subjects: prev.subjects.map((subject) => {
+				if (subject.id == subjectId)
+					return {
+						...subject,
+						tasks: subject.tasks.map((task) => {
+							if (task.id == taskId)
+								return { ...task, finished: !task.finished };
+							return task;
+						})
+					};
+				return subject;
+			})
+		}));
+	};
+
 	return {
 		schedule,
 		editName,
@@ -137,6 +156,7 @@ export function useSchedule(initialSchedule: Schedule): useScheduleReturn {
 		getTask,
 		addTask,
 		removeTask,
-		editTask
+		editTask,
+		toggleFinished
 	};
 }

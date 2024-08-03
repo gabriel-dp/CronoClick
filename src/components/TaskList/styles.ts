@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 export const CardList = styled.div`
 	width: min(100%, 40rem);
+	margin-bottom: 2rem;
 
 	display: flex;
 	flex-direction: column;
@@ -20,13 +21,12 @@ export const DayGroup = styled.div`
 	}
 `;
 
-export const TaskCard = styled.div<{ $color: string }>`
+export const TaskCard = styled.div<{ $color: string; $finished: string }>`
 	border-radius: 0.5rem;
 	padding: 0.75rem 1.25rem;
 	border: 1px solid ${(props) => props.theme.primary}44;
 	cursor: pointer;
 	transition: all 0.125s ease-in-out;
-
 	position: relative;
 	overflow: hidden;
 
@@ -49,15 +49,31 @@ export const TaskCard = styled.div<{ $color: string }>`
 			width: 0.625rem;
 		}
 	}
+
+	.subject {
+		opacity: ${(props) => (props.$finished == "true" ? 0.5 : 0.75)};
+	}
+
+	.task {
+		text-decoration: ${(props) =>
+			props.$finished == "true" ? "line-through" : "normal"};
+		opacity: ${(props) => (props.$finished == "true" ? 0.5 : 1)};
+	}
 `;
 
 export const TaskCardData = styled.div`
 	flex: 1;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	justify-content: space-between;
+
+	div {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
 
 	.subject {
-		opacity: 0.5;
 		font-size: 0.75rem;
 	}
 
