@@ -64,4 +64,4 @@ npm run dev
 
 | _Bárbara Assis_ | _Gabriel de Paula_ | _Gabriel Souza_ | _Henrique Azevedo_ |
 | :-: | :-: | :-: | :-: |
-|![https://github.com/bahdias](https://avatars.githubusercontent.com/u/81807439?v=4) | ![https://github.com/gabrieldp23](https://avatars.githubusercontent.com/u/66735014?v=4) | ![https://github.com/GSOliveira1](https://avatars.githubusercontent.com/u/111782319?v=4) | ![https://github.com/henrique589](https://avatars.githubusercontent.com/u/83303066?v=4) |
+|[![Bárbara](https://avatars.githubusercontent.com/u/81807439?v=4)](https://github.com/bahdias) | [![Gabriel de Paula](https://avatars.githubusercontent.com/u/66735014?v=4)](https://github.com/gabriel-dp) | [![Gabriel Souza](https://avatars.githubusercontent.com/u/111782319?v=4)](https://github.com/GSOliveira1) | [![Henrique](https://avatars.githubusercontent.com/u/83303066?v=4)](https://github.com/henrique589) |
