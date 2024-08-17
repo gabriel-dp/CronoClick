@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
-import { encrypt, validatedFields } from "@/utils/userUtils";
+import { encrypt } from "@/utils/userUtils";
 import { response, success } from "@/utils/response";
+import { userSchema, validateFields } from "@/utils/validations";
 
 export const GET = () =>
 	response(async () => {
@@ -10,7 +11,10 @@ export const GET = () =>
 
 export const POST = (request: Request) =>
 	response(async () => {
-		const { password, ...user } = validatedFields(await request.json());
+		const { password, ...user } = validateFields(
+			await request.json(),
+			userSchema
+		);
 
 		const newUser = await prisma.user.create({
 			data: {

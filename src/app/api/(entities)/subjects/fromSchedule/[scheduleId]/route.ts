@@ -1,10 +1,10 @@
 import prisma from "@/lib/prisma";
-import { validatedFieldsSubject } from "@/utils/validations";
 import { response, success } from "@/utils/response";
+import { subjectSchema, validateFields } from "@/utils/validations";
 
-type paramsSchedule = { params: { scheduleId: string } };
+type paramsRequest = { params: { scheduleId: string } };
 
-export const GET = (request: Request, { params }: paramsSchedule) =>
+export const GET = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const subjects = await prisma.subject.findMany({
 			where: { scheduleId: params.scheduleId },
@@ -13,13 +13,16 @@ export const GET = (request: Request, { params }: paramsSchedule) =>
 				tasks: true
 			}
 		});
+
 		return success(subjects);
 	});
 
-export const POST = (request: Request, { params }: paramsSchedule) =>
+export const POST = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const subject = await request.json();
-		const { times, ...validatedSubject } = validatedFieldsSubject(subject);
+		const { times, ...validatedSubject } = validateFields(
+			await request.json(),
+			subjectSchema
+		);
 
 		const newSubject = await prisma.subject.create({
 			data: {

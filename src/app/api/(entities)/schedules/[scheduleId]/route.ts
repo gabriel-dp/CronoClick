@@ -1,11 +1,10 @@
 import prisma from "@/lib/prisma";
-import { Schedule } from "@/types/schedules";
 import { fail, response, success } from "@/utils/response";
-import { validatedFieldsSchedule } from "@/utils/validations";
+import { scheduleSchema, validateFields } from "@/utils/validations";
 
-type paramsSchedule = { params: { scheduleId: string } };
+type paramsRequest = { params: { scheduleId: string } };
 
-export const GET = (request: Request, { params }: paramsSchedule) =>
+export const GET = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const found = await prisma.schedule.findUnique({
 			where: { id: params.scheduleId },
@@ -20,14 +19,16 @@ export const GET = (request: Request, { params }: paramsSchedule) =>
 			omit: { userId: false }
 		});
 
-		if (found == null) return fail(404);
+		if (!found) return fail(404);
 		return success(found);
 	});
 
-export const PUT = (request: Request, { params }: paramsSchedule) =>
+export const PUT = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const schedule: Schedule = await request.json();
-		const validatedSchedule = validatedFieldsSchedule(schedule);
+		const validatedSchedule = validateFields(
+			await request.json(),
+			scheduleSchema
+		);
 
 		const updatedSchedule = await prisma.schedule.update({
 			data: validatedSchedule,
@@ -38,7 +39,7 @@ export const PUT = (request: Request, { params }: paramsSchedule) =>
 		return success(updatedSchedule, 201);
 	});
 
-export const DELETE = (request: Request, { params }: paramsSchedule) =>
+export const DELETE = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const deleted = await prisma.schedule.delete({
 			where: { id: params.scheduleId },

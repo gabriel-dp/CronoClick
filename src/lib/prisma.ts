@@ -7,7 +7,8 @@ const prismaClientSingleton = () => {
 			schedule: { userId: true },
 			subject: { scheduleId: true },
 			task: { subjectId: true },
-			time: { subjectId: true, id: true }
+			time: { subjectId: true, id: true },
+			note: { taskId: true }
 		}
 	});
 };

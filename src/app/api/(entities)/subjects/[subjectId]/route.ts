@@ -1,11 +1,10 @@
 import prisma from "@/lib/prisma";
-import { Subject } from "@/types/schedules";
 import { fail, response, success } from "@/utils/response";
-import { validatedFieldsSubject } from "@/utils/validations";
+import { subjectSchema, validateFields } from "@/utils/validations";
 
-type paramsSchedule = { params: { subjectId: string } };
+type paramsRequest = { params: { subjectId: string } };
 
-export const GET = (request: Request, { params }: paramsSchedule) =>
+export const GET = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const found = await prisma.subject.findUnique({
 			where: { id: params.subjectId },
@@ -20,10 +19,12 @@ export const GET = (request: Request, { params }: paramsSchedule) =>
 		return success(found);
 	});
 
-export const PUT = (request: Request, { params }: paramsSchedule) =>
+export const PUT = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const subject: Subject = await request.json();
-		const { times, ...validatedSubject } = validatedFieldsSubject(subject);
+		const { times, ...validatedSubject } = validateFields(
+			await request.json(),
+			subjectSchema
+		);
 
 		const updatedSubject = await prisma.subject.update({
 			data: {
@@ -44,7 +45,7 @@ export const PUT = (request: Request, { params }: paramsSchedule) =>
 		return success(updatedSubject, 201);
 	});
 
-export const DELETE = (request: Request, { params }: paramsSchedule) =>
+export const DELETE = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const deleted = await prisma.subject.delete({
 			where: { id: params.subjectId },

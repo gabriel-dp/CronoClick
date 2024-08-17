@@ -1,8 +1,19 @@
-import { z } from "zod";
+import { z, ZodObject, ZodRawShape } from "zod";
 
-import { Schedule, Subject } from "@/types/schedules";
+export const userSchema = z.object({
+	username: z.string().min(1, "Username is required").max(100),
+	email: z.string().min(1, "Email is required").email("Invalid email"),
+	password: z
+		.string()
+		.min(1, "Password is required")
+		.min(8, "Password must have at least 8 characters ")
+});
 
-export const timeZodSchema = z.object({
+export const scheduleSchema = z.object({
+	name: z.string().trim().min(1).max(100)
+});
+
+export const timeSchema = z.object({
 	days: z.number().min(1).max(127),
 	start: z
 		.number()
@@ -14,27 +25,30 @@ export const timeZodSchema = z.object({
 		.max(60 * 24)
 });
 
-export const subjectZodSchema = z.object({
+export const subjectSchema = z.object({
 	name: z.string().trim().min(1),
 	teacher: z.string().trim(),
 	color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
-	times: z.array(timeZodSchema).min(1)
+	times: z.array(timeSchema).min(1)
 });
 
-export function validatedFieldsSubject(
-	body: Subject
-): Pick<Subject, "name" | "color" | "teacher" | "times"> {
-	const fields = subjectZodSchema.parse(body);
-	return fields;
-}
-
-const scheduleZodSchema = z.object({
-	name: z.string().trim().min(1).max(100)
+export const taskSchema = z.object({
+	name: z.string().trim().min(1),
+	description: z.string().min(1).max(256),
+	submission: z
+		.string()
+		.regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
+	finished: z.boolean()
 });
 
-export function validatedFieldsSchedule(
-	body: Schedule
-): Pick<Schedule, "name"> {
-	const fields = scheduleZodSchema.parse(body);
+export const noteSchema = z.object({
+	description: z.string().min(1).max(256)
+});
+
+export function validateFields<T, F extends ZodRawShape>(
+	body: T,
+	schema: ZodObject<F>
+) {
+	const fields: z.infer<typeof schema> = schema.parse(body);
 	return fields;
 }

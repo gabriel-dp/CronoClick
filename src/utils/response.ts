@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/binary.js";
+import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 
 type SuccessCode = 200 | 201;
@@ -15,6 +15,7 @@ const ERRORS_MESSAGES: { [E in ErrorCode]: string } = {
 
 const PRISMA_ERRORS: { [key: string]: ErrorCode } = {
 	P2002: 409,
+	P2023: 400,
 	P2025: 404
 };
 
@@ -22,13 +23,14 @@ export async function response(action: () => Promise<NextResponse>) {
 	try {
 		return await action();
 	} catch (error) {
-		if (error instanceof PrismaClientKnownRequestError) {
+		//console.log(typeof error, error.code, PRISMA_ERRORS[error.code]);
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			if (PRISMA_ERRORS[error.code] != undefined)
-				fail(PRISMA_ERRORS[error.code], error);
+				return fail(PRISMA_ERRORS[error.code], error);
 		} else if (error instanceof ZodError) {
 			return fail(400, error);
 		}
-		fail(500, error);
+		return fail(500, error);
 	}
 }
 

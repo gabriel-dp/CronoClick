@@ -1,10 +1,10 @@
 import prisma from "@/lib/prisma";
-import { validatedFieldsSchedule } from "@/utils/validations";
 import { response, success } from "@/utils/response";
+import { scheduleSchema, validateFields } from "@/utils/validations";
 
-type paramsSchedule = { params: { userId: string } };
+type paramsRequest = { params: { userId: string } };
 
-export const GET = (request: Request, { params }: paramsSchedule) =>
+export const GET = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const schedules = await prisma.schedule.findMany({
 			where: {
@@ -19,12 +19,12 @@ export const GET = (request: Request, { params }: paramsSchedule) =>
 		return success(schedules);
 	});
 
-export const POST = (request: Request, { params }: paramsSchedule) =>
+export const POST = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const schedule = await request.json();
-		const validatedSchedule = validatedFieldsSchedule(schedule);
-
-		console.log("teste");
+		const validatedSchedule = validateFields(
+			await request.json(),
+			scheduleSchema
+		);
 
 		const newSchedule = await prisma.schedule.create({
 			data: {

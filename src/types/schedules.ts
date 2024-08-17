@@ -29,4 +29,9 @@ export interface Task {
 	finished: boolean;
 }
 
+export interface Note {
+	id: Id;
+	description: string;
+}
+
 export type SubjectTask = Task & { subjectId: Id };
