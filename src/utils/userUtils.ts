@@ -18,16 +18,6 @@ export const validatedFields = (
 	return fields;
 };
 
-export const removePassword = (
-	user: User | null
-): Omit<User, "password"> | null => {
-	if (!user) return null;
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { password: _, ...userWithoutPassword } = user;
-	return userWithoutPassword;
-};
-
 export const encrypt = async (value: string): Promise<string> => {
 	const encryptedValue = await hash(value, 10);
 	return encryptedValue;

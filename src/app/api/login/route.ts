@@ -1,33 +1,29 @@
-import { NextResponse } from "next/server";
-
 import prisma from "@/lib/prisma";
-import { compareEncrypted, removePassword } from "@/utils/userUtils";
+import { compareEncrypted } from "@/utils/userUtils";
+import { fail, response, success } from "@/utils/response";
 
-export const POST = async (request: Request) => {
-	try {
-		const { username, password } = await request.json();
+export const POST = async (request: Request) =>
+	response(async () => {
+		const user: { username: string; password: string } =
+			await request.json();
 
-		const user = await prisma.user.findUnique({ where: { username } });
-		if (!user) {
-			return NextResponse.json(
-				{ error: "User not found" },
-				{ status: 401 }
-			);
+		const found = await prisma.user.findUnique({
+			where: { username: user.username },
+			omit: { password: false }
+		});
+		if (!found) {
+			return fail(401, { details: "User not found" });
 		}
 
-		const passwordMatch = await compareEncrypted(password, user.password);
-		if (!passwordMatch) {
-			return NextResponse.json(
-				{ error: "Credentials does not match" },
-				{ status: 401 }
-			);
-		}
-
-		return NextResponse.json(
-			{ user: removePassword(user) },
-			{ status: 200 }
+		const passwordMatch = await compareEncrypted(
+			user.password,
+			found.password
 		);
-	} catch (error) {
-		return NextResponse.json({ error }, { status: 500 });
-	}
-};
+		if (!passwordMatch) {
+			return fail(401, { details: "Credentials does not match" });
+		}
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { password: _, ...userWithoutPassword } = found;
+		return success(userWithoutPassword, 200);
+	});

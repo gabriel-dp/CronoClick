@@ -1,24 +1,62 @@
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["omitApi"]
 }
 
 datasource db {
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL")
-    directUrl = env("POSTGRES_URL_NON_POOLING")
-}
-
-model Schedule {
-    id     String @id @default(cuid())
-    name   String
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
+    provider = "mongodb"
+    url      = env("MONGODB_URL")
 }
 
 model User {
-    id        String     @id @default(cuid())
+    id        String     @id @default(auto()) @map("_id") @db.ObjectId
     username  String     @unique
     password  String
     email     String     @unique
     schedules Schedule[]
+}
+
+model Schedule {
+    id   String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    subjects Subject[]
+}
+
+model Subject {
+    id      String  @id @default(auto()) @map("_id") @db.ObjectId
+    name    String
+    color   String
+    teacher String?
+
+    scheduleId String   @db.ObjectId
+    schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+    times Time[]
+    tasks Task[]
+}
+
+model Time {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    days     Int
+    start    Int
+    duration Int
+
+    subjectId String  @db.ObjectId
+    subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+    @@unique([days, start, duration, subjectId])
+}
+
+model Task {
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    title       String
+    description String
+    submission  String
+
+    subjectId String  @db.ObjectId
+    subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 }
