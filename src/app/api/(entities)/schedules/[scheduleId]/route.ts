@@ -11,8 +11,12 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 			include: {
 				subjects: {
 					include: {
-						tasks: true,
-						times: true
+						times: true,
+						tasks: {
+							include: {
+								notes: true
+							}
+						}
 					}
 				}
 			},

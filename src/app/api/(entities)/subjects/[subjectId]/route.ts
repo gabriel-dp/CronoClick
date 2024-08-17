@@ -10,7 +10,11 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 			where: { id: params.subjectId },
 			include: {
 				times: true,
-				tasks: true
+				tasks: {
+					include: {
+						notes: true
+					}
+				}
 			},
 			omit: { scheduleId: false }
 		});
