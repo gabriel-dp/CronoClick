@@ -9,24 +9,29 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	type?: "submit";
 }
 
-export default function Button(props: ButtonProps) {
-	const [loading, setLoading] = useState<boolean>(false);
+export default function Button({
+	onClick,
+	loading,
+	type,
+	...props
+}: ButtonProps) {
+	const [loadingState, setLoadingState] = useState<boolean>(false);
 
 	async function handleClick() {
-		if (props.onClick) {
-			setLoading(true);
-			await props.onClick();
-			setLoading(false);
+		if (onClick) {
+			setLoadingState(true);
+			await onClick();
+			setLoadingState(false);
 		}
 	}
 
 	// Selects which loading will be used
-	const state = props.loading ?? loading;
+	const state = loading ?? loadingState;
 
 	return (
 		<ButtonComponent
 			onClick={handleClick}
-			type={props.type ?? "button"}
+			type={type ?? "button"}
 			{...props}
 		>
 			{!state ? props.children : "loading"}

@@ -1,17 +1,20 @@
-import { redirect } from "next/navigation";
+"use client";
 
-import { useSession } from "@/contexts/session/useSession";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { AuthContainer } from "./styles";
+import { useEffect } from "react";
 
-export default async function AuthLayout({
-	children
-}: React.PropsWithChildren) {
-	const session = await useSession();
+export default function AuthLayout({ children }: React.PropsWithChildren) {
+	const session = useSession();
+	const { push } = useRouter();
 
-	if (session) {
-		redirect("/");
-	}
+	useEffect(() => {
+		if (session.status == "authenticated") {
+			push("/");
+		}
+	}, [session.status, push]);
 
 	return <AuthContainer>{children}</AuthContainer>;
 }

@@ -1,22 +1,28 @@
-import { useSession } from "@/contexts/session/useSession";
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
 import { logout } from "@/utils/authActions";
-import { redirectSignIn } from "@/utils/redirectActions";
 import Button from "@/components/ui/Button";
 
-export default async function Home() {
-	const session = await useSession();
+export default function Home() {
+	const { push } = useRouter();
+	const session = useSession();
 
 	return (
 		<main>
 			<h1>TecWeb</h1>
-			{session ? (
+			{session.status == "authenticated" ? (
 				<>
 					<p>{JSON.stringify(session)}</p>
+					<Button onClick={() => push("/schedule")}>schedule</Button>
 					<Button onClick={logout}>logout</Button>
 				</>
 			) : (
 				<>
-					<Button onClick={redirectSignIn}>login</Button>
+					<Button onClick={() => push("/sign-up")}>Sign-up</Button>
+					<Button onClick={() => push("/sign-in")}>Sign-in</Button>
 				</>
 			)}
 		</main>

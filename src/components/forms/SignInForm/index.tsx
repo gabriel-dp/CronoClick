@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
 
 import { login } from "@/utils/authActions";
-import { exitAuth } from "@/utils/redirectActions";
 import Button from "@/components/ui/Button";
 
 import { Form, Input } from "./styles";
 
 const signInSchema = z.object({
-	username: z.string(),
-	password: z.string()
+	username: z.string().trim().min(1),
+	password: z.string().min(1)
 });
 type SignInSchema = z.infer<typeof signInSchema>;
 
@@ -29,12 +28,7 @@ export default function SignInForm() {
 		const success = await login(data.username, data.password);
 		setLoading(false);
 
-		if (!success) {
-			console.log("LOGIN ERROR");
-			return;
-		}
-
-		exitAuth();
+		if (!success) console.log("LOGIN ERROR");
 	}
 
 	return (

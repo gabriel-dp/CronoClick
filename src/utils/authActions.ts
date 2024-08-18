@@ -2,8 +2,6 @@
 
 import { signIn, signOut } from "next-auth/react";
 
-import { redirectSignIn } from "@/utils/redirectActions";
-
 export async function login(
 	username: string,
 	password: string
@@ -21,6 +19,4 @@ export async function logout(): Promise<void> {
 	await signOut({
 		redirect: false
 	});
-
-	redirectSignIn();
 }
