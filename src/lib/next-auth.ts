@@ -15,7 +15,7 @@ export const nextAuthOptions: NextAuthOptions = {
 					return null;
 
 				const BASE_URL = process.env.NEXTAUTH_URL;
-				const API_KEY = process.env.API_KEY;
+				const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 				const response = await fetch(`${BASE_URL}/api/login`, {
 					method: "POST",
 					headers: {

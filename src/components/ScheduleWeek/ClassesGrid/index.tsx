@@ -65,7 +65,10 @@ export default function Grid(props: GridProps) {
 			<Modal {...editSubjectModal}>
 				<SubjectForm
 					controls={props.controls}
-					finally={editSubjectModal.close}
+					finally={() => {
+						editSubjectModal.close();
+						setSelectedSubject(null);
+					}}
 					original={selectedSubject ?? undefined}
 				/>
 			</Modal>

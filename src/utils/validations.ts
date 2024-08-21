@@ -34,7 +34,7 @@ export const subjectSchema = z.object({
 
 export const taskSchema = z.object({
 	name: z.string().trim().min(1),
-	description: z.string().min(1).max(256),
+	description: z.string().max(256),
 	submission: z
 		.string()
 		.regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),

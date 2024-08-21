@@ -14,7 +14,6 @@ interface ScheduleControlProps {
 	controls: ScheduleControlI;
 	configs: Configs;
 	setConfigs: (newConfigs: Configs) => void;
-	saveChanges: () => void;
 }
 
 export default function ScheduleControl(props: ScheduleControlProps) {
@@ -24,7 +23,6 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 	return (
 		<ControlBar>
 			<Button onClick={addSubjectModal.open}>Adicionar disciplina</Button>
-			<Button onClick={props.saveChanges}>Salvar alterações</Button>
 			<Button onClick={configsModal.open}>Configurações</Button>
 			<Modal {...addSubjectModal}>
 				<SubjectForm

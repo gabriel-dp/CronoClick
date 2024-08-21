@@ -23,8 +23,8 @@ export async function response(action: () => Promise<NextResponse>) {
 	try {
 		return await action();
 	} catch (error) {
-		//console.log(typeof error, error.code, PRISMA_ERRORS[error.code]);
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.log(error);
 			if (PRISMA_ERRORS[error.code] != undefined)
 				return fail(PRISMA_ERRORS[error.code], error);
 		} else if (error instanceof ZodError) {
