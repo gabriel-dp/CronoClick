@@ -10,7 +10,6 @@ import { useMemo } from "react";
 export default function Home() {
 	const { push } = useRouter();
 	const session = useSession();
-	session.update();
 
 	const Options = useMemo(() => {
 		switch (session.status) {
