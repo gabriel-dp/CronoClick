@@ -7,8 +7,9 @@ import z from "zod";
 
 import { login } from "@/utils/authActions";
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 
-import { Form, Input } from "./styles";
+import { Form } from "./styles";
 
 const signInSchema = z.object({
 	username: z.string().trim().min(1),
@@ -35,11 +36,13 @@ export default function SignInForm() {
 		<Form onSubmit={handleSubmit(handleSignInAttempt)}>
 			<h1>Sign In</h1>
 			<Input
+				label="Usuário"
 				type="text"
 				placeholder="username"
 				{...register("username")}
 			/>
 			<Input
+				label="Senha"
 				type="password"
 				placeholder="password"
 				{...register("password")}

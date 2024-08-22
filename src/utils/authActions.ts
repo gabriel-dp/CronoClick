@@ -2,6 +2,9 @@
 
 import { signIn, signOut } from "next-auth/react";
 
+import { apiRequest } from "@/hooks/useApiRequest";
+import { Session } from "next-auth";
+
 export async function login(
 	username: string,
 	password: string
@@ -16,7 +19,19 @@ export async function login(
 }
 
 export async function logout(): Promise<void> {
-	await signOut({
-		redirect: false
+	await signOut({ redirect: false });
+}
+
+export async function register(data: {
+	email: string;
+	username: string;
+	password: string;
+}): Promise<boolean> {
+	let success = false;
+	await apiRequest<Session, Session>("users", "POST", data, {
+		async actionSuccess() {
+			success = await login(data.username, data.password);
+		}
 	});
+	return success;
 }
