@@ -18,10 +18,11 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 
 export const PUT = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const validatedTask = validateFields(await request.json(), taskSchema);
+		const { subjectId, ...task } = await request.json();
+		const validatedTask = validateFields(task, taskSchema);
 
 		const updated = await prisma.task.update({
-			data: validatedTask,
+			data: { subjectId, ...validatedTask },
 			where: { id: params.taskId },
 			include: { notes: true },
 			omit: { subjectId: false }

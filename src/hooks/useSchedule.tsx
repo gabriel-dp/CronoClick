@@ -1,33 +1,18 @@
 "use client";
 
-import { Id, Schedule, Subject, SubjectTask } from "@/types/schedules";
+import { Id, Schedule, Subject, SubjectTask, Task } from "@/types/schedules";
 import { apiRequest, RequestType } from "@/hooks/useApiRequest";
-
-export interface ScheduleControlI {
-	editName: (newName: string) => void;
-	getAllSubjects: () => Subject[];
-	getSubject: (id: Id) => Subject | undefined;
-	addSubject: (newSubject: Subject) => void;
-	removeSubject: (id: Id) => void;
-	editSubject: (newSubject: Subject) => void;
-	getTask: (subjectId: Id, taskId: Id) => SubjectTask | undefined;
-	addTask: (newTask: SubjectTask) => void;
-	removeTask: (oldTask: SubjectTask) => void;
-	editTask: (oldTask: SubjectTask, newTask: SubjectTask) => void;
-	toggleFinished: (subjectId: Id, taskId: Id) => void;
-}
-
-interface useScheduleReturn extends ScheduleControlI {
-	schedule: Schedule;
-}
+import { controlSchedule, ScheduleControlI } from "@/utils/scheduleUtils";
 
 export function useSchedule(
 	schedule: Schedule,
 	setSchedule: React.Dispatch<React.SetStateAction<Schedule>>
-): useScheduleReturn {
-	// Default action for all api requests
-	function optimisticSafeUpdate<T>(
-		updateScheduleState: () => void,
+): ScheduleControlI {
+	const controls = controlSchedule(schedule, setSchedule);
+
+	// Action for all api requests
+	function optimisticSafeUpdate<T extends { id: Id }>(
+		updateScheduleState: (newId?: Id) => void,
 		path: string,
 		method: RequestType,
 		body: Partial<T>
@@ -35,60 +20,43 @@ export function useSchedule(
 		const previousState = { ...schedule };
 		updateScheduleState();
 
-		apiRequest<Schedule>(path, method, body, {
+		apiRequest<T, T>(path, method, body, {
 			actionError: (message: string) => {
 				setSchedule(previousState);
 				console.log(message);
+			},
+			actionResponse: (data: T) => {
+				setSchedule(previousState);
+				updateScheduleState(data.id);
 			}
 		});
 	}
 
 	const editName = (newName: string): void =>
 		optimisticSafeUpdate<Schedule>(
-			() =>
-				setSchedule((prev) => ({
-					...prev,
-					name: newName
-				})),
+			() => controls.editName(newName),
 			`/schedules/${schedule.id}`,
 			"PUT",
-			{
-				name: newName
-			}
+			{ name: newName }
 		);
 
-	const getAllSubjects = (): Subject[] => {
-		return schedule.subjects;
-	};
-
-	const getSubject = (id: Id): Subject | undefined => {
-		return schedule.subjects.find((subject) => subject.id == id);
-	};
-
 	const addSubject = (newSubject: Subject): void => {
+		const { id: originalId, ...subjectWithoutId } = newSubject;
 		optimisticSafeUpdate<Subject>(
-			() =>
-				setSchedule((prev) => ({
-					...prev,
-					subjects: [...prev.subjects, newSubject]
-				})),
+			(newId) =>
+				controls.addSubject({
+					id: newId ?? originalId,
+					...subjectWithoutId
+				}),
 			`/subjects/fromSchedule/${schedule.id}`,
 			"POST",
-			{
-				...newSubject
-			}
+			{ ...newSubject }
 		);
 	};
 
 	const removeSubject = (id: Id): void => {
 		optimisticSafeUpdate<Subject>(
-			() =>
-				setSchedule((prev) => ({
-					...prev,
-					subjects: prev.subjects.filter(
-						(subject) => subject.id != id
-					)
-				})),
+			() => controls.removeSubject(id),
 			`/subjects/${id}`,
 			"DELETE",
 			{}
@@ -97,137 +65,51 @@ export function useSchedule(
 
 	const editSubject = (newSubject: Subject): void => {
 		optimisticSafeUpdate<Subject>(
-			() =>
-				setSchedule((prev) => ({
-					...prev,
-					subjects: prev.subjects.map((subject) => {
-						if (subject.id == newSubject.id)
-							return { ...newSubject };
-						return subject;
-					})
-				})),
+			() => controls.editSubject(newSubject),
 			`/subjects/${newSubject.id}`,
 			"PUT",
-			{
-				...newSubject
-			}
+			{ ...newSubject }
 		);
 	};
 
-	const getTask = (subjectId: Id, taskId: Id): SubjectTask | undefined => {
-		const taskFound = getSubject(subjectId)?.tasks.find(
-			(task) => task.id == taskId
-		);
-
-		if (!taskFound) return undefined;
-		return {
-			subjectId,
-			...taskFound
-		};
-	};
-
-	const addTask = (newTask: SubjectTask) =>
-		optimisticSafeUpdate(
-			() => {
-				setSchedule((prev) => ({
-					...prev,
-					subjects: prev.subjects.map((subject) => {
-						if (subject.id == newTask.subjectId)
-							return {
-								...subject,
-								tasks: [...subject.tasks, newTask]
-							};
-						return subject;
-					})
-				}));
-			},
+	const addTask = (newTask: SubjectTask) => {
+		const { id: originalId, ...taskWithoutId } = newTask;
+		optimisticSafeUpdate<Task>(
+			(newId) =>
+				controls.addTask({
+					id: newId ?? originalId,
+					...taskWithoutId
+				}),
 			`tasks/fromSubject/${newTask.subjectId}`,
 			"POST",
 			{ ...newTask }
 		);
+	};
 
 	const removeTask = (oldTask: SubjectTask) => {
-		optimisticSafeUpdate(
-			() => {
-				setSchedule((prev) => ({
-					...prev,
-					subjects: prev.subjects.map((subject) => {
-						if (subject.id == oldTask.subjectId)
-							return {
-								...subject,
-								tasks: subject.tasks.filter(
-									(task) => task.id != oldTask.id
-								)
-							};
-						return subject;
-					})
-				}));
-			},
+		optimisticSafeUpdate<Task>(
+			() => controls.removeTask(oldTask),
 			`tasks/${oldTask.id}`,
 			"DELETE",
 			{}
 		);
 	};
 
-	const editTask = (oldTask: SubjectTask, newTask: SubjectTask) => {
-		// Changes subject from task
-		if (oldTask.subjectId != newTask.subjectId) {
-			removeTask(oldTask);
-			addTask(newTask);
-			return;
-		}
-
-		optimisticSafeUpdate(
-			() => {
-				setSchedule((prev) => ({
-					...prev,
-					subjects: prev.subjects.map((subject) => {
-						if (subject.id == newTask.subjectId)
-							return {
-								...subject,
-								tasks: subject.tasks.map((task) => {
-									if (task.id == newTask.id)
-										return { ...newTask };
-									return task;
-								})
-							};
-						return subject;
-					})
-				}));
-			},
+	const editTask = (oldTask: SubjectTask, newTask: SubjectTask) =>
+		optimisticSafeUpdate<Task>(
+			() => controls.editTask(oldTask, newTask),
 			`tasks/${newTask.id}`,
 			"PUT",
 			{ ...newTask }
 		);
-	};
 
 	const toggleFinished = (subjectId: Id, taskId: Id) => {
-		const task = getTask(subjectId, taskId);
+		const task = controls.getTask(subjectId, taskId);
 		if (!task) return;
 
 		const { finished, ...taskData } = task;
-
-		optimisticSafeUpdate(
-			() => {
-				setSchedule((prev) => ({
-					...prev,
-					subjects: prev.subjects.map((subject) => {
-						if (subject.id == subjectId)
-							return {
-								...subject,
-								tasks: subject.tasks.map((task) => {
-									if (task.id == taskId)
-										return {
-											...task,
-											finished: !task.finished
-										};
-									return task;
-								})
-							};
-						return subject;
-					})
-				}));
-			},
+		optimisticSafeUpdate<Task>(
+			() => controls.toggleFinished(subjectId, taskId),
 			`tasks/${taskId}`,
 			"PUT",
 			{ finished: !finished, ...taskData }
@@ -235,14 +117,13 @@ export function useSchedule(
 	};
 
 	return {
-		schedule,
 		editName,
-		getAllSubjects,
-		getSubject,
+		getAllSubjects: controls.getAllSubjects,
+		getSubject: controls.getSubject,
 		addSubject,
 		removeSubject,
 		editSubject,
-		getTask,
+		getTask: controls.getTask,
 		addTask,
 		removeTask,
 		editTask,
