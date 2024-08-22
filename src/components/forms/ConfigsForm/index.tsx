@@ -18,10 +18,9 @@ interface ScheduleConfigsFormProps {
 }
 
 export default function ScheduleConfigsForm(props: ScheduleConfigsFormProps) {
-	const { register, handleSubmit, reset, watch, setValue } =
-		useForm<ConfigsSchema>({
-			resolver: zodResolver(configsSchema)
-		});
+	const { register, handleSubmit, reset } = useForm<ConfigsSchema>({
+		resolver: zodResolver(configsSchema)
+	});
 
 	// Sets initial values
 	useEffect(() => {
@@ -31,11 +30,6 @@ export default function ScheduleConfigsForm(props: ScheduleConfigsFormProps) {
 	function handleChange(configs: ConfigsSchema) {
 		props.setConfigs(configs);
 		props.finally();
-	}
-
-	// Enables weekends if the first day of the week is the weekend
-	if (watch("firstDayWeek") == "0" || watch("firstDayWeek") == "6") {
-		setValue("weekends", true);
 	}
 
 	const days = getLocalDaysNames();
