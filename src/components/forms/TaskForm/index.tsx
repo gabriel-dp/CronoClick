@@ -68,6 +68,7 @@ export default function TaskForm(props: TaskFormProps) {
 
 	const subjectOptions = props.controls
 		.getAllSubjects()
+		.sort((a, b) => a.name.localeCompare(b.name))
 		.reduce<{ [key: string]: string }>((acc, cur) => {
 			acc[cur.id] = cur.name;
 			return acc;
@@ -79,6 +80,7 @@ export default function TaskForm(props: TaskFormProps) {
 			<Dropdown
 				label="Disciplina"
 				options={subjectOptions}
+				required
 				{...register("subjectId", { required: true })}
 			/>
 			<Input
