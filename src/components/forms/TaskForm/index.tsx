@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { SubjectTask } from "@/types/schedules";
-import { ScheduleControlI } from "@/hooks/useSchedule";
+import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { FormContainer, FormRow } from "@/components/forms/styles";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";

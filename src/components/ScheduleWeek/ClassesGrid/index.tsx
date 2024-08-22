@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Class } from "@/types/classes";
 import { Id, Subject } from "@/types/schedules";
 import { useModal } from "@/hooks/useModal";
-import { ScheduleControlI } from "@/hooks/useSchedule";
+import { ScheduleControlI } from "@/utils/scheduleUtils";
 import Modal from "@/components/ui/Modal";
 import SubjectForm from "@/components/forms/SubjectForm";
 

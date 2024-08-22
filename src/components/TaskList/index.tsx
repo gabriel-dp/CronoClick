@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Id, Subject, SubjectTask } from "@/types/schedules";
-import { ScheduleControlI } from "@/hooks/useSchedule";
+import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { useModal } from "@/hooks/useModal";
 import { formatDateStringToLocalString } from "@/utils/timeUtils";
 import TaskForm from "@/components/forms/TaskForm";

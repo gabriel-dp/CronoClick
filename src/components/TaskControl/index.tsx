@@ -1,4 +1,4 @@
-import { ScheduleControlI } from "@/hooks/useSchedule";
+import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { useModal } from "@/hooks/useModal";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";

@@ -2,7 +2,7 @@ import { Configs } from "@/types/configs";
 import { Class, DayClasses } from "@/types/classes";
 import { Subject } from "@/types/schedules";
 import { decodeValue } from "@/utils/daysUtils";
-import { ScheduleControlI } from "@/hooks/useSchedule";
+import { ScheduleControlI } from "@/utils/scheduleUtils";
 
 import DaysRow from "./DaysRow";
 import TimeColumn from "./TimeColumn";

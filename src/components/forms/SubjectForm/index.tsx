@@ -5,7 +5,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Subject } from "@/types/schedules";
-import { ScheduleControlI } from "@/hooks/useSchedule";
+import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { encodeDays } from "@/utils/daysUtils";
 import { formatTimeToMinutes } from "@/utils/timeUtils";
 import Button from "@/components/ui/Button";
