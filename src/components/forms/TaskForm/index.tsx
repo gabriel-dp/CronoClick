@@ -6,11 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
-import { FormContainer, FormRow } from "@/components/forms/styles";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Textarea from "@/components/ui/Taskarea";
 import Dropdown from "@/components/ui/Dropdown";
+import Checkbox from "@/components/ui/Checkbox";
+import { FormContainer, FormRow } from "@/components/forms/styles";
 
 import {
 	convertToTaskSchema,
@@ -18,7 +19,6 @@ import {
 	TaskSchema,
 	taskZodSchema
 } from "./types";
-import Checkbox from "@/components/ui/Checkbox";
 
 interface TaskFormProps {
 	controls: ScheduleControlI;

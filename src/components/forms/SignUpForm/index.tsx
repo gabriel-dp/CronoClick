@@ -3,26 +3,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
 
 import { register as signUp } from "@/utils/authActions";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
+import { signUpSchema, SignUpSchema } from "./types";
 import { Form } from "./styles";
-
-const signUpSchema = z
-	.object({
-		username: z.string().trim().min(1),
-		password: z.string().regex(/^[\S]{8,32}$/),
-		passwordConfirm: z.string(),
-		email: z.string().email()
-	})
-	.refine((data) => data.password === data.passwordConfirm, {
-		message: "Passwords don't match",
-		path: ["passwordConfirm"]
-	});
-type SignUpSchema = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
 	const [loading, setLoading] = useState<boolean>(false);
