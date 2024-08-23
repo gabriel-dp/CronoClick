@@ -11,11 +11,17 @@ import Input from "@/components/ui/Input";
 
 import { Form } from "./styles";
 
-const signUpSchema = z.object({
-	username: z.string().trim().min(1),
-	password: z.string().regex(/^[\S]{8,32}$/),
-	email: z.string().email()
-});
+const signUpSchema = z
+	.object({
+		username: z.string().trim().min(1),
+		password: z.string().regex(/^[\S]{8,32}$/),
+		passwordConfirm: z.string(),
+		email: z.string().email()
+	})
+	.refine((data) => data.password === data.passwordConfirm, {
+		message: "Passwords don't match",
+		path: ["passwordConfirm"]
+	});
 type SignUpSchema = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
@@ -55,8 +61,14 @@ export default function SignUpForm() {
 			<Input
 				label="Senha"
 				type="password"
-				placeholder="password"
+				placeholder="********"
 				{...register("password")}
+			/>
+			<Input
+				label="Confirme a Senha"
+				type="password"
+				placeholder="********"
+				{...register("passwordConfirm")}
 			/>
 			<Button type="submit" loading={loading}>
 				Register
