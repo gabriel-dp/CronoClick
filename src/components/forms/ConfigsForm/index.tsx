@@ -13,7 +13,7 @@ import { configsSchema, ConfigsSchema } from "./types";
 
 interface ScheduleConfigsFormProps {
 	configs: Configs;
-	setConfigs: (newConfigs: Configs) => void;
+	setConfigs: React.Dispatch<React.SetStateAction<Configs>>;
 	finally: () => void;
 }
 
@@ -28,7 +28,7 @@ export default function ScheduleConfigsForm(props: ScheduleConfigsFormProps) {
 	}, [reset, props.configs]);
 
 	function handleChange(configs: ConfigsSchema) {
-		props.setConfigs(configs);
+		props.setConfigs((prev) => ({ ...prev, ...configs }));
 		props.finally();
 	}
 

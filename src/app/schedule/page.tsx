@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 
@@ -9,7 +9,6 @@ import { Id, Schedule } from "@/types/schedules";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useApiRequest } from "@/hooks/useApiRequest";
-import ScheduleControl from "@/components/ScheduleControl";
 
 import {
 	MainContainer,
@@ -17,16 +16,11 @@ import {
 	SectionTitle,
 	TasksContainer
 } from "./styles";
-import Dropdown from "@/components/ui/Dropdown";
 
 // Schedule and Tasks should not be pre-rendered on the server
 const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
 	ssr: false,
 	loading: () => <p>Loading Schedule</p>
-});
-const TaskControl = dynamic(() => import("@/components/TaskControl"), {
-	ssr: false,
-	loading: () => <p>Loading Task Controls</p>
 });
 const TaskList = dynamic(() => import("@/components/TaskList"), {
 	ssr: false,
@@ -37,7 +31,8 @@ const generateInitialConfigs = (): Configs => ({
 	firstDayWeek: "1",
 	minimizeTimeSpan: false,
 	weekends: false,
-	timeInterval: "60"
+	timeInterval: "60",
+	hideFinishedTasks: true
 });
 
 export default function SchedulePage() {
@@ -60,67 +55,51 @@ export default function SchedulePage() {
 
 	// Get data from the selected schedule
 	const [selectedSchedule, setSelectedSchedule] = useState<Id | null>(null);
-	const { data: scheduleData } = useApiRequest<Schedule>(
-		`schedules/${selectedSchedule}`,
-		{ method: "GET", body: {}, immediate: selectedSchedule != null }
-	);
+	const { data: scheduleData, execute: executeSchedule } =
+		useApiRequest<Schedule>(`schedules/${selectedSchedule}`, {
+			method: "GET",
+			body: {},
+			immediate: selectedSchedule != null
+		});
 
-	// Define schedule options to select
-	const scheduleOptions = useMemo(
-		() =>
-			userSchedules?.reduce<{ [key: string]: string }>((acc, cur) => {
-				acc[cur.id] = cur.name;
-				return acc;
-			}, {}) ?? {},
-		[userSchedules]
-	);
+	// Set initial option using first
 	useEffect(() => {
-		if (userSchedules && Object.keys(scheduleOptions).length > 0)
-			setSelectedSchedule(Object.keys(scheduleOptions)[0]); // Set initial option using first
-	}, [userSchedules, scheduleOptions]);
+		if (userSchedules) setSelectedSchedule(userSchedules[0].id);
+	}, [userSchedules]);
 
-	// Start schedule controls interface
+	// Schedule used on client starts empty
 	const [schedule, setSchedule] = useState<Schedule>({
 		id: "",
 		name: "",
 		subjects: []
 	});
+
+	// Start schedule controls interface
 	useEffect(() => {
 		if (scheduleData) setSchedule(scheduleData);
 	}, [scheduleData]);
+
 	const controls = useSchedule(schedule, setSchedule);
 
 	return (
 		<MainContainer>
 			<ScheduleContainer>
-				<Dropdown
-					label="Cronograma"
-					name="selected"
-					onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-						setSelectedSchedule(event.target.value)
-					}
-					options={scheduleOptions}
-					disableNullOption
-				/>
-				<SectionTitle>Cronograma</SectionTitle>
-				<ScheduleControl
+				<SectionTitle>{schedule.name}</SectionTitle>
+				<ScheduleWeek
+					schedule={schedule}
 					controls={controls}
 					configs={storedConfigs}
 					setConfigs={setStoredConfigs}
-				/>
-				<ScheduleWeek
-					subjects={schedule.subjects}
-					controls={controls}
-					configs={storedConfigs}
+					refresh={executeSchedule}
 				/>
 			</ScheduleContainer>
 			<TasksContainer>
 				<SectionTitle>Tarefas</SectionTitle>
-				<TaskControl controls={controls} />
 				<TaskList
-					subjects={schedule.subjects}
+					schedule={schedule}
+					configs={storedConfigs}
+					setConfigs={setStoredConfigs}
 					controls={controls}
-					hideFinished={false}
 				/>
 			</TasksContainer>
 		</MainContainer>

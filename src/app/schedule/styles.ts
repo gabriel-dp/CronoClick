@@ -26,6 +26,11 @@ export const SectionContainer = styled.section`
 	gap: 0.5rem;
 `;
 
-export const ScheduleContainer = styled(SectionContainer)``;
+export const ScheduleContainer = styled(SectionContainer)`
+	padding: 1.5rem 0;
+`;
 
-export const TasksContainer = styled(SectionContainer)``;
+export const TasksContainer = styled(SectionContainer)`
+	padding-top: 2rem;
+	border-top: 1px solid ${(props) => props.theme.primary}44;
+`;

@@ -19,9 +19,9 @@ interface useApiOptions<Data> {
 
 interface useApiReturn<Data> {
 	data: Data | null;
-	setData: React.Dispatch<React.SetStateAction<Data | null>>;
 	error: string | null;
 	status: FetchStatus;
+	execute: () => void;
 }
 
 export async function apiRequest<Body extends object = object, T = object>(
@@ -95,8 +95,8 @@ export function useApiRequest<Data, Body extends object = object>(
 
 	return {
 		data,
-		setData,
 		error,
-		status
+		status,
+		execute
 	};
 }

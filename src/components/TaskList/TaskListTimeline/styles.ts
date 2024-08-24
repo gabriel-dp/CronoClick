@@ -10,6 +10,11 @@ export const CardList = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 1.5rem;
+
+	.empty {
+		text-align: center;
+		opacity: 0.75;
+	}
 `;
 
 export const DayGroup = styled.div`

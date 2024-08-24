@@ -10,6 +10,10 @@ export const ButtonComponent = styled.button`
 	color: ${(props) => props.theme.primaryText};
 	cursor: pointer;
 
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
 	&:hover {
 		background-color: ${(props) => props.theme.primaryHighlight};
 	}

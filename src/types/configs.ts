@@ -3,4 +3,5 @@ export interface Configs {
 	firstDayWeek: string;
 	minimizeTimeSpan: boolean;
 	timeInterval: string;
+	hideFinishedTasks: boolean;
 }
