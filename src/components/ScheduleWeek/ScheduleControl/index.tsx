@@ -1,3 +1,4 @@
+import { exportComponentAsPNG } from "react-component-export-image";
 import { FaPlus as AddIcon } from "react-icons/fa6";
 import { FaGear as SettingsIcon } from "react-icons/fa6";
 import { FaDownload as DownloadIcon } from "react-icons/fa6";
@@ -19,12 +20,17 @@ interface ScheduleControlProps {
 	configs: Configs;
 	setConfigs: React.Dispatch<React.SetStateAction<Configs>>;
 	refresh: () => void;
+	gridRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 export default function ScheduleControl(props: ScheduleControlProps) {
 	const addSubjectModal = useModal();
 	const scheduleModal = useModal();
 	const configsModal = useModal();
+
+	function exportComponent() {
+		exportComponentAsPNG(props.gridRef, { fileName: "schedule" });
+	}
 
 	return (
 		<ControlBar>
@@ -35,7 +41,7 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 				<Button className="round" onClick={scheduleModal.open}>
 					<ChangeIcon className="icon" />
 				</Button>
-				<Button className="round">
+				<Button className="round" onClick={exportComponent}>
 					<DownloadIcon className="icon" />
 				</Button>
 				<Button className="round" onClick={props.refresh}>

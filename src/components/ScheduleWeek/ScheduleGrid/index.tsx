@@ -19,6 +19,7 @@ interface ScheduleProps {
 	subjects: Subject[];
 	controls: ScheduleControlI;
 	configs: Configs;
+	$ref: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 export default function ScheduleGrid(props: ScheduleProps) {
@@ -100,7 +101,7 @@ export default function ScheduleGrid(props: ScheduleProps) {
 		Math.ceil(Math.max(end, startFloor + minDiff) / interval) * interval;
 
 	return (
-		<ScheduleContainer>
+		<ScheduleContainer ref={props.$ref}>
 			<div className="empty"></div>
 			<DaysRow days={days} />
 			<TimeColumn start={startFloor} end={endCeil} interval={interval} />

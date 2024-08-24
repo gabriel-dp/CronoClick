@@ -8,6 +8,7 @@ export const ScheduleContainer = styled.div`
 	padding: 1rem 0;
 	margin: auto;
 	overflow-x: auto;
+	background-color: ${(props) => props.theme.background};
 
 	display: grid;
 	grid-template-columns: min-content minmax(55rem, 1fr);

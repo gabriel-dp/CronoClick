@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import { Schedule } from "@/types/schedules";
 import { Configs } from "@/types/configs";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
@@ -14,6 +16,8 @@ interface ScheduleWeekProps {
 }
 
 export default function ScheduleWeek(props: ScheduleWeekProps) {
+	const gridRef = useRef<HTMLDivElement | null>(null);
+
 	return (
 		<>
 			<ScheduleControl
@@ -21,11 +25,13 @@ export default function ScheduleWeek(props: ScheduleWeekProps) {
 				configs={props.configs}
 				setConfigs={props.setConfigs}
 				refresh={props.refresh}
+				gridRef={gridRef}
 			/>
 			<ScheduleGrid
 				subjects={props.schedule.subjects}
 				controls={props.controls}
 				configs={props.configs}
+				$ref={gridRef}
 			/>
 		</>
 	);
