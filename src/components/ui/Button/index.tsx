@@ -7,22 +7,25 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	onClick?: () => Promise<void> | void;
 	loading?: boolean;
 	type?: "submit";
+	stopPropagation?: boolean;
 }
 
 export default function Button({
 	onClick,
 	loading,
 	type,
+	stopPropagation,
 	...props
 }: ButtonProps) {
 	const [loadingState, setLoadingState] = useState<boolean>(false);
 
-	async function handleClick() {
+	async function handleClick(event: React.MouseEvent<HTMLElement>) {
 		if (onClick) {
 			setLoadingState(true);
 			await onClick();
 			setLoadingState(false);
 		}
+		if (stopPropagation) event.stopPropagation();
 	}
 
 	// Selects which loading will be used
@@ -30,7 +33,7 @@ export default function Button({
 
 	return (
 		<ButtonComponent
-			onClick={handleClick}
+			onClick={(event) => handleClick(event)}
 			type={type ?? "button"}
 			{...props}
 		>

@@ -91,6 +91,7 @@ export default function SchedulePage() {
 					configs={storedConfigs}
 					setConfigs={setStoredConfigs}
 					refresh={executeSchedule}
+					changeSchedule={setSelectedSchedule}
 				/>
 			</ScheduleContainer>
 			<TasksContainer>

@@ -5,21 +5,25 @@ import { FaDownload as DownloadIcon } from "react-icons/fa6";
 import { FaArrowRightArrowLeft as ChangeIcon } from "react-icons/fa6";
 import { FaRotate as ReloadIcon } from "react-icons/fa6";
 
+import { Id, Schedule } from "@/types/schedules";
 import { Configs } from "@/types/configs";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { useModal } from "@/hooks/useModal";
 import SubjectForm from "@/components/forms/SubjectForm";
 import ConfigsForm from "@/components/forms/ConfigsForm";
+import ScheduleForm from "@/components/forms/ScheduleForm";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 
 import { ControlBar, ButtonsContainer } from "./styles";
 
 interface ScheduleControlProps {
+	schedule: Schedule;
 	controls: ScheduleControlI;
 	configs: Configs;
 	setConfigs: React.Dispatch<React.SetStateAction<Configs>>;
 	refresh: () => void;
+	changeSchedule: (id: Id) => void;
 	gridRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
@@ -57,7 +61,14 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 					finally={addSubjectModal.close}
 				/>
 			</Modal>
-			<Modal {...scheduleModal}></Modal>
+			<Modal {...scheduleModal}>
+				<ScheduleForm
+					current={props.schedule}
+					controls={props.controls}
+					changeSchedule={props.changeSchedule}
+					finally={scheduleModal.close}
+				/>
+			</Modal>
 			<Modal {...configsModal}>
 				<ConfigsForm
 					configs={props.configs}

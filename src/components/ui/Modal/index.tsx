@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { FaX as CloseIcon } from "react-icons/fa6";
 
 import Button from "@/components/ui/Button";
 
@@ -37,7 +38,7 @@ export default function Modal(props: ModalProps) {
 			<ModalContainer onClick={handleModalClick} ref={modalRef}>
 				<CloseButtonContainer>
 					<Button className="close-button" onClick={props.close}>
-						X
+						<CloseIcon />
 					</Button>
 				</CloseButtonContainer>
 				{props.children}
