@@ -19,13 +19,12 @@ export default function Button({
 }: ButtonProps) {
 	const [loadingState, setLoadingState] = useState<boolean>(false);
 
-	async function handleClick(event: React.MouseEvent<HTMLElement>) {
+	async function handleClick() {
 		if (onClick) {
 			setLoadingState(true);
 			await onClick();
 			setLoadingState(false);
 		}
-		if (stopPropagation) event.stopPropagation();
 	}
 
 	// Selects which loading will be used
@@ -33,7 +32,10 @@ export default function Button({
 
 	return (
 		<ButtonComponent
-			onClick={(event) => handleClick(event)}
+			onClick={(event) => {
+				handleClick();
+				if (stopPropagation) event.stopPropagation();
+			}}
 			type={type ?? "button"}
 			{...props}
 		>
