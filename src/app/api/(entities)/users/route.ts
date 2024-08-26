@@ -19,7 +19,12 @@ export const POST = (request: Request) =>
 		const newUser = await prisma.user.create({
 			data: {
 				password: await encrypt(password),
-				...user
+				...user,
+				schedules: {
+					create: {
+						name: "Cronograma"
+					}
+				}
 			}
 		});
 
