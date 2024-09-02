@@ -50,7 +50,7 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 
 	function handleEditName(newName: string) {
 		setScheduleName(newName);
-		changeDelay(newName, 750);
+		changeDelay(newName, 1000);
 	}
 
 	function handleDeleteSchedule(id: Id) {
