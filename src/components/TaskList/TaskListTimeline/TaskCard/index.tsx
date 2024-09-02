@@ -1,6 +1,7 @@
 import {
 	FaNotesMedical as AddNoteIcon,
-	FaRegTrashCan as RemoveNoteIcon
+	FaRegTrashCan as RemoveNoteIcon,
+	FaRegFloppyDisk as EditNoteIcon
 } from "react-icons/fa6";
 
 import { Id, Subject, SubjectTask } from "@/types/schedules";
@@ -52,6 +53,22 @@ export default function TaskCard({
 		});
 	}
 
+	function handleEditNoteClick(id: Id) {
+		if (!subject) return;
+
+		const description = document.getElementsByName(
+			`description-${id}`
+		)[0] as HTMLTextAreaElement;
+		const text = description.value;
+
+		controls.editNote({
+			id,
+			taskId: task.id,
+			subjectId: subject?.id,
+			description: text
+		});
+	}
+
 	return (
 		<CardContainer
 			key={task.id}
@@ -78,7 +95,17 @@ export default function TaskCard({
 			<NotesContainer onClick={(event) => event.stopPropagation()}>
 				{task.notes.map((note) => (
 					<NoteCard key={note.id}>
-						<Textarea name={note.id} label="" />
+						<Textarea
+							name={`description-${note.id}`}
+							label=""
+							defaultValue={note.description}
+						/>
+						<Button
+							stopPropagation
+							onClick={() => handleEditNoteClick(note.id)}
+						>
+							<EditNoteIcon />
+						</Button>
 						<Button
 							stopPropagation
 							onClick={() => handleRemoveNoteClick(note.id)}
