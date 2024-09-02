@@ -3,48 +3,20 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import { logout } from "@/utils/authActions";
 import Button from "@/components/ui/Button";
-import { useMemo } from "react";
+
+import { HomeMainContainer } from "./styles";
 
 export default function Home() {
-	const { push } = useRouter();
 	const session = useSession();
-
-	const Options = useMemo(() => {
-		switch (session.status) {
-			case "authenticated":
-				return (
-					<>
-						<p>{JSON.stringify(session)}</p>
-						<Button onClick={() => push("/schedule")}>
-							Schedule
-						</Button>
-						<Button onClick={logout}>Logout</Button>
-					</>
-				);
-			case "loading":
-				return <>Loading...</>;
-			case "unauthenticated":
-				return (
-					<>
-						<Button onClick={() => push("/sign-up")}>
-							Sign-up
-						</Button>
-						<Button onClick={() => push("/sign-in")}>
-							Sign-in
-						</Button>
-					</>
-				);
-			default:
-				return null;
-		}
-	}, [session, push]);
-
+	const { push } = useRouter();
 	return (
-		<main>
-			<h1>TecWeb</h1>
-			{Options}
-		</main>
+		<HomeMainContainer>
+			{session.status == "authenticated" && (
+				<Button onClick={() => push("/schedule")}>
+					Ver Cronogramas
+				</Button>
+			)}
+		</HomeMainContainer>
 	);
 }

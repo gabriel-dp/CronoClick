@@ -5,7 +5,7 @@ import styled from "styled-components";
 export const AuthContainer = styled.div`
 	width: 100%;
 	padding: 1rem;
-	min-height: 100dvh;
+	padding-top: 12rem;
 
 	display: flex;
 	flex-direction: column;

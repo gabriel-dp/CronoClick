@@ -32,5 +32,5 @@ export const ScheduleContainer = styled(SectionContainer)`
 
 export const TasksContainer = styled(SectionContainer)`
 	padding-top: 2rem;
-	border-top: 1px solid ${(props) => props.theme.primary}44;
+	border-top: 1px solid ${(props) => props.theme.primary}22;
 `;

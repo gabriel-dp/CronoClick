@@ -38,7 +38,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function _(
 			ref={ref}
 			{...rest}
 		>
-			{!state ? rest.children : "loading"}
+			{!state ? rest.children : "Carregando..."}
 		</ButtonComponent>
 	);
 });

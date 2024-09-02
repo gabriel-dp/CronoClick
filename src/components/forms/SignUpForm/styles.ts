@@ -15,9 +15,21 @@ export const Form = styled.form`
 
 	h1 {
 		margin-bottom: 1rem;
+		color: ${(props) => props.theme.primary};
 	}
 
 	button {
 		margin-top: 1rem;
+		padding: 0.75rem;
+	}
+
+	hr {
+		margin: 0.5rem 0;
+		border: 1px solid ${(props) => props.theme.primary}AA;
+		border-top: 0;
+	}
+
+	a {
+		color: ${(props) => props.theme.primary};
 	}
 `;

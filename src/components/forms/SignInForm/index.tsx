@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -28,7 +29,7 @@ export default function SignInForm() {
 
 	return (
 		<Form onSubmit={handleSubmit(handleSignInAttempt)}>
-			<h1>Sign In</h1>
+			<h1>Entrar</h1>
 			<Input
 				label="Usuário"
 				type="text"
@@ -42,8 +43,12 @@ export default function SignInForm() {
 				{...register("password")}
 			/>
 			<Button type="submit" loading={loading}>
-				Login
+				Entrar
 			</Button>
+			<hr />
+			<p>
+				Não possui conta? <Link href="/sign-up">Cadastre-se</Link>
+			</p>
 		</Form>
 	);
 }

@@ -19,7 +19,7 @@ export async function login(
 }
 
 export async function logout(): Promise<void> {
-	await signOut({ redirect: false });
+	await signOut({ redirect: true, callbackUrl: "/" });
 }
 
 export async function register(data: {
