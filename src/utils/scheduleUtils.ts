@@ -159,12 +159,11 @@ export function controlSchedule(
 					return {
 						...subject,
 						tasks: subject.tasks.map((task) => {
-							if (task.id == newNote.taskId) {
+							if (task.id == newNote.taskId)
 								return {
 									...task,
 									notes: [...task.notes, newNote]
 								};
-							}
 							return task;
 						})
 					};

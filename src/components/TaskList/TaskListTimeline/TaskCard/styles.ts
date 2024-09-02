@@ -111,7 +111,7 @@ export const NoteCard = styled.div`
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	gap: 0.75rem;
+	gap: 0.5rem;
 
 	& > * {
 		flex: 1;
@@ -123,8 +123,8 @@ export const NoteCard = styled.div`
 	}
 
 	button {
-		width: 3rem;
-		height: 3rem;
+		width: 2.5rem;
+		height: 2.5rem;
 		padding: 0;
 		flex: none;
 
