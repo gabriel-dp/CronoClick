@@ -53,11 +53,10 @@ model Time {
 }
 
 model Task {
-    id          String  @id @default(auto()) @map("_id") @db.ObjectId
-    name        String
-    description String
-    submission  String
-    finished    Boolean
+    id         String  @id @default(auto()) @map("_id") @db.ObjectId
+    name       String
+    submission String
+    finished   Boolean
 
     subjectId String  @db.ObjectId
     subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)

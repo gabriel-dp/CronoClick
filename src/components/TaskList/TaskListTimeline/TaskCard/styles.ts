@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/ui/Button";
+
 import styled from "styled-components";
 
 export const CardContainer = styled.div<{ $color: string; $finished: string }>`
@@ -9,7 +11,6 @@ export const CardContainer = styled.div<{ $color: string; $finished: string }>`
 	cursor: pointer;
 	transition: all 0.125s ease-in-out;
 	position: relative;
-	overflow: hidden;
 
 	&::before {
 		content: "";
@@ -19,6 +20,7 @@ export const CardContainer = styled.div<{ $color: string; $finished: string }>`
 		bottom: 0;
 		width: 0.375rem;
 		background-color: ${(props) => props.$color};
+		border-radius: 0.5rem 0 0 0.5rem;
 		border-right: 1px solid ${(props) => props.theme.primary}22;
 		transition: all 0.125s ease-in-out;
 	}
@@ -64,5 +66,75 @@ export const CardData = styled.div`
 
 		display: flex;
 		flex-direction: column-reverse;
+	}
+`;
+
+export const AddNoteButton = styled(Button)`
+	background-color: transparent;
+	color: ${(props) => props.theme.primary};
+	border: 1px solid ${(props) => props.theme.primary}44;
+	transition: all 0.125s ease-in-out;
+
+	border-top: 0;
+	padding: 0.5rem;
+	padding-top: 0.2rem;
+	border-radius: 0;
+	border-bottom-left-radius: 1rem;
+	border-bottom-right-radius: 1rem;
+
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+
+	&:hover {
+		background-color: ${(props) => props.theme.primary};
+		color: ${(props) => props.theme.primaryText};
+	}
+`;
+
+export const NotesContainer = styled.div`
+	width: 100%;
+	cursor: auto;
+
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+
+	& > :first-child {
+		margin-top: 0.5rem;
+	}
+`;
+
+export const NoteCard = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.75rem;
+
+	& > * {
+		flex: 1;
+	}
+
+	textarea {
+		border-radius: 0.5rem;
+		border-color: ${(props) => props.theme.primary}44;
+	}
+
+	button {
+		width: 3rem;
+		height: 3rem;
+		padding: 0;
+		flex: none;
+
+		background-color: transparent;
+		color: ${(props) => props.theme.primary};
+		font-size: 1rem;
+
+		&:hover {
+			background-color: ${(props) => props.theme.primary};
+			color: ${(props) => props.theme.primaryText};
+		}
 	}
 `;

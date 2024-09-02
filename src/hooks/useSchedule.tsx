@@ -1,6 +1,14 @@
 "use client";
 
-import { Id, Schedule, Subject, SubjectTask, Task } from "@/types/schedules";
+import {
+	Id,
+	Note,
+	Schedule,
+	Subject,
+	SubjectTask,
+	SubjectTaskNote,
+	Task
+} from "@/types/schedules";
 import { apiRequest, RequestType } from "@/hooks/useApiRequest";
 import { controlSchedule, ScheduleControlI } from "@/utils/scheduleUtils";
 
@@ -40,19 +48,17 @@ export function useSchedule(
 			{ name: newName }
 		);
 
-	const addSubject = (newSubject: Subject): void => {
-		const { id: originalId, ...subjectWithoutId } = newSubject;
+	const addSubject = (newSubject: Subject): void =>
 		optimisticSafeUpdate<Subject>(
 			(newId) =>
 				controls.addSubject({
-					id: newId ?? originalId,
-					...subjectWithoutId
+					...newSubject,
+					id: newId ?? newSubject.id
 				}),
 			`/subjects/fromSchedule/${schedule.id}`,
 			"POST",
 			{ ...newSubject }
 		);
-	};
 
 	const removeSubject = (id: Id): void => {
 		optimisticSafeUpdate<Subject>(
@@ -72,19 +78,14 @@ export function useSchedule(
 		);
 	};
 
-	const addTask = (newTask: SubjectTask) => {
-		const { id: originalId, ...taskWithoutId } = newTask;
+	const addTask = (newTask: SubjectTask) =>
 		optimisticSafeUpdate<Task>(
 			(newId) =>
-				controls.addTask({
-					id: newId ?? originalId,
-					...taskWithoutId
-				}),
+				controls.addTask({ ...newTask, id: newId ?? newTask.id }),
 			`tasks/fromSubject/${newTask.subjectId}`,
 			"POST",
 			{ ...newTask }
 		);
-	};
 
 	const removeTask = (oldTask: SubjectTask) => {
 		optimisticSafeUpdate<Task>(
@@ -116,6 +117,32 @@ export function useSchedule(
 		);
 	};
 
+	const addNote = (newNote: SubjectTaskNote) =>
+		optimisticSafeUpdate<Note>(
+			(newId) =>
+				controls.addNote({ ...newNote, id: newId ?? newNote.id }),
+			`notes/fromTask/${newNote.taskId}`,
+			"POST",
+			{ ...newNote }
+		);
+
+	const editNote = (newNote: SubjectTaskNote) =>
+		optimisticSafeUpdate<Note>(
+			() => controls.editNote(newNote),
+			`notes/${newNote.id}`,
+			"PUT",
+			{ ...newNote }
+		);
+
+	const removeNote = (oldNote: SubjectTaskNote) => {
+		optimisticSafeUpdate<Note>(
+			() => controls.removeNote(oldNote),
+			`notes/${oldNote.id}`,
+			"DELETE",
+			{}
+		);
+	};
+
 	return {
 		editName,
 		getAllSubjects: controls.getAllSubjects,
@@ -127,6 +154,9 @@ export function useSchedule(
 		addTask,
 		removeTask,
 		editTask,
-		toggleFinished
+		toggleFinished,
+		addNote,
+		editNote,
+		removeNote
 	};
 }

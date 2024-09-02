@@ -24,9 +24,9 @@ export interface Time {
 export interface Task {
 	id: Id;
 	name: string;
-	description: string;
 	submission: string;
 	finished: boolean;
+	notes: Note[];
 }
 
 export interface Note {
@@ -35,3 +35,5 @@ export interface Note {
 }
 
 export type SubjectTask = Task & { subjectId: Id };
+
+export type SubjectTaskNote = Note & { taskId: Id; subjectId: Id };

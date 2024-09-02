@@ -8,7 +8,6 @@ import { SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import Textarea from "@/components/ui/Textarea";
 import Dropdown from "@/components/ui/Dropdown";
 import Checkbox from "@/components/ui/Checkbox";
 import { FormContainer, FormRow } from "@/components/forms/styles";
@@ -46,7 +45,8 @@ export default function TaskForm(props: TaskFormProps) {
 	function handleSaveData(data: TaskSchema) {
 		const newTask: SubjectTask = {
 			id: props.original?.id ?? data.name,
-			...data
+			...data,
+			notes: props.original?.notes ?? []
 		};
 
 		if (!props.original) {
@@ -89,11 +89,6 @@ export default function TaskForm(props: TaskFormProps) {
 				placeholder="Trabalho"
 				{...register("name", { required: true })}
 			/>
-			<Textarea
-				label="Descrição"
-				placeholder="Descrição do trabalho"
-				{...register("description")}
-			/>
 			<FormRow>
 				<Input
 					type="date"
@@ -107,6 +102,7 @@ export default function TaskForm(props: TaskFormProps) {
 					{...register("finished")}
 				/>
 			</FormRow>
+			<hr />
 			<FormRow>
 				<Button type="submit">
 					{props.original ? "Salvar" : "Criar"}

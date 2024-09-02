@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { forwardRef, useState } from "react";
+
 import { ButtonComponent } from "./styles";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,13 +11,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	stopPropagation?: boolean;
 }
 
-export default function Button({
-	onClick,
-	loading,
-	type,
-	stopPropagation,
-	...props
-}: ButtonProps) {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(function _(
+	{ onClick, loading, type, stopPropagation, ...rest },
+	ref
+) {
 	const [loadingState, setLoadingState] = useState<boolean>(false);
 
 	async function handleClick() {
@@ -37,9 +35,12 @@ export default function Button({
 				if (stopPropagation) event.stopPropagation();
 			}}
 			type={type ?? "button"}
-			{...props}
+			ref={ref}
+			{...rest}
 		>
-			{!state ? props.children : "loading"}
+			{!state ? rest.children : "loading"}
 		</ButtonComponent>
 	);
-}
+});
+
+export default Button;

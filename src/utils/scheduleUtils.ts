@@ -1,4 +1,10 @@
-import { Id, Schedule, Subject, SubjectTask } from "@/types/schedules";
+import {
+	Id,
+	Schedule,
+	Subject,
+	SubjectTask,
+	SubjectTaskNote
+} from "@/types/schedules";
 
 export interface ScheduleControlI {
 	editName: (newName: string) => void;
@@ -12,6 +18,9 @@ export interface ScheduleControlI {
 	removeTask: (oldTask: SubjectTask) => void;
 	editTask: (oldTask: SubjectTask, newTask: SubjectTask) => void;
 	toggleFinished: (subjectId: Id, taskId: Id) => void;
+	addNote: (newNote: SubjectTaskNote) => void;
+	editNote: (newNote: SubjectTaskNote) => void;
+	removeNote: (oldNote: SubjectTaskNote) => void;
 }
 
 interface controlScheduleReturn extends ScheduleControlI {
@@ -142,6 +151,78 @@ export function controlSchedule(
 		}));
 	};
 
+	const addNote = (newNote: SubjectTaskNote) => {
+		setSchedule((prev) => ({
+			...prev,
+			subjects: prev.subjects.map((subject) => {
+				if (subject.id == newNote.subjectId)
+					return {
+						...subject,
+						tasks: subject.tasks.map((task) => {
+							if (task.id == newNote.taskId) {
+								return {
+									...task,
+									notes: [...task.notes, newNote]
+								};
+							}
+							return task;
+						})
+					};
+				return subject;
+			})
+		}));
+	};
+
+	const editNote = (newNote: SubjectTaskNote) => {
+		setSchedule((prev) => ({
+			...prev,
+			subjects: prev.subjects.map((subject) => {
+				if (subject.id == newNote.subjectId)
+					return {
+						...subject,
+						tasks: subject.tasks.map((task) => {
+							if (task.id == newNote.taskId) {
+								return {
+									...task,
+									notes: task.notes.map((note) => {
+										if (note.id == newNote.id)
+											return { ...newNote };
+										return note;
+									})
+								};
+							}
+							return task;
+						})
+					};
+				return subject;
+			})
+		}));
+	};
+
+	const removeNote = (oldNote: SubjectTaskNote) => {
+		setSchedule((prev) => ({
+			...prev,
+			subjects: prev.subjects.map((subject) => {
+				if (subject.id == oldNote.subjectId)
+					return {
+						...subject,
+						tasks: subject.tasks.map((task) => {
+							if (task.id == oldNote.taskId) {
+								return {
+									...task,
+									notes: task.notes.filter(
+										(note) => note.id != oldNote.id
+									)
+								};
+							}
+							return task;
+						})
+					};
+				return subject;
+			})
+		}));
+	};
+
 	return {
 		schedule,
 		editName,
@@ -154,6 +235,9 @@ export function controlSchedule(
 		addTask,
 		removeTask,
 		editTask,
-		toggleFinished
+		toggleFinished,
+		addNote,
+		editNote,
+		removeNote
 	};
 }
