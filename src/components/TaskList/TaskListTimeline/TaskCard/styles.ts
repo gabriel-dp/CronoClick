@@ -120,6 +120,12 @@ export const NoteCard = styled.div`
 	textarea {
 		border-radius: 0.5rem;
 		border-color: ${(props) => props.theme.primary}44;
+		transition: all 0.25s ease-in-out;
+
+		&:focus {
+			border-color: ${(props) => props.theme.primary}66;
+			filter: drop-shadow(0 0 0.5rem #00000011);
+		}
 	}
 
 	button {
@@ -127,6 +133,7 @@ export const NoteCard = styled.div`
 		height: 2.5rem;
 		padding: 0;
 		flex: none;
+		transition: all 0.125s ease-in-out;
 
 		background-color: transparent;
 		color: ${(props) => props.theme.primary};
