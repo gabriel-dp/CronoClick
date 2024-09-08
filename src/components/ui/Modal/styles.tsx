@@ -7,7 +7,7 @@ export const MODAL_TRANSITION_TIME_MS = 250;
 export const BackgroundFilter = styled.div<{ $isOpen: string }>`
 	position: fixed;
 	inset: 0;
-	z-index: 2;
+	z-index: 3;
 	background-color: ${(props) => props.theme.background}55;
 	backdrop-filter: blur(10px);
 
