@@ -7,20 +7,29 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    volumes: 
+    volumes:
       - .:/app
-    depends_on: 
+    depends_on:
       - mongo
     ports:
       - "3000:3000"
-  
+
   mongo:
     container_name: mongo
     image: mongo:8
     restart: always
+    logging:
+      driver: "none"
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: cronoclick
     volumes:
       - ./data:/data/db
+      - ./docker:/docker
+    command: >
+      bash -c " 
+        mongod --replSet rs0 --bind_ip_all &
+        bash /docker/mongo-replica.sh 
+        tail -f /dev/null 
+      "
