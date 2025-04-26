@@ -9,10 +9,16 @@ services:
     restart: always
     volumes:
       - .:/app
+      - ./docker:/docker
     depends_on:
       - mongo
     ports:
       - "3000:3000"
+    command: >
+      bash -c "
+        bash /docker/entry-prisma.sh &&
+        npm run dev
+      "
 
   mongo:
     container_name: mongo
