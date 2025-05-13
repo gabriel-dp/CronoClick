@@ -31,17 +31,19 @@ export default function SignInForm() {
 	async function handleSignInAttempt(data: SignInSchema) {
 		setLoading(true);
 		setError("");
-		
+
 		try {
 			const success = await login(data.username, data.password);
-			
+
 			if (success) {
 				router.push("/dashboard");
 			} else {
 				setError("Credenciais inválidas. Por favor, tente novamente.");
 			}
 		} catch (err) {
-			setError("Ocorreu um erro ao fazer login. Por favor, tente novamente.");
+			setError(
+				"Ocorreu um erro ao fazer login. Por favor, tente novamente."
+			);
 		} finally {
 			setLoading(false);
 		}
