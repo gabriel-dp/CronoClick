@@ -36,9 +36,10 @@ export default function SignInForm() {
 			const success = await login(data.username, data.password);
 
 			if (success) {
+				console.log("dashboard");
 				router.push("/dashboard");
 			} else {
-				setError("Credenciais inválidas. Por favor, tente novamente.");
+				setError("Ocorreu um erro ao fazer login");
 			}
 		} catch (err) {
 			setError(

@@ -4,7 +4,7 @@ import { AppProvider } from "@/contexts";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-	title: "TecWeb",
+	title: "CronoClick",
 	description: "Project in progress"
 };
 
