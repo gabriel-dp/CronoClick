@@ -27,11 +27,11 @@ export async function register(data: {
 	username: string;
 	password: string;
 }): Promise<boolean> {
-	let success = false;
-	await apiRequest<Session, Session>("users", "POST", data, {
+	const result = await apiRequest<Session, Session>("users", "POST", data, {
 		async actionSuccess() {
-			success = await login(data.username, data.password);
+			login(data.username, data.password);
 		}
 	});
-	return success;
+
+	return !!result && result?.ok;
 }

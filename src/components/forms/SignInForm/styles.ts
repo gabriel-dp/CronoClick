@@ -6,6 +6,13 @@ export const Title = styled.h1`
 	color: red;
 `;
 
+export const ErrorMessage = styled.span`
+	color: #ff4444;
+	font-size: 0.875rem;
+	margin-top: -0.5rem;
+	margin-bottom: 0.5rem;
+`;
+
 export const Form = styled.form`
 	width: 100%;
 	display: flex;
