@@ -24,6 +24,7 @@ export async function response(action: () => Promise<NextResponse>) {
 		return await action();
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.log(error);
 			if (PRISMA_ERRORS[error.code] != undefined)
 				return fail(PRISMA_ERRORS[error.code], error);
 		} else if (error instanceof ZodError) {

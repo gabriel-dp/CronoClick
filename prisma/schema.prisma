@@ -9,11 +9,10 @@ datasource db {
 }
 
 model User {
-    id       String  @id @default(auto()) @map("_id") @db.ObjectId
-    username String  @unique
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    username String @unique
     password String
-    email    String  @unique
-    isAdmin  Boolean @default(false)
+    email    String @unique
 
     schedules Schedule[]
 }

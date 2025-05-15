@@ -34,29 +34,29 @@ export async function apiRequest<Body extends object = object, T = object>(
 		actionResponse?: (data: T) => void;
 	}
 ) {
-	const response = await fetch(`/api/${path}`, {
+	return fetch(`/api/${path}`, {
 		method: method,
 		body: Object.keys(body).length > 0 ? JSON.stringify(body) : undefined,
 		headers: {
 			Accept: "application/json",
 			Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
 		}
-	});
-
-	if (response.ok) {
-		if (callbacks.actionSuccess) {
-			callbacks.actionSuccess();
-		}
-		response.json().then((data: T) => {
+	})
+		.then((response) => {
+			if (response.ok) {
+				if (callbacks.actionSuccess) {
+					callbacks.actionSuccess();
+				}
+			} else {
+				if (callbacks.actionError) {
+					callbacks.actionError(response.statusText);
+				}
+			}
+			return response.json();
+		})
+		.then((data: T) => {
 			if (callbacks.actionResponse) callbacks.actionResponse(data);
 		});
-	} else {
-		if (callbacks.actionError) {
-			callbacks.actionError(response.statusText);
-		}
-	}
-
-	return response;
 }
 
 export function useApiRequest<Data, Body extends object = object>(
