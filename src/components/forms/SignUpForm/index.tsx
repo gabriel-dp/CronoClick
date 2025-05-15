@@ -33,20 +33,24 @@ export default function SignUpForm() {
 		setLoading(true);
 		setError("");
 		setSuccess("");
-		
+
 		try {
 			const success = await signUp(data);
-			
+
 			if (success) {
 				setSuccess("Cadastro realizado com sucesso! Redirecionando...");
 				setTimeout(() => {
 					router.push("/sign-in");
 				}, 2000);
 			} else {
-				setError("Erro ao realizar cadastro. Por favor, tente novamente.");
+				setError(
+					"Erro ao realizar cadastro. Por favor, tente novamente."
+				);
 			}
 		} catch (err) {
-			setError("Ocorreu um erro ao realizar o cadastro. Por favor, tente novamente.");
+			setError(
+				"Ocorreu um erro ao realizar o cadastro. Por favor, tente novamente."
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -108,7 +112,9 @@ export default function SignUpForm() {
 					{...register("passwordConfirm")}
 				/>
 				{errors.passwordConfirm && (
-					<ErrorMessage>{errors.passwordConfirm.message}</ErrorMessage>
+					<ErrorMessage>
+						{errors.passwordConfirm.message}
+					</ErrorMessage>
 				)}
 				<Button type="submit" loading={loading} disabled={!isValid}>
 					Cadastrar
