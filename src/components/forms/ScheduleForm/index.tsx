@@ -55,6 +55,7 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 
 	function handleDeleteSchedule(id: Id) {
 		if (props.current.id == id) return;
+		console.log(props.current.id, id);
 		apiRequest<Schedule, Schedule>(
 			`schedules/${id}`,
 			"DELETE",

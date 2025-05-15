@@ -2,91 +2,53 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { login } from "@/utils/authActions";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import Toast from "@/components/ui/Toast";
 
 import { SignInSchema, signInSchema } from "./types";
-import { Form, ErrorMessage } from "./styles";
+import { Form } from "./styles";
 
 export default function SignInForm() {
 	const [loading, setLoading] = useState<boolean>(false);
-	const [error, setError] = useState<string>("");
-	const router = useRouter();
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors, isValid }
-	} = useForm<SignInSchema>({
-		resolver: zodResolver(signInSchema),
-		mode: "onChange"
+	const { register, handleSubmit } = useForm<SignInSchema>({
+		resolver: zodResolver(signInSchema)
 	});
 
 	async function handleSignInAttempt(data: SignInSchema) {
 		setLoading(true);
-		setError("");
+		const success = await login(data.username, data.password);
+		setLoading(false);
 
-		try {
-			const success = await login(data.username, data.password);
-
-			if (success) {
-				console.log("dashboard");
-				router.push("/dashboard");
-			} else {
-				setError("Ocorreu um erro ao fazer login");
-			}
-		} catch (err) {
-			setError(
-				"Ocorreu um erro ao fazer login. Por favor, tente novamente."
-			);
-		} finally {
-			setLoading(false);
-		}
+		if (!success) console.log("LOGIN ERROR");
 	}
 
 	return (
-		<>
-			{error && (
-				<Toast
-					message={error}
-					type="error"
-					onClose={() => setError("")}
-				/>
-			)}
-			<Form onSubmit={handleSubmit(handleSignInAttempt)}>
-				<h1>Entrar</h1>
-				<Input
-					label="Usuário"
-					type="text"
-					placeholder="Digite seu usuário"
-					{...register("username")}
-				/>
-				{errors.username && (
-					<ErrorMessage>{errors.username.message}</ErrorMessage>
-				)}
-				<Input
-					label="Senha"
-					type="password"
-					placeholder="Digite sua senha"
-					{...register("password")}
-				/>
-				{errors.password && (
-					<ErrorMessage>{errors.password.message}</ErrorMessage>
-				)}
-				<Button type="submit" loading={loading} disabled={!isValid}>
-					Entrar
-				</Button>
-				<hr />
-				<p>
-					Não possui conta? <Link href="/sign-up">Cadastre-se</Link>
-				</p>
-			</Form>
-		</>
+		<Form onSubmit={handleSubmit(handleSignInAttempt)}>
+			<h1>Entrar</h1>
+			<Input
+				label="Usuário"
+				type="text"
+				placeholder="username"
+				{...register("username")}
+			/>
+			<Input
+				label="Senha"
+				type="password"
+				placeholder="password"
+				{...register("password")}
+			/>
+			<Button type="submit" loading={loading}>
+				Entrar
+			</Button>
+			<hr />
+			<p>
+				Não possui conta? <Link href="/sign-up">Cadastre-se</Link>
+			</p>
+		</Form>
 	);
 }
