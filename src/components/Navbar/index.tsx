@@ -49,7 +49,10 @@ export default function Navbar() {
 
 	return (
 		<HeaderContainer>
-			<h1>CronoClick</h1>
+			<h1 onClick={() => push("/")} style={{ cursor: "pointer" }}>
+				CronoClick
+			</h1>
+
 			<OptionsContainer>{Options}</OptionsContainer>
 		</HeaderContainer>
 	);
