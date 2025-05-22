@@ -94,7 +94,7 @@ export default function SchedulePage() {
 					changeSchedule={setSelectedSchedule}
 				/>
 			</ScheduleContainer>
-			<TasksContainer>
+			{/* <TasksContainer>
 				<SectionTitle>Tarefas</SectionTitle>
 				<TaskList
 					schedule={schedule}
@@ -102,7 +102,7 @@ export default function SchedulePage() {
 					setConfigs={setStoredConfigs}
 					controls={controls}
 				/>
-			</TasksContainer>
+			</TasksContainer> */}
 		</MainContainer>
 	);
 }
