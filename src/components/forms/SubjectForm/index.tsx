@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-hot-toast";
 
 import { Subject } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
@@ -11,6 +12,7 @@ import { formatTimeToMinutes } from "@/utils/timeUtils";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
+import ColorPicker from "@/components/ui/ColorPicker";
 import {
 	FormContainer,
 	FormGroup,
@@ -35,7 +37,7 @@ interface SubjectFormProps {
 }
 
 export default function SubjectForm(props: SubjectFormProps) {
-	const { control, register, handleSubmit, reset, setError } =
+	const { control, register, handleSubmit, reset, setError, formState: { errors }, watch, setValue } =
 		useForm<SubjectSchema>({
 			defaultValues: DEFAULT_SUBJECT,
 			resolver: zodResolver(subjectZodSchema)
@@ -72,14 +74,47 @@ export default function SubjectForm(props: SubjectFormProps) {
 	}
 
 	function handleSaveData(data: SubjectSchema) {
+		// Validação do nome da disciplina
+		if (!data.name.trim()) {
+			toast.error("Por favor, insira um nome para a disciplina");
+			setError("name", { message: "O nome da disciplina é obrigatório" });
+			return;
+		}
+
+		// Validação dos dias e horários
 		const errorOccurrence = errorOccurrences(data);
 		if (errorOccurrence != undefined) {
+			toast.error("Por favor, selecione pelo menos um dia para cada ocorrência");
 			setError(
 				`occurrences.${errorOccurrence}.days`,
-				new Error("Select at least one day")
+				new Error("Selecione pelo menos um dia")
 			);
 			return;
 		}
+
+		// Validação do horário de início
+		data.occurrences.forEach((occurrence, index) => {
+			if (!occurrence.start) {
+				toast.error("Por favor, insira o horário de início para cada ocorrência");
+				setError(
+					`occurrences.${index}.start`,
+					new Error("O horário de início é obrigatório")
+				);
+				return;
+			}
+		});
+
+		// Validação da duração
+		data.occurrences.forEach((occurrence, index) => {
+			if (!occurrence.duration || occurrence.duration <= 0) {
+				toast.error("Por favor, insira uma duração válida para cada ocorrência");
+				setError(
+					`occurrences.${index}.duration`,
+					new Error("A duração deve ser maior que zero")
+				);
+				return;
+			}
+		});
 
 		const action = !props.original
 			? props.controls.addSubject
@@ -96,12 +131,15 @@ export default function SubjectForm(props: SubjectFormProps) {
 			tasks: props.original?.tasks ?? []
 		});
 
+		// Mensagem de sucesso
+		toast.success("Disciplina adicionada com sucesso ao seu cronograma!");
 		closeForm();
 	}
 
 	function handleDelete() {
 		if (props.original) {
 			props.controls.removeSubject(props.original.id);
+			toast.success("Disciplina removida com sucesso!");
 		}
 
 		closeForm();
@@ -115,19 +153,26 @@ export default function SubjectForm(props: SubjectFormProps) {
 				label="Nome"
 				placeholder="Cálculo I"
 				{...register("name", { required: true })}
+				error={errors.name?.message}
 			/>
 			<Input
 				type="text"
 				label="Professor"
-				placeholder="Fábio"
 				{...register("teacher")}
+				error={errors.teacher?.message}
 			/>
-			<Input
-				type="color"
-				label="Cor"
-				placeholder="! Seletor de cor"
-				{...register("color")}
-			/>
+			<div>
+				<label style={{ display: "block", marginBottom: "0.5rem" }}>Cor</label>
+				<ColorPicker
+					value={watch("color")}
+					onChange={(color) => setValue("color", color)}
+				/>
+				{errors.color?.message && (
+					<p style={{ color: "#ff4d4d", fontSize: "0.75rem", margin: "0.25rem 0 0 0" }}>
+						{errors.color.message}
+					</p>
+				)}
+			</div>
 			<hr />
 			{fields.map((field, i) => (
 				<FormGroup key={field.id}>
@@ -148,6 +193,11 @@ export default function SubjectForm(props: SubjectFormProps) {
 							/>
 						))}
 					</FormRow>
+					{errors.occurrences?.[i]?.days && (
+						<p style={{ color: "#ff4d4d", fontSize: "0.75rem", margin: "0.25rem 0 0 0" }}>
+							{errors.occurrences[i]?.days?.message}
+						</p>
+					)}
 					<FormRow>
 						<Input
 							type="time"
@@ -155,6 +205,7 @@ export default function SubjectForm(props: SubjectFormProps) {
 							{...register(`occurrences.${i}.start`, {
 								required: true
 							})}
+							error={errors.occurrences?.[i]?.start?.message}
 						/>
 						<Input
 							type="number"
@@ -163,6 +214,7 @@ export default function SubjectForm(props: SubjectFormProps) {
 							{...register(`occurrences.${i}.duration`, {
 								required: true
 							})}
+							error={errors.occurrences?.[i]?.duration?.message}
 						/>
 					</FormRow>
 				</FormGroup>
