@@ -37,11 +37,19 @@ interface SubjectFormProps {
 }
 
 export default function SubjectForm(props: SubjectFormProps) {
-	const { control, register, handleSubmit, reset, setError, formState: { errors }, watch, setValue } =
-		useForm<SubjectSchema>({
-			defaultValues: DEFAULT_SUBJECT,
-			resolver: zodResolver(subjectZodSchema)
-		});
+	const {
+		control,
+		register,
+		handleSubmit,
+		reset,
+		setError,
+		formState: { errors },
+		watch,
+		setValue
+	} = useForm<SubjectSchema>({
+		defaultValues: DEFAULT_SUBJECT,
+		resolver: zodResolver(subjectZodSchema)
+	});
 
 	const { fields, append, remove } = useFieldArray({
 		control,
@@ -84,7 +92,9 @@ export default function SubjectForm(props: SubjectFormProps) {
 		// Validação dos dias e horários
 		const errorOccurrence = errorOccurrences(data);
 		if (errorOccurrence != undefined) {
-			toast.error("Por favor, selecione pelo menos um dia para cada ocorrência");
+			toast.error(
+				"Por favor, selecione pelo menos um dia para cada ocorrência"
+			);
 			setError(
 				`occurrences.${errorOccurrence}.days`,
 				new Error("Selecione pelo menos um dia")
@@ -95,7 +105,9 @@ export default function SubjectForm(props: SubjectFormProps) {
 		// Validação do horário de início
 		data.occurrences.forEach((occurrence, index) => {
 			if (!occurrence.start) {
-				toast.error("Por favor, insira o horário de início para cada ocorrência");
+				toast.error(
+					"Por favor, insira o horário de início para cada ocorrência"
+				);
 				setError(
 					`occurrences.${index}.start`,
 					new Error("O horário de início é obrigatório")
@@ -107,7 +119,9 @@ export default function SubjectForm(props: SubjectFormProps) {
 		// Validação da duração
 		data.occurrences.forEach((occurrence, index) => {
 			if (!occurrence.duration || occurrence.duration <= 0) {
-				toast.error("Por favor, insira uma duração válida para cada ocorrência");
+				toast.error(
+					"Por favor, insira uma duração válida para cada ocorrência"
+				);
 				setError(
 					`occurrences.${index}.duration`,
 					new Error("A duração deve ser maior que zero")
@@ -162,13 +176,26 @@ export default function SubjectForm(props: SubjectFormProps) {
 				error={errors.teacher?.message}
 			/>
 			<div>
-				<label style={{ display: "block", marginBottom: "0.5rem" }}>Cor</label>
+				<label
+					style={{
+						display: "block",
+						marginBottom: "0.5rem"
+					}}
+				>
+					Cor
+				</label>
 				<ColorPicker
 					value={watch("color")}
 					onChange={(color) => setValue("color", color)}
 				/>
 				{errors.color?.message && (
-					<p style={{ color: "#ff4d4d", fontSize: "0.75rem", margin: "0.25rem 0 0 0" }}>
+					<p
+						style={{
+							color: "#ff4d4d",
+							fontSize: "0.75rem",
+							margin: "0.25rem 0 0 0"
+						}}
+					>
 						{errors.color.message}
 					</p>
 				)}
@@ -194,7 +221,13 @@ export default function SubjectForm(props: SubjectFormProps) {
 						))}
 					</FormRow>
 					{errors.occurrences?.[i]?.days && (
-						<p style={{ color: "#ff4d4d", fontSize: "0.75rem", margin: "0.25rem 0 0 0" }}>
+						<p
+							style={{
+								color: "#ff4d4d",
+								fontSize: "0.75rem",
+								margin: "0.25rem 0 0 0"
+							}}
+						>
 							{errors.occurrences[i]?.days?.message}
 						</p>
 					)}

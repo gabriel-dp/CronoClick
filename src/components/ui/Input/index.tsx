@@ -1,6 +1,11 @@
 import { forwardRef } from "react";
 
-import { InputComponent, InputLabel, InputWrapper, ErrorMessage } from "./styles";
+import {
+	InputComponent,
+	InputLabel,
+	InputWrapper,
+	ErrorMessage
+} from "./styles";
 
 interface InputProps extends React.ComponentPropsWithoutRef<"input"> {
 	name: string;
