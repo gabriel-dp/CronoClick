@@ -3,7 +3,6 @@ import { FaPlus as AddIcon } from "react-icons/fa6";
 import { FaGear as SettingsIcon } from "react-icons/fa6";
 import { FaDownload as DownloadIcon } from "react-icons/fa6";
 import { FaArrowRightArrowLeft as ChangeIcon } from "react-icons/fa6";
-import { FaRotate as ReloadIcon } from "react-icons/fa6";
 
 import { Id, Schedule } from "@/types/schedules";
 import { Configs } from "@/types/configs";
@@ -22,7 +21,6 @@ interface ScheduleControlProps {
 	controls: ScheduleControlI;
 	configs: Configs;
 	setConfigs: React.Dispatch<React.SetStateAction<Configs>>;
-	refresh: () => void;
 	changeSchedule: (id: Id) => void;
 	gridRef: React.MutableRefObject<HTMLDivElement | null>;
 }
@@ -47,9 +45,6 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 				</Button>
 				<Button className="round" onClick={exportComponent}>
 					<DownloadIcon className="icon" />
-				</Button>
-				<Button className="round" onClick={props.refresh}>
-					<ReloadIcon className="icon" />
 				</Button>
 				<Button className="round" onClick={configsModal.open}>
 					<SettingsIcon className="icon" />

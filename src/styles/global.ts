@@ -1,10 +1,8 @@
 "use client";
 
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, DefaultTheme } from "styled-components";
 
-import { AppTheme } from "@/styles/themes";
-
-export default createGlobalStyle<{ theme: AppTheme }>`
+export default createGlobalStyle<{ theme: DefaultTheme }>`
     * {
         margin: 0;
         padding: 0;

@@ -21,16 +21,16 @@ export const InputComponent = styled.input`
 	width: 100%;
 	padding: 0.5rem 1rem;
 	border-radius: 100rem;
-	border: 1px solid var(--border-color);
+	border: 1px solid ${(props) => props.theme.dark}AA;
 	text-overflow: ellipsis;
 
 	&:focus {
 		outline: none;
-		border-color: var(--primary-color);
+		border-color: ${(props) => props.theme.primary};
 	}
 
 	&::placeholder {
-		color: var(--text-color-light);
+		color: ${(props) => props.theme.text}AA;
 	}
 `;
 

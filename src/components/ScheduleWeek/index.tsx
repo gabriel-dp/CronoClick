@@ -13,7 +13,6 @@ interface ScheduleWeekProps {
 	configs: Configs;
 	setConfigs: React.Dispatch<React.SetStateAction<Configs>>;
 	changeSchedule: (id: Id) => void;
-	refresh: () => void;
 }
 
 export default function ScheduleWeek(props: ScheduleWeekProps) {
@@ -26,7 +25,6 @@ export default function ScheduleWeek(props: ScheduleWeekProps) {
 				controls={props.controls}
 				configs={props.configs}
 				setConfigs={props.setConfigs}
-				refresh={props.refresh}
 				changeSchedule={props.changeSchedule}
 				gridRef={gridRef}
 			/>

@@ -67,20 +67,6 @@ export default function SubjectForm(props: SubjectFormProps) {
 		if (props.finally) props.finally(() => reset(DEFAULT_SUBJECT));
 	}
 
-	function errorOccurrences(data: SubjectSchema): number | undefined {
-		let index;
-
-		data.occurrences.every((occurrence, i) => {
-			if (!occurrence.days.some((day) => day == true)) {
-				index = i;
-				return false;
-			}
-			return true;
-		});
-
-		return index;
-	}
-
 	function handleSaveData(data: SubjectSchema) {
 		// Validação do nome da disciplina
 		if (!data.name.trim()) {
@@ -90,45 +76,15 @@ export default function SubjectForm(props: SubjectFormProps) {
 		}
 
 		// Validação dos dias e horários
-		const errorOccurrence = errorOccurrences(data);
-		if (errorOccurrence != undefined) {
+		const errorOccurrence = !data.occurrences.every((occurrence) =>
+			occurrence.days.some((day) => day === true)
+		);
+		if (errorOccurrence) {
 			toast.error(
-				"Por favor, selecione pelo menos um dia para cada ocorrência"
-			);
-			setError(
-				`occurrences.${errorOccurrence}.days`,
-				new Error("Selecione pelo menos um dia")
+				"Por favor, selecione ao menos um dia para cada ocorrência"
 			);
 			return;
 		}
-
-		// Validação do horário de início
-		data.occurrences.forEach((occurrence, index) => {
-			if (!occurrence.start) {
-				toast.error(
-					"Por favor, insira o horário de início para cada ocorrência"
-				);
-				setError(
-					`occurrences.${index}.start`,
-					new Error("O horário de início é obrigatório")
-				);
-				return;
-			}
-		});
-
-		// Validação da duração
-		data.occurrences.forEach((occurrence, index) => {
-			if (!occurrence.duration || occurrence.duration <= 0) {
-				toast.error(
-					"Por favor, insira uma duração válida para cada ocorrência"
-				);
-				setError(
-					`occurrences.${index}.duration`,
-					new Error("A duração deve ser maior que zero")
-				);
-				return;
-			}
-		});
 
 		const action = !props.original
 			? props.controls.addSubject
@@ -146,7 +102,11 @@ export default function SubjectForm(props: SubjectFormProps) {
 		});
 
 		// Mensagem de sucesso
-		toast.success("Disciplina adicionada com sucesso ao seu cronograma!");
+		toast.success(
+			!props.original
+				? "Disciplina adicionada com sucesso ao seu cronograma!"
+				: "Disciplina editada com sucesso!"
+		);
 		closeForm();
 	}
 
@@ -164,7 +124,7 @@ export default function SubjectForm(props: SubjectFormProps) {
 			<h1>Disciplina</h1>
 			<Input
 				type="text"
-				label="Nome"
+				label="Nome*"
 				placeholder="Cálculo I"
 				{...register("name", { required: true })}
 				error={errors.name?.message}
@@ -172,34 +132,15 @@ export default function SubjectForm(props: SubjectFormProps) {
 			<Input
 				type="text"
 				label="Professor"
+				placeholder="Fulano"
 				{...register("teacher")}
 				error={errors.teacher?.message}
 			/>
-			<div>
-				<label
-					style={{
-						display: "block",
-						marginBottom: "0.5rem"
-					}}
-				>
-					Cor
-				</label>
-				<ColorPicker
-					value={watch("color")}
-					onChange={(color) => setValue("color", color)}
-				/>
-				{errors.color?.message && (
-					<p
-						style={{
-							color: "#ff4d4d",
-							fontSize: "0.75rem",
-							margin: "0.25rem 0 0 0"
-						}}
-					>
-						{errors.color.message}
-					</p>
-				)}
-			</div>
+			<ColorPicker
+				label="Cor"
+				value={watch("color")}
+				onChange={(color) => setValue("color", color)}
+			/>
 			<hr />
 			{fields.map((field, i) => (
 				<FormGroup key={field.id}>
@@ -220,21 +161,10 @@ export default function SubjectForm(props: SubjectFormProps) {
 							/>
 						))}
 					</FormRow>
-					{errors.occurrences?.[i]?.days && (
-						<p
-							style={{
-								color: "#ff4d4d",
-								fontSize: "0.75rem",
-								margin: "0.25rem 0 0 0"
-							}}
-						>
-							{errors.occurrences[i]?.days?.message}
-						</p>
-					)}
 					<FormRow>
 						<Input
 							type="time"
-							label="Início"
+							label="Início*"
 							{...register(`occurrences.${i}.start`, {
 								required: true
 							})}
@@ -242,7 +172,7 @@ export default function SubjectForm(props: SubjectFormProps) {
 						/>
 						<Input
 							type="number"
-							label="Duração (minutos)"
+							label="Duração (minutos)*"
 							placeholder="0"
 							{...register(`occurrences.${i}.duration`, {
 								required: true
