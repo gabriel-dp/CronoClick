@@ -3,11 +3,17 @@
 import styled from "styled-components";
 
 export const HomeMainContainer = styled.main`
-	& > * {
-		margin: auto;
-		margin-top: 2rem;
-	}
-		h1 {
+	min-height: calc(100dvh - 9rem);
+	padding: 2rem;
+	text-align: center;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2rem;
+
+	h1 {
 		color: ${(props) => props.theme.primary};
 		font-size: 2.5rem;
 	}
@@ -15,5 +21,11 @@ export const HomeMainContainer = styled.main`
 	p {
 		font-size: 1.25rem;
 		color: ${(props) => props.theme.text};
+	}
+
+	button {
+		padding: 1.25rem 2rem;
+		font-size: 1rem;
+		font-weight: bold;
 	}
 `;

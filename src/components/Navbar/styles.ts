@@ -18,6 +18,7 @@ export const HeaderContainer = styled.header`
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
+	gap: 1.5rem;
 
 	h1 {
 		font-size: 1.5rem;
