@@ -22,4 +22,6 @@ export const ScheduleData = styled.div`
 			font-size: 1rem;
 		}
 	}
+
+	min-height: 2.5rem;
 `;
