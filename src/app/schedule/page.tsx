@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { Configs } from "@/types/configs";
 import { Id, Schedule } from "@/types/schedules";
@@ -20,11 +21,11 @@ import {
 // Schedule and Tasks should not be pre-rendered on the server
 const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
 	ssr: false,
-	loading: () => <p>Loading Schedule</p>
+	loading: () => <p>Carregando...</p>
 });
 // const TaskList = dynamic(() => import("@/components/TaskList"), {
 // 	ssr: false,
-// 	loading: () => <p>Loading Tasks</p>
+// 	loading: () => <p>Carregando...</p>
 // });
 
 const generateInitialConfigs = (): Configs => ({
@@ -59,6 +60,12 @@ export default function SchedulePage() {
 		`schedules/${selectedSchedule}`,
 		{ method: "GET", body: {}, immediate: selectedSchedule != null }
 	);
+
+	// Redirect unauthenticated users
+	const router = useRouter();
+	if (session.status == "unauthenticated") {
+		router.replace("/");
+	}
 
 	// Set initial option using first
 	useEffect(() => {

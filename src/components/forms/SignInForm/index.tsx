@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -17,7 +16,6 @@ import { Form, ErrorMessage } from "./styles";
 export default function SignInForm() {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
-	const router = useRouter();
 
 	const {
 		register,
@@ -35,10 +33,7 @@ export default function SignInForm() {
 		try {
 			const success = await login(data.username, data.password);
 
-			if (success) {
-				console.log("dashboard");
-				router.push("/dashboard");
-			} else {
+			if (!success) {
 				setError("Ocorreu um erro ao fazer login");
 			}
 		} catch (err) {
