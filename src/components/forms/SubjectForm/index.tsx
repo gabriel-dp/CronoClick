@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-hot-toast";
 
 import { Subject } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
@@ -11,6 +12,7 @@ import { formatTimeToMinutes } from "@/utils/timeUtils";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
+import ColorPicker from "@/components/ui/ColorPicker";
 import {
 	FormContainer,
 	FormGroup,
@@ -35,11 +37,19 @@ interface SubjectFormProps {
 }
 
 export default function SubjectForm(props: SubjectFormProps) {
-	const { control, register, handleSubmit, reset, setError } =
-		useForm<SubjectSchema>({
-			defaultValues: DEFAULT_SUBJECT,
-			resolver: zodResolver(subjectZodSchema)
-		});
+	const {
+		control,
+		register,
+		handleSubmit,
+		reset,
+		setError,
+		formState: { errors },
+		watch,
+		setValue
+	} = useForm<SubjectSchema>({
+		defaultValues: DEFAULT_SUBJECT,
+		resolver: zodResolver(subjectZodSchema)
+	});
 
 	const { fields, append, remove } = useFieldArray({
 		control,
@@ -57,26 +67,21 @@ export default function SubjectForm(props: SubjectFormProps) {
 		if (props.finally) props.finally(() => reset(DEFAULT_SUBJECT));
 	}
 
-	function errorOccurrences(data: SubjectSchema): number | undefined {
-		let index;
-
-		data.occurrences.every((occurrence, i) => {
-			if (!occurrence.days.some((day) => day == true)) {
-				index = i;
-				return false;
-			}
-			return true;
-		});
-
-		return index;
-	}
-
 	function handleSaveData(data: SubjectSchema) {
-		const errorOccurrence = errorOccurrences(data);
-		if (errorOccurrence != undefined) {
-			setError(
-				`occurrences.${errorOccurrence}.days`,
-				new Error("Select at least one day")
+		// Validação do nome da disciplina
+		if (!data.name.trim()) {
+			toast.error("Por favor, insira um nome para a disciplina");
+			setError("name", { message: "O nome da disciplina é obrigatório" });
+			return;
+		}
+
+		// Validação dos dias e horários
+		const errorOccurrence = !data.occurrences.every((occurrence) =>
+			occurrence.days.some((day) => day === true)
+		);
+		if (errorOccurrence) {
+			toast.error(
+				"Por favor, selecione ao menos um dia para cada ocorrência"
 			);
 			return;
 		}
@@ -96,12 +101,19 @@ export default function SubjectForm(props: SubjectFormProps) {
 			tasks: props.original?.tasks ?? []
 		});
 
+		// Mensagem de sucesso
+		toast.success(
+			!props.original
+				? "Disciplina adicionada com sucesso ao seu cronograma!"
+				: "Disciplina editada com sucesso!"
+		);
 		closeForm();
 	}
 
 	function handleDelete() {
 		if (props.original) {
 			props.controls.removeSubject(props.original.id);
+			toast.success("Disciplina removida com sucesso!");
 		}
 
 		closeForm();
@@ -112,21 +124,22 @@ export default function SubjectForm(props: SubjectFormProps) {
 			<h1>Disciplina</h1>
 			<Input
 				type="text"
-				label="Nome"
+				label="Nome*"
 				placeholder="Cálculo I"
 				{...register("name", { required: true })}
+				error={errors.name?.message}
 			/>
 			<Input
 				type="text"
 				label="Professor"
-				placeholder="Fábio"
+				placeholder="Fulano"
 				{...register("teacher")}
+				error={errors.teacher?.message}
 			/>
-			<Input
-				type="color"
+			<ColorPicker
 				label="Cor"
-				placeholder="! Seletor de cor"
-				{...register("color")}
+				value={watch("color")}
+				onChange={(color) => setValue("color", color)}
 			/>
 			<hr />
 			{fields.map((field, i) => (
@@ -151,18 +164,20 @@ export default function SubjectForm(props: SubjectFormProps) {
 					<FormRow>
 						<Input
 							type="time"
-							label="Início"
+							label="Início*"
 							{...register(`occurrences.${i}.start`, {
 								required: true
 							})}
+							error={errors.occurrences?.[i]?.start?.message}
 						/>
 						<Input
 							type="number"
-							label="Duração (minutos)"
+							label="Duração (minutos)*"
 							placeholder="0"
 							{...register(`occurrences.${i}.duration`, {
 								required: true
 							})}
+							error={errors.occurrences?.[i]?.duration?.message}
 						/>
 					</FormRow>
 				</FormGroup>

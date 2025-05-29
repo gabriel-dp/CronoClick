@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 
 import { AppProvider } from "@/contexts";
 import Navbar from "@/components/Navbar";
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
 				<AppProvider>
 					<Navbar />
 					{children}
+					<Toaster position="top-right" />
 				</AppProvider>
 			</body>
 		</html>

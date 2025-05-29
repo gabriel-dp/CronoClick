@@ -3,7 +3,7 @@
 import styled from "styled-components";
 
 export const InputWrapper = styled.div`
-	max-width: 100%;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;
@@ -23,4 +23,20 @@ export const InputComponent = styled.input`
 	border-radius: 100rem;
 	border: 1px solid ${(props) => props.theme.dark}AA;
 	text-overflow: ellipsis;
+
+	&:focus {
+		outline: none;
+		border-color: ${(props) => props.theme.primary};
+	}
+
+	&::placeholder {
+		color: ${(props) => props.theme.text}AA;
+	}
+`;
+
+export const ErrorMessage = styled.p`
+	color: #ff4d4d;
+	font-size: 0.75rem;
+	margin: 0;
+	margin-top: 0.25rem;
 `;

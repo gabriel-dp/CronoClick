@@ -6,16 +6,24 @@ import { formatMinutesToTime } from "@/utils/timeUtils";
 
 export const occurrenceZodSchema = z.object({
 	days: z.array(z.boolean()),
-	start: z.coerce.string().regex(/^[0-9]{2}:[0-9]{2}/),
-	duration: z.coerce.number().min(1)
+	start: z.coerce.string().regex(/^[0-9]{2}:[0-9]{2}/, {
+		message: "O horário deve estar no formato HH:MM"
+	}),
+	duration: z.coerce.number().min(1, {
+		message: "A duração deve ser maior que zero"
+	})
 });
 
 export type OccurrenceSchema = z.infer<typeof occurrenceZodSchema>;
 
 export const subjectZodSchema = z.object({
-	name: z.string().trim().min(1),
+	name: z.string().trim().min(1, {
+		message: "O nome da disciplina é obrigatório"
+	}),
 	teacher: z.string().trim(),
-	color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
+	color: z.string().regex(/^#[A-Fa-f0-9]{6}/, {
+		message: "A cor deve estar no formato hexadecimal (#RRGGBB)"
+	}),
 	occurrences: z.array(occurrenceZodSchema)
 });
 

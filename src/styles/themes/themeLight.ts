@@ -1,6 +1,6 @@
-import { AppTheme } from "@/styles/themes";
+import { DefaultTheme } from "styled-components";
 
-export const LightTheme: AppTheme = {
+export const LightTheme: DefaultTheme = {
 	primary: "#37474F",
 	primaryText: "#EEEEEE",
 	primaryHighlight: "#455A64",

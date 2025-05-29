@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { Configs } from "@/types/configs";
 import { Id, Schedule } from "@/types/schedules";
@@ -13,19 +14,19 @@ import { useApiRequest } from "@/hooks/useApiRequest";
 import {
 	MainContainer,
 	ScheduleContainer,
-	SectionTitle,
-	TasksContainer
+	SectionTitle
+	// TasksContainer
 } from "./styles";
 
 // Schedule and Tasks should not be pre-rendered on the server
 const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
 	ssr: false,
-	loading: () => <p>Loading Schedule</p>
+	loading: () => <p>Carregando...</p>
 });
-const TaskList = dynamic(() => import("@/components/TaskList"), {
-	ssr: false,
-	loading: () => <p>Loading Tasks</p>
-});
+// const TaskList = dynamic(() => import("@/components/TaskList"), {
+// 	ssr: false,
+// 	loading: () => <p>Carregando...</p>
+// });
 
 const generateInitialConfigs = (): Configs => ({
 	firstDayWeek: "1",
@@ -55,12 +56,16 @@ export default function SchedulePage() {
 
 	// Get data from the selected schedule
 	const [selectedSchedule, setSelectedSchedule] = useState<Id | null>(null);
-	const { data: scheduleData, execute: executeSchedule } =
-		useApiRequest<Schedule>(`schedules/${selectedSchedule}`, {
-			method: "GET",
-			body: {},
-			immediate: selectedSchedule != null
-		});
+	const { data: scheduleData } = useApiRequest<Schedule>(
+		`schedules/${selectedSchedule}`,
+		{ method: "GET", body: {}, immediate: selectedSchedule != null }
+	);
+
+	// Redirect unauthenticated users
+	const router = useRouter();
+	if (session.status == "unauthenticated") {
+		router.replace("/");
+	}
 
 	// Set initial option using first
 	useEffect(() => {
@@ -90,11 +95,10 @@ export default function SchedulePage() {
 					controls={controls}
 					configs={storedConfigs}
 					setConfigs={setStoredConfigs}
-					refresh={executeSchedule}
 					changeSchedule={setSelectedSchedule}
 				/>
 			</ScheduleContainer>
-			<TasksContainer>
+			{/* <TasksContainer>
 				<SectionTitle>Tarefas</SectionTitle>
 				<TaskList
 					schedule={schedule}
@@ -102,7 +106,7 @@ export default function SchedulePage() {
 					setConfigs={setStoredConfigs}
 					controls={controls}
 				/>
-			</TasksContainer>
+			</TasksContainer> */}
 		</MainContainer>
 	);
 }

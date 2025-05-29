@@ -24,9 +24,11 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 
 	const session = useSession();
 
-	const { data: userSchedules, execute: refreshList } = useApiRequest<
-		Schedule[]
-	>(`schedules/fromUser/${session?.data?.id}`, {
+	const {
+		data: userSchedules,
+		execute: refreshList,
+		status: requestStatus
+	} = useApiRequest<Schedule[]>(`schedules/fromUser/${session?.data?.id}`, {
 		method: "GET",
 		body: {},
 		immediate: session.status == "authenticated"
@@ -87,14 +89,18 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 		<FormContainer>
 			<h1>Cronogramas</h1>
 			<Input
-				label="Editar nome do atual"
+				label="Editar nome do cronograma atual"
 				name="schedule-name"
 				value={scheduleName}
 				onChange={(event) => handleEditName(event.target.value)}
 			/>
 			<hr />
 			{!userSchedules ? (
-				<p>Nenhum calendário encontrado</p>
+				requestStatus === "loading" ? (
+					<p>Carregando...</p>
+				) : (
+					<p>Nenhum calendário encontrado</p>
+				)
 			) : (
 				userSchedules?.map((schedule) => (
 					<FormRow key={schedule.id}>
@@ -106,14 +112,16 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 									? scheduleName
 									: schedule.name}
 							</span>
-							<Button
-								onClick={() =>
-									handleDeleteSchedule(schedule.id)
-								}
-								stopPropagation
-							>
-								<DeleteIcon className="icon" />
-							</Button>
+							{schedule.id != props.current.id && (
+								<Button
+									onClick={() =>
+										handleDeleteSchedule(schedule.id)
+									}
+									stopPropagation
+								>
+									<DeleteIcon className="icon" />
+								</Button>
+							)}
 						</ScheduleData>
 					</FormRow>
 				))
