@@ -27,9 +27,12 @@ interface ColorPickerProps {
 export default function ColorPicker(props: ColorPickerProps) {
 	const [customColor, setCustomColor] = useState("#BBBBBB");
 
+	// Define initial color
 	useEffect(() => {
-		props.onChange(PREDEFINED_COLORS[0]);
-	}, [props]);
+		if (!props.value) {
+			props.onChange(PREDEFINED_COLORS[0]);
+		}
+	}, [props.value, props.onChange]);
 
 	function handleCustomColor(color: string) {
 		setCustomColor(color);
