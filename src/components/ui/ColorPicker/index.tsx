@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FaEyeDropper as ColorPickerIcon } from "react-icons/fa";
 
 import {
 	ColorGrid,
@@ -24,7 +25,11 @@ interface ColorPickerProps {
 }
 
 export default function ColorPicker(props: ColorPickerProps) {
-	const [customColor, setCustomColor] = useState("#000000");
+	const [customColor, setCustomColor] = useState("#BBBBBB");
+
+	useEffect(() => {
+		props.onChange(PREDEFINED_COLORS[0]);
+	}, [props]);
 
 	function handleCustomColor(color: string) {
 		setCustomColor(color);
@@ -43,15 +48,23 @@ export default function ColorPicker(props: ColorPickerProps) {
 						onClick={() => props.onChange(color)}
 					/>
 				))}
-				<CustomColorInput
-					selected={props.value === customColor}
-					onClick={(e) =>
-						handleCustomColor((e.target as HTMLInputElement).value)
-					}
-					onChange={(e) =>
-						handleCustomColor((e.target as HTMLInputElement).value)
-					}
-				/>
+				<div className="color-picker-custom">
+					<CustomColorInput
+						value={customColor}
+						selected={props.value === customColor}
+						onClick={(e) =>
+							handleCustomColor(
+								(e.target as HTMLInputElement).value
+							)
+						}
+						onChange={(e) =>
+							handleCustomColor(
+								(e.target as HTMLInputElement).value
+							)
+						}
+					/>
+					<ColorPickerIcon className="icon" />
+				</div>
 			</ColorGrid>
 		</ColorPickerContainer>
 	);

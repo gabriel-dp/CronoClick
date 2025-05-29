@@ -14,6 +14,20 @@ export const ColorGrid = styled.div`
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+
+	.color-picker-custom {
+		position: relative;
+
+		.icon {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -62.5%);
+			font-size: 0.865rem;
+			color: #666;
+			pointer-events: none;
+		}
+	}
 `;
 
 export const ColorOption = styled.div<{ selected: boolean }>`
