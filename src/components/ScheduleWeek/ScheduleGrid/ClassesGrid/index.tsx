@@ -44,7 +44,7 @@ export default function Grid(props: GridProps) {
 					{Array.from({ length: intervals }, (_, i) => (
 						<IntervalLine key={`${day}-${i}`} />
 					))}
-					{dayClasses.map((dayClass) => (
+					{dayClasses.reverse().map((dayClass) => (
 						<TimeSpan
 							key={day + dayClass.start + dayClass.subject.id}
 							$startPercentage={percentageRatio(dayClass.start)}

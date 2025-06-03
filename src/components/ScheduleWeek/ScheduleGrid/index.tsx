@@ -92,6 +92,11 @@ export default function ScheduleGrid(props: ScheduleProps) {
 		{ start: MAX_END, end: MIN_START, days: [], weekClasses: [] }
 	);
 
+	// Sort classes by its duration
+	weekClasses.forEach((day) => {
+		day.sort((a, b) => a.duration - b.duration);
+	});
+
 	// Set schedule start and end times
 	const startFloor =
 		start != MAX_END

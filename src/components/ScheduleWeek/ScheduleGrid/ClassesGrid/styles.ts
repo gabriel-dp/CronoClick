@@ -47,7 +47,6 @@ export const TimeSpan = styled.div<TimeSpanProps>`
 	transform: translateX(-50%);
 
 	&:hover {
-		position: absolute;
 		z-index: 2;
 	}
 `;
