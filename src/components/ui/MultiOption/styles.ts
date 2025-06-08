@@ -13,7 +13,7 @@ export const OptionsContainerLabel = styled.p`
 `;
 
 export const OptionsContainer = styled.div`
-	border: 1px solid ${(props) => props.theme.details};
+	border: 1px solid ${(props) => props.theme.primary};
 	border-radius: 0.25rem;
 	overflow: hidden;
 
@@ -21,7 +21,7 @@ export const OptionsContainer = styled.div`
 	flex-direction: row;
 
 	& > * {
-		border-right: 1px solid ${(props) => props.theme.details};
+		border-right: 1px solid ${(props) => props.theme.primary};
 		&:last-child {
 			border-right: none;
 		}
