@@ -31,7 +31,7 @@ export type SubjectSchema = z.infer<typeof subjectZodSchema>;
 
 export const DEFAULT_SUBJECT: SubjectSchema = {
 	name: "",
-	color: "#54afff",
+	color: "",
 	teacher: "",
 	occurrences: [{} as OccurrenceSchema]
 };

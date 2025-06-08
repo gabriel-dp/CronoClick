@@ -32,7 +32,7 @@ export default function ColorPicker(props: ColorPickerProps) {
 		if (!props.value) {
 			props.onChange(PREDEFINED_COLORS[0]);
 		}
-	}, [props.value, props.onChange]);
+	}, [props]);
 
 	function handleCustomColor(color: string) {
 		setCustomColor(color);
