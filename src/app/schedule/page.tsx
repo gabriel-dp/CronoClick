@@ -4,12 +4,16 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { FaAngleDown as DrowdownIcon } from "react-icons/fa";
 
 import { Configs } from "@/types/configs";
 import { Id, Schedule } from "@/types/schedules";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useApiRequest } from "@/hooks/useApiRequest";
+import { useModal } from "@/hooks/useModal";
+import Modal from "@/components/ui/Modal";
+import ScheduleForm from "@/components/forms/ScheduleForm";
 
 import {
 	MainContainer,
@@ -37,6 +41,8 @@ const generateInitialConfigs = (): Configs => ({
 });
 
 export default function SchedulePage() {
+	const scheduleModal = useModal();
+
 	// User configs stored in browser
 	const [storedConfigs, setStoredConfigs] = useLocalStorage<Configs>(
 		"cc-configs",
@@ -88,14 +94,24 @@ export default function SchedulePage() {
 
 	return (
 		<MainContainer>
+			<Modal {...scheduleModal}>
+				<ScheduleForm
+					current={schedule}
+					controls={controls}
+					changeSchedule={setSelectedSchedule}
+					finally={scheduleModal.close}
+				/>
+			</Modal>
 			<ScheduleContainer>
-				<SectionTitle>{schedule.name}</SectionTitle>
+				<SectionTitle onClick={scheduleModal.open}>
+					{schedule.name}
+					<DrowdownIcon className="icon dropdown" />
+				</SectionTitle>
 				<ScheduleWeek
 					schedule={schedule}
 					controls={controls}
 					configs={storedConfigs}
 					setConfigs={setStoredConfigs}
-					changeSchedule={setSelectedSchedule}
 				/>
 			</ScheduleContainer>
 			{/* <TasksContainer>

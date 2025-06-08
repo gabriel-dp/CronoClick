@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-import { Id, Schedule } from "@/types/schedules";
+import { Schedule } from "@/types/schedules";
 import { Configs } from "@/types/configs";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
 
@@ -12,7 +12,6 @@ interface ScheduleWeekProps {
 	controls: ScheduleControlI;
 	configs: Configs;
 	setConfigs: React.Dispatch<React.SetStateAction<Configs>>;
-	changeSchedule: (id: Id) => void;
 }
 
 export default function ScheduleWeek(props: ScheduleWeekProps) {
@@ -25,7 +24,6 @@ export default function ScheduleWeek(props: ScheduleWeekProps) {
 				controls={props.controls}
 				configs={props.configs}
 				setConfigs={props.setConfigs}
-				changeSchedule={props.changeSchedule}
 				gridRef={gridRef}
 			/>
 			<ScheduleGrid

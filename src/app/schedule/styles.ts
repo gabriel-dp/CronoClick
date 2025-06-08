@@ -15,6 +15,18 @@ export const MainContainer = styled.main`
 export const SectionTitle = styled.h1`
 	font-size: 2rem;
 	color: ${(props) => props.theme.primary};
+	cursor: pointer;
+
+	&:hover {
+		&,
+		* {
+			color: ${(props) => props.theme.primaryHighlight};
+		}
+	}
+
+	.icon.dropdown {
+		transform: translate(0.375rem, 0.375rem);
+	}
 `;
 
 export const SectionContainer = styled.section`

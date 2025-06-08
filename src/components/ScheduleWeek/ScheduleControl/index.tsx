@@ -2,15 +2,13 @@ import { exportComponentAsPNG } from "react-component-export-image";
 import { FaPlus as AddIcon } from "react-icons/fa6";
 import { FaGear as SettingsIcon } from "react-icons/fa6";
 import { FaDownload as DownloadIcon } from "react-icons/fa6";
-import { FaArrowRightArrowLeft as ChangeIcon } from "react-icons/fa6";
 
-import { Id, Schedule } from "@/types/schedules";
+import { Schedule } from "@/types/schedules";
 import { Configs } from "@/types/configs";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { useModal } from "@/hooks/useModal";
 import SubjectForm from "@/components/forms/SubjectForm";
 import ConfigsForm from "@/components/forms/ConfigsForm";
-import ScheduleForm from "@/components/forms/ScheduleForm";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 
@@ -21,13 +19,11 @@ interface ScheduleControlProps {
 	controls: ScheduleControlI;
 	configs: Configs;
 	setConfigs: React.Dispatch<React.SetStateAction<Configs>>;
-	changeSchedule: (id: Id) => void;
 	gridRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 export default function ScheduleControl(props: ScheduleControlProps) {
 	const addSubjectModal = useModal();
-	const scheduleModal = useModal();
 	const configsModal = useModal();
 
 	function exportComponent() {
@@ -40,9 +36,6 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 				<Button onClick={addSubjectModal.open}>
 					<AddIcon className="icon" /> &nbsp; Disciplina
 				</Button>
-				<Button className="round" onClick={scheduleModal.open}>
-					<ChangeIcon className="icon" />
-				</Button>
 				<Button className="round" onClick={exportComponent}>
 					<DownloadIcon className="icon" />
 				</Button>
@@ -54,14 +47,6 @@ export default function ScheduleControl(props: ScheduleControlProps) {
 				<SubjectForm
 					controls={props.controls}
 					finally={addSubjectModal.close}
-				/>
-			</Modal>
-			<Modal {...scheduleModal}>
-				<ScheduleForm
-					current={props.schedule}
-					controls={props.controls}
-					changeSchedule={props.changeSchedule}
-					finally={scheduleModal.close}
 				/>
 			</Modal>
 			<Modal {...configsModal}>
