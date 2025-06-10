@@ -7,7 +7,7 @@ export const HeaderContainer = styled.header`
 	position: sticky;
 	top: 0;
 	left: 0;
-	z-index: 2;
+	z-index: 3;
 
 	padding: 1rem 2rem;
 	border-bottom: 1px solid ${(props) => props.theme.primary}22;
