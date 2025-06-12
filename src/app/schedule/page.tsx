@@ -18,8 +18,8 @@ import ScheduleForm from "@/components/forms/ScheduleForm";
 import {
 	MainContainer,
 	ScheduleContainer,
-	SectionTitle
-	// TasksContainer
+	SectionTitle,
+	TasksContainer
 } from "./styles";
 
 // Schedule and Tasks should not be pre-rendered on the server
@@ -31,10 +31,10 @@ const SubjectList = dynamic(() => import("@/components/SubjectList"), {
 	ssr: false,
 	loading: () => <p>Carregando...</p>
 });
-// const TaskList = dynamic(() => import("@/components/TaskList"), {
-// 	ssr: false,
-// 	loading: () => <p>Carregando...</p>
-// });
+const TaskList = dynamic(() => import("@/components/TaskList"), {
+	ssr: false,
+	loading: () => <p>Carregando...</p>
+});
 
 const generateInitialConfigs = (): Configs => ({
 	firstDayWeek: "1",
@@ -119,7 +119,7 @@ export default function SchedulePage() {
 				/>
 				<SubjectList subjects={schedule.subjects} controls={controls} />
 			</ScheduleContainer>
-			{/* <TasksContainer>
+			<TasksContainer>
 				<SectionTitle>Tarefas</SectionTitle>
 				<TaskList
 					schedule={schedule}
@@ -127,7 +127,7 @@ export default function SchedulePage() {
 					setConfigs={setStoredConfigs}
 					controls={controls}
 				/>
-			</TasksContainer> */}
+			</TasksContainer>
 		</MainContainer>
 	);
 }
