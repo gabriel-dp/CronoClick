@@ -8,6 +8,7 @@ import { apiRequest, useApiRequest } from "@/hooks/useApiRequest";
 import { FormContainer, FormRow } from "@/components/forms/styles";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
 
 import { ScheduleData } from "./styles";
 
@@ -21,6 +22,7 @@ interface ScheduleFormProps {
 export default function ScheduleForm(props: ScheduleFormProps) {
 	const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 	const [scheduleName, setScheduleName] = useState(props.current.name);
+	const [deleteModalOpen, setDeleteModalOpen] = useState<null | string>(null);
 
 	const session = useSession();
 
@@ -57,8 +59,13 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 
 	function handleDeleteSchedule(id: Id) {
 		if (props.current.id == id) return;
+		setDeleteModalOpen(id);
+	}
+
+	function confirmDeleteSchedule() {
+		if (!deleteModalOpen) return;
 		apiRequest<Schedule, Schedule>(
-			`schedules/${id}`,
+			`schedules/${deleteModalOpen}`,
 			"DELETE",
 			{},
 			{
@@ -66,6 +73,7 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 				actionSuccess: () => refreshList()
 			}
 		);
+		setDeleteModalOpen(null);
 	}
 
 	function handleChangeSchedule(id: Id) {
@@ -129,6 +137,13 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 			<Button onClick={handleCreateNewSchedule}>Criar novo</Button>
 			<hr />
 			<Button onClick={props.finally}>Fechar</Button>
+			<ConfirmDeleteModal
+				isOpen={!!deleteModalOpen}
+				onCancel={() => setDeleteModalOpen(null)}
+				onConfirm={confirmDeleteSchedule}
+				title="Deletar cronograma?"
+				description="Tem certeza que deseja deletar este cronograma? Esta ação não poderá ser desfeita."
+			/>
 		</FormContainer>
 	);
 }

@@ -9,6 +9,8 @@ import { ScheduleControlI } from "@/utils/scheduleUtils";
 import Checkbox from "@/components/ui/Checkbox";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
+import React from "react";
+import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
 
 import {
 	AddNoteButton,
@@ -31,6 +33,10 @@ export default function TaskCard({
 	handleTaskClick,
 	controls
 }: TaskCardI) {
+	const [deleteModalOpen, setDeleteModalOpen] = React.useState<null | string>(
+		null
+	);
+
 	function handleNewNoteClick() {
 		if (!subject) return;
 
@@ -44,13 +50,18 @@ export default function TaskCard({
 
 	function handleRemoveNoteClick(id: Id) {
 		if (!subject) return;
+		setDeleteModalOpen(id);
+	}
 
+	function confirmDeleteNote() {
+		if (!subject || !deleteModalOpen) return;
 		controls.removeNote({
-			id,
+			id: deleteModalOpen,
 			taskId: task.id,
 			subjectId: subject?.id,
 			description: ""
 		});
+		setDeleteModalOpen(null);
 	}
 
 	function handleEditNoteClick(id: Id) {
@@ -118,6 +129,13 @@ export default function TaskCard({
 			<AddNoteButton stopPropagation onClick={handleNewNoteClick}>
 				<AddNoteIcon />
 			</AddNoteButton>
+			<ConfirmDeleteModal
+				isOpen={!!deleteModalOpen}
+				onCancel={() => setDeleteModalOpen(null)}
+				onConfirm={confirmDeleteNote}
+				title="Deletar anexo?"
+				description="Tem certeza que deseja deletar este anexo? Esta ação não poderá ser desfeita."
+			/>
 		</CardContainer>
 	);
 }

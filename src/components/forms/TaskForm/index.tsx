@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -11,6 +11,7 @@ import Button from "@/components/ui/Button";
 import Dropdown from "@/components/ui/Dropdown";
 import Checkbox from "@/components/ui/Checkbox";
 import { FormContainer, FormRow } from "@/components/forms/styles";
+import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
 
 import {
 	convertToTaskSchema,
@@ -30,6 +31,8 @@ export default function TaskForm(props: TaskFormProps) {
 		defaultValues: DEFAULT_TASK,
 		resolver: zodResolver(taskZodSchema)
 	});
+
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
 	// Set initial values if exists
 	useEffect(() => {
@@ -59,10 +62,14 @@ export default function TaskForm(props: TaskFormProps) {
 	}
 
 	function handleDelete() {
+		setDeleteModalOpen(true);
+	}
+
+	function confirmDelete() {
 		if (props.original) {
 			props.controls.removeTask(props.original);
 		}
-
+		setDeleteModalOpen(false);
 		closeForm();
 	}
 
@@ -112,6 +119,13 @@ export default function TaskForm(props: TaskFormProps) {
 					<Button onClick={handleDelete}>Deletar</Button>
 				)}
 			</FormRow>
+			<ConfirmDeleteModal
+				isOpen={deleteModalOpen}
+				onCancel={() => setDeleteModalOpen(false)}
+				onConfirm={confirmDelete}
+				title="Deletar tarefa?"
+				description="Tem certeza que deseja deletar esta tarefa? Esta ação não poderá ser desfeita."
+			/>
 		</FormContainer>
 	);
 }

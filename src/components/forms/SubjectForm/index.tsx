@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
+import React from "react";
 
 import { Subject } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
@@ -19,6 +20,7 @@ import {
 	FormHead,
 	FormRow
 } from "@/components/forms/styles";
+import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
 
 import {
 	DEFAULT_SUBJECT,
@@ -55,6 +57,8 @@ export default function SubjectForm(props: SubjectFormProps) {
 		control,
 		name: "occurrences"
 	});
+
+	const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
 
 	// Set initial values if exists
 	useEffect(() => {
@@ -111,11 +115,15 @@ export default function SubjectForm(props: SubjectFormProps) {
 	}
 
 	function handleDelete() {
+		setDeleteModalOpen(true);
+	}
+
+	function confirmDelete() {
 		if (props.original) {
 			props.controls.removeSubject(props.original.id);
 			toast.success("Disciplina removida com sucesso!");
 		}
-
+		setDeleteModalOpen(false);
 		closeForm();
 	}
 
@@ -195,6 +203,13 @@ export default function SubjectForm(props: SubjectFormProps) {
 					<Button onClick={handleDelete}>Deletar</Button>
 				)}
 			</FormRow>
+			<ConfirmDeleteModal
+				isOpen={deleteModalOpen}
+				onCancel={() => setDeleteModalOpen(false)}
+				onConfirm={confirmDelete}
+				title="Deletar disciplina?"
+				description="Tem certeza que deseja deletar esta disciplina? Esta ação não poderá ser desfeita."
+			/>
 		</FormContainer>
 	);
 }
