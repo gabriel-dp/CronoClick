@@ -23,6 +23,10 @@ const ScheduleWeek = dynamic(() => import("@/components/ScheduleWeek"), {
 	ssr: false,
 	loading: () => <p>Carregando...</p>
 });
+const SubjectList = dynamic(() => import("@/components/SubjectList"), {
+	ssr: false,
+	loading: () => <p>Carregando...</p>
+});
 // const TaskList = dynamic(() => import("@/components/TaskList"), {
 // 	ssr: false,
 // 	loading: () => <p>Carregando...</p>
@@ -97,6 +101,7 @@ export default function SchedulePage() {
 					setConfigs={setStoredConfigs}
 					changeSchedule={setSelectedSchedule}
 				/>
+				<SubjectList subjects={schedule.subjects} controls={controls} />
 			</ScheduleContainer>
 			{/* <TasksContainer>
 				<SectionTitle>Tarefas</SectionTitle>
