@@ -44,6 +44,12 @@ export const noteSchema = z.object({
 	description: z.string().min(0).max(256)
 });
 
+export const attachmentSchema = z.object({
+	filename: z.string().min(1),
+	contentType: z.string().min(1),
+	base64Data: z.string().min(1)
+});
+
 export function validateFields<T, F extends ZodRawShape>(
 	body: T,
 	schema: ZodObject<F>
