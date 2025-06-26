@@ -7,7 +7,7 @@ interface ConfirmDeleteModalProps {
 	onConfirm: () => void;
 	onCancel: () => void;
 	title?: string;
-	description?: string;
+	description?: React.ReactNode;
 }
 
 export default function ConfirmDeleteModal({

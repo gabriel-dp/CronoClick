@@ -134,7 +134,13 @@ export default function TaskCard({
 				onCancel={() => setDeleteModalOpen(null)}
 				onConfirm={confirmDeleteNote}
 				title="Deletar anexo?"
-				description="Tem certeza que deseja deletar este anexo? Esta ação não poderá ser desfeita."
+				description={
+					<>
+						Tem certeza que deseja deletar este anexo?
+						<br />
+						Esta ação não poderá ser desfeita.
+					</>
+				}
 			/>
 		</CardContainer>
 	);

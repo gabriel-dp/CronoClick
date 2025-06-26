@@ -124,7 +124,13 @@ export default function TaskForm(props: TaskFormProps) {
 				onCancel={() => setDeleteModalOpen(false)}
 				onConfirm={confirmDelete}
 				title="Deletar tarefa?"
-				description="Tem certeza que deseja deletar esta tarefa? Esta ação não poderá ser desfeita."
+				description={
+					<>
+						Tem certeza que deseja deletar esta tarefa?
+						<br />
+						Esta ação não poderá ser desfeita.
+					</>
+				}
 			/>
 		</FormContainer>
 	);

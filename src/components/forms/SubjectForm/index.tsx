@@ -208,7 +208,13 @@ export default function SubjectForm(props: SubjectFormProps) {
 				onCancel={() => setDeleteModalOpen(false)}
 				onConfirm={confirmDelete}
 				title="Deletar disciplina?"
-				description="Tem certeza que deseja deletar esta disciplina? Esta ação não poderá ser desfeita."
+				description={
+					<>
+						Tem certeza que deseja deletar esta disciplina?
+						<br />
+						Esta ação não poderá ser desfeita.
+					</>
+				}
 			/>
 		</FormContainer>
 	);

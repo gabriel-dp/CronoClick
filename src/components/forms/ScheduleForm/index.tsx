@@ -142,7 +142,13 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 				onCancel={() => setDeleteModalOpen(null)}
 				onConfirm={confirmDeleteSchedule}
 				title="Deletar cronograma?"
-				description="Tem certeza que deseja deletar este cronograma? Esta ação não poderá ser desfeita."
+				description={
+					<>
+						Tem certeza que deseja deletar este cronograma?
+						<br />
+						Esta ação não poderá ser desfeita.
+					</>
+				}
 			/>
 		</FormContainer>
 	);
