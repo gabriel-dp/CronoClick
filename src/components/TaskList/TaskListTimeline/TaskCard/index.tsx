@@ -3,6 +3,7 @@ import {
 	FaRegTrashCan as RemoveNoteIcon,
 	FaRegFloppyDisk as EditNoteIcon
 } from "react-icons/fa6";
+import { toast } from "react-hot-toast";
 
 import { Id, Subject, SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
@@ -46,6 +47,7 @@ export default function TaskCard({
 			taskId: task.id,
 			subjectId: subject?.id
 		});
+		toast.success("Anotação adicionada com sucesso!");
 	}
 
 	function handleRemoveNoteClick(id: Id) {
@@ -62,6 +64,7 @@ export default function TaskCard({
 			description: ""
 		});
 		setDeleteModalOpen(null);
+		toast.success("Anotação removida com sucesso!");
 	}
 
 	function handleEditNoteClick(id: Id) {
@@ -78,6 +81,7 @@ export default function TaskCard({
 			subjectId: subject?.id,
 			description: text
 		});
+		toast.success("Anotação atualizada com sucesso!");
 	}
 
 	return (
