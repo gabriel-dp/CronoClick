@@ -4,13 +4,20 @@ import { userType } from "@/utils/validations";
 
 export default class UserService {
 	static async readAll() {
-		const allUsers = await prisma.user.findMany();
+		const allUsers = await prisma.user.findMany({
+			omit: {
+				password: true
+			}
+		});
 		return allUsers;
 	}
 
 	static async readOne(id: string) {
 		const foundUser = await prisma.user.findUnique({
-			where: { id }
+			where: { id },
+			omit: {
+				password: false
+			}
 		});
 		return foundUser;
 	}
@@ -25,8 +32,12 @@ export default class UserService {
 						name: "Cronograma"
 					}
 				}
+			},
+			omit: {
+				password: false
 			}
 		});
+		console.log(newUser);
 
 		return newUser;
 	}
@@ -37,6 +48,9 @@ export default class UserService {
 			data: {
 				...data,
 				password: await encrypt(data.password)
+			},
+			omit: {
+				password: false
 			}
 		});
 		return updatedUser;
