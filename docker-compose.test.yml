@@ -3,6 +3,8 @@ version: "3"
 services:
   web-test:
     container_name: web-test
+    env_file:
+      - .env.test
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,11 +13,7 @@ services:
       - ./docker:/docker
     depends_on:
       - mongo-test
-    command: >
-      bash -c "
-        bash /docker/entry-prisma.sh &&
-        npm run test
-      "
+    command: "sh ./docker/run-test.sh"
 
   mongo-test:
     container_name: mongo-test
@@ -23,12 +21,14 @@ services:
     logging:
       driver: "none"
     ports:
-      - "27018:27017"
+      - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: cronoclick-test
+    volumes:
+      - ./docker:/docker
     command: >
       bash -c " 
         mongod --replSet rs0 --bind_ip_all &
-        bash /docker/mongo-replica.sh 
+        bash ./docker/mongo-replica-test.sh 
         tail -f /dev/null 
       "
