@@ -6,8 +6,6 @@ import { userType } from "@/utils/validations";
 
 import UserService from "../userService";
 
-jest.setTimeout(30000); // 30 seconds
-
 describe("UserService", () => {
 	let createdUserId: string;
 	const invalidId: string = new ObjectId().toHexString();

@@ -37,7 +37,6 @@ export default class UserService {
 				password: false
 			}
 		});
-		console.log(newUser);
 
 		return newUser;
 	}
