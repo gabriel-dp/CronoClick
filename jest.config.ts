@@ -6,5 +6,6 @@ module.exports = {
 	testEnvironment: "node",
 	moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
 		prefix: "<rootDir>/"
-	})
+	}),
+	testMatch: ["**/__tests__/**/*.test.ts"]
 };
