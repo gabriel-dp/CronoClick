@@ -3,7 +3,6 @@ import { ObjectId } from "bson";
 import prisma from "@/lib/prisma";
 import { scheduleType, userType } from "@/utils/validations";
 
-import UserService from "../userService";
 import ScheduleService from "../scheduleService";
 
 describe("ScheduleService", () => {
@@ -21,7 +20,7 @@ describe("ScheduleService", () => {
 			email: "test.schedule@example.com",
 			password: "securePassword123"
 		};
-		const user = await UserService.create(testUser);
+		const user = await prisma.user.create({ data: testUser });
 		userId = user.id;
 	});
 
@@ -39,7 +38,7 @@ describe("ScheduleService", () => {
 			const schedules = await prisma.schedule.findMany({
 				where: { userId }
 			});
-			expect(schedules.length).toBe(2);
+			expect(schedules.length).toBe(1);
 			expect(schedules.some((s) => s.name == testSchedule.name)).toBe(
 				true
 			);

@@ -21,7 +21,7 @@ services:
     logging:
       driver: "none"
     ports:
-      - "27017:27017"
+      - "27018:27017"
     environment:
       MONGO_INITDB_DATABASE: cronoclick-test
     volumes:
