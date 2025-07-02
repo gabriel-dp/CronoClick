@@ -1,36 +1,29 @@
-import { ObjectId } from "bson";
-
 import prisma from "@/lib/prisma";
-import { scheduleType, userType } from "@/utils/validations";
 
 import ScheduleService from "../scheduleService";
+import { invalidId, testSchedule, testUser } from "./__utils__";
 
 describe("ScheduleService", () => {
 	let userId: string;
 	let createdScheduleId: string;
-	const invalidId: string = new ObjectId().toHexString();
-
-	const testSchedule: scheduleType = {
-		name: "Test Schedule"
-	};
+	const scheduleData = testSchedule();
 
 	beforeAll(async () => {
-		const testUser: userType = {
-			username: "Test User Schedule",
-			email: "test.schedule@example.com",
-			password: "securePassword123"
-		};
-		const user = await prisma.user.create({ data: testUser });
+		const user = await prisma.user.create({ data: testUser() });
 		userId = user.id;
+	});
+
+	afterAll(async () => {
+		await prisma.user.delete({ where: { id: userId } });
 	});
 
 	describe("create", () => {
 		it("should create a schedule with no subjects", async () => {
-			const schedule = await ScheduleService.create(testSchedule, userId);
+			const schedule = await ScheduleService.create(scheduleData, userId);
 			createdScheduleId = schedule.id;
 
 			expect(schedule).toHaveProperty("id");
-			expect(schedule.name).toBe(testSchedule.name);
+			expect(schedule.name).toBe(scheduleData.name);
 			expect(schedule.userId).toBe(userId);
 			expect(Array.isArray(schedule.subjects)).toBe(true);
 			expect(schedule.subjects.length).toBe(0);
@@ -39,9 +32,7 @@ describe("ScheduleService", () => {
 				where: { userId }
 			});
 			expect(schedules.length).toBe(1);
-			expect(schedules.some((s) => s.name == testSchedule.name)).toBe(
-				true
-			);
+			expect(schedules[0].id).toBe(schedule.id);
 		});
 	});
 
@@ -49,7 +40,10 @@ describe("ScheduleService", () => {
 		it("should read a schedule by id", async () => {
 			const schedule = await ScheduleService.readOne(createdScheduleId);
 			expect(schedule).not.toBeNull();
-			expect(schedule?.id).toBe(createdScheduleId);
+			if (schedule) {
+				expect(schedule.id).toBe(createdScheduleId);
+				expect(schedule.name).toBe(scheduleData.name);
+			}
 		});
 
 		it("should not read a schedule with invalid id", async () => {
@@ -68,9 +62,7 @@ describe("ScheduleService", () => {
 
 	describe("update", () => {
 		it("should update schedule data", async () => {
-			const newData: scheduleType = {
-				name: "Test Schedule Updated"
-			};
+			const newData = testSchedule();
 
 			const updated = await ScheduleService.update(
 				createdScheduleId,
@@ -83,7 +75,7 @@ describe("ScheduleService", () => {
 
 		it("should not update a schedule data with an invalid id", async () => {
 			await expect(
-				ScheduleService.update(invalidId, testSchedule)
+				ScheduleService.update(invalidId, scheduleData)
 			).rejects.toThrow();
 		});
 	});
@@ -93,8 +85,8 @@ describe("ScheduleService", () => {
 			const deleted = await ScheduleService.delete(createdScheduleId);
 			expect(deleted.id).toBe(createdScheduleId);
 
-			const user = await ScheduleService.readOne(createdScheduleId);
-			expect(user).toBeNull();
+			const schedule = await ScheduleService.readOne(createdScheduleId);
+			expect(schedule).toBeNull();
 
 			await expect(
 				ScheduleService.delete(createdScheduleId)

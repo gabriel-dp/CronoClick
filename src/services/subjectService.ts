@@ -40,7 +40,8 @@ export default class SubjectService {
 			include: {
 				times: true,
 				tasks: true
-			}
+			},
+			omit: { scheduleId: false }
 		});
 		return newSubject;
 	}

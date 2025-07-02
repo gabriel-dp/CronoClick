@@ -1,33 +1,27 @@
 import { compare } from "bcrypt";
-import { ObjectId } from "bson";
 
 import prisma from "@/lib/prisma";
-import { userType } from "@/utils/validations";
 
 import UserService from "../userService";
+import { invalidId, testUser } from "./__utils__";
 
 describe("UserService", () => {
 	let createdUserId: string;
-	const invalidId: string = new ObjectId().toHexString();
 
-	const testUser: userType = {
-		username: "Test User",
-		email: "test@example.com",
-		password: "securePassword123"
-	};
+	const userData = testUser();
 
 	describe("create", () => {
 		it("should create a user with encrypted password and a schedule", async () => {
-			const user = await UserService.create(testUser);
+			const user = await UserService.create(userData);
 			createdUserId = user.id;
 
 			expect(user).toHaveProperty("id");
-			expect(user.username).toBe(testUser.username);
-			expect(user.email).toBe(testUser.email);
-			expect(user.password).not.toBe(testUser.password);
+			expect(user.username).toBe(userData.username);
+			expect(user.email).toBe(userData.email);
+			expect(user.password).not.toBe(userData.password);
 
 			const passwordMatches = await compare(
-				testUser.password,
+				userData.password,
 				user.password
 			);
 			expect(passwordMatches).toBe(true);
@@ -40,10 +34,10 @@ describe("UserService", () => {
 		});
 
 		it("should not create a user with same username or email", async () => {
-			const sameUsername = { ...testUser, email: "test2@example.com" };
+			const sameUsername = { ...userData, email: "test2@example.com" };
 			await expect(UserService.create(sameUsername)).rejects.toThrow();
 
-			const sameEmail = { ...testUser, username: "Test User" };
+			const sameEmail = { ...userData, username: "Test User" };
 			await expect(UserService.create(sameEmail)).rejects.toThrow();
 		});
 	});
@@ -52,7 +46,12 @@ describe("UserService", () => {
 		it("should read a user by id", async () => {
 			const user = await UserService.readOne(createdUserId);
 			expect(user).not.toBeNull();
-			expect(user?.id).toBe(createdUserId);
+			if (user) {
+				expect(user.id).toBe(createdUserId);
+				expect(user.username).toBe(userData.username);
+				expect(user.email).toBe(userData.email);
+				expect(user.password).not.toBe(userData.password);
+			}
 		});
 
 		it("should not read a user with invalid id", async () => {
@@ -74,11 +73,7 @@ describe("UserService", () => {
 
 	describe("update", () => {
 		it("should update user data", async () => {
-			const newData: userType = {
-				username: "Updated User",
-				email: "test.updated@example.com",
-				password: "newPassword456"
-			};
+			const newData = testUser();
 
 			const updated = await UserService.update(createdUserId, newData);
 			expect(updated.username).toBe(newData.username);
@@ -93,7 +88,7 @@ describe("UserService", () => {
 
 		it("should not update a user data with an invalid id", async () => {
 			await expect(
-				UserService.update(invalidId, testUser)
+				UserService.update(invalidId, userData)
 			).rejects.toThrow();
 		});
 	});

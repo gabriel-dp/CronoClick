@@ -25,7 +25,8 @@ export default class TaskService {
 				subjectId,
 				...data
 			},
-			include: { notes: true }
+			include: { notes: true },
+			omit: { subjectId: false }
 		});
 		return newTask;
 	}
