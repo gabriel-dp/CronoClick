@@ -1,0 +1,50 @@
+import axios, { AxiosError, AxiosResponse } from "axios";
+
+export const api = axios.create({
+	baseURL: process.env.NEXTAUTH_URL + "/api",
+	headers: {
+		Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY ?? ""}`
+	}
+});
+
+api.interceptors.request.use((config) => {
+	console.log(
+		`[REQUEST] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`
+	);
+	console.log("Payload:", config.data);
+	return config;
+});
+
+export function fail(message: string) {
+	throw new Error(message);
+}
+
+export async function expectRequestSuccess(
+	status: number,
+	func: () => Promise<AxiosResponse>
+) {
+	try {
+		const response = await func();
+		expect(response.status).toBe(status);
+		return response;
+	} catch (error) {
+		fail(
+			`should success, expect ${status}, got ${(error as AxiosError).response?.status ?? "???"}`
+		);
+	}
+}
+
+export async function expectRequestFail(
+	status: number,
+	func: () => Promise<AxiosResponse>
+) {
+	let response;
+	try {
+		response = await func();
+		fail("should fail");
+	} catch (error) {
+		expect((error as AxiosError).response?.status ?? response?.status).toBe(
+			status
+		);
+	}
+}
