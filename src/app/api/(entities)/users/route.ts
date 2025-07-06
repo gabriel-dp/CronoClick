@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import UserService from "@/services/userService";
 import { response, success } from "@/utils/response";
 import { userSchema, validateFields } from "@/utils/validations";
@@ -11,6 +13,6 @@ export const GET = () =>
 export const POST = (request: Request) =>
 	response(async () => {
 		const data = validateFields(await request.json(), userSchema);
-		const newUser = await UserService.create(data);
+		const { password, ...newUser } = await UserService.create(data);
 		return success(newUser, 201);
 	});

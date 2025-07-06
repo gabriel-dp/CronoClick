@@ -23,7 +23,7 @@ describe("/users/", () => {
 			expect(response?.data).toHaveProperty("id");
 			expect(response?.data.username).toBe(userData.username);
 			expect(response?.data.email).toBe(userData.email);
-			expect(response?.data.password).not.toBe(userData.password);
+			expect(response?.data).not.toHaveProperty("password");
 
 			createdId = response?.data.id;
 		});
@@ -100,7 +100,7 @@ describe("/users/", () => {
 			expect(response?.data).toHaveProperty("id", createdId);
 			expect(response?.data.username).toBe(userData.username);
 			expect(response?.data.email).toBe(userData.email);
-			expect(response?.data.password).not.toBe(userData.password);
+			expect(response?.data).not.toHaveProperty("password");
 		});
 
 		it("should return 404 for invalid user ID - 404", async () => {
@@ -134,7 +134,7 @@ describe("/users/", () => {
 			expect(response?.data).toHaveProperty("id", createdId);
 			expect(response?.data.username).toBe(updatedData.username);
 			expect(response?.data.email).toBe(updatedData.email);
-			expect(response?.data.password).not.toBe(updatedData.password);
+			expect(response?.data).not.toHaveProperty("password");
 		});
 
 		it("should not update with invalid data - 400", async () => {
@@ -152,9 +152,10 @@ describe("/users/", () => {
 
 	describe("DELETE", () => {
 		it("should delete a user by ID - 204", async () => {
-			await expectRequestSuccess(204, () =>
+			const response = await expectRequestSuccess(204, () =>
 				api.delete(`/users/${createdId}`)
 			);
+			expect(response?.data).toBe("");
 
 			await expectRequestFail(404, () =>
 				api.delete(`/users/${createdId}`)
