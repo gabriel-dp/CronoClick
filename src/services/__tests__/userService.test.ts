@@ -1,9 +1,10 @@
 import { compare } from "bcrypt";
 
 import prisma from "@/lib/prisma";
+import { invalidId } from "@/utils/testUtils";
 
 import UserService from "../userService";
-import { invalidId, testUser } from "./__utils__";
+import { testUser } from "./__utils__";
 
 describe("UserService", () => {
 	let createdUserId: string;

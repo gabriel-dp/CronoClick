@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
+import { invalidId } from "@/utils/testUtils";
 
 import SubjectService from "../subjectService";
-import { testUser, testSchedule, testSubject, invalidId } from "./__utils__";
+import { testUser, testSchedule, testSubject } from "./__utils__";
 
 describe("SubjectService", () => {
 	let userId: string;

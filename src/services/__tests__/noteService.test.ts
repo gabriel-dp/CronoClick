@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { invalidId } from "@/utils/testUtils";
 
 import NoteService from "../noteService";
 import {
@@ -6,8 +7,7 @@ import {
 	testSchedule,
 	testSubject,
 	testNote,
-	testTask,
-	invalidId
+	testTask
 } from "./__utils__";
 
 describe("NoteService", () => {

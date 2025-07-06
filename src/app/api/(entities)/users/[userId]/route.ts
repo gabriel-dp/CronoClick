@@ -6,20 +6,20 @@ type paramsRequest = { params: { userId: string } };
 
 export const GET = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const founduser = await UserService.readOne(params.userId);
-		if (!founduser) return fail(404);
-		return success(founduser);
+		const foundUser = await UserService.readOne(params.userId);
+		if (!foundUser) return fail(404);
+		return success(foundUser);
 	});
 
 export const PUT = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const data = validateFields(await request.json(), userSchema);
 		const updatedUser = await UserService.update(params.userId, data);
-		return success(updatedUser);
+		return success(updatedUser, 201);
 	});
 
 export const DELETE = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const deletedUser = await UserService.delete(params.userId);
-		return success(deletedUser);
+		await UserService.delete(params.userId);
+		return success({}, 204);
 	});

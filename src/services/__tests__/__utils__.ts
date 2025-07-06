@@ -5,7 +5,6 @@ import {
 	taskType,
 	userType
 } from "@/utils/validations";
-import { ObjectId } from "bson";
 
 function unique(length = 10) {
 	const time = process.hrtime.bigint();
@@ -18,8 +17,6 @@ function unique(length = 10) {
 function randomNumber(min = 0, max = 64) {
 	return Math.floor(Math.random() * max) + min;
 }
-
-export const invalidId: string = new ObjectId().toHexString();
 
 export const testUser = (): userType => ({
 	username: `User${unique()}`,

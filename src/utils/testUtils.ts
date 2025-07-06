@@ -1,18 +1,11 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { ObjectId } from "bson";
 
 export const api = axios.create({
 	baseURL: process.env.NEXTAUTH_URL + "/api",
 	headers: {
 		Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY ?? ""}`
 	}
-});
-
-api.interceptors.request.use((config) => {
-	console.log(
-		`[REQUEST] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`
-	);
-	console.log("Payload:", config.data);
-	return config;
 });
 
 export function fail(message: string) {
@@ -48,3 +41,5 @@ export async function expectRequestFail(
 		);
 	}
 }
+
+export const invalidId: string = new ObjectId().toHexString();
