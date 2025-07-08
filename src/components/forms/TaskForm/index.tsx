@@ -13,6 +13,11 @@ import Dropdown from "@/components/ui/Dropdown";
 import Checkbox from "@/components/ui/Checkbox";
 import { FormContainer, FormRow } from "@/components/forms/styles";
 import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
+type Attachment = {
+	id: string;
+	filename: string;
+	contentType: string;
+};
 
 import {
 	convertToTaskSchema,
@@ -40,6 +45,9 @@ export default function TaskForm(props: TaskFormProps) {
 	});
 
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [attachments, setAttachments] = useState<Attachment[]>([]); // Corrigindo o tipo de any para Attachment[]
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadError, setUploadError] = useState<string | null>(null);
 
 	// Set initial values if exists
 	useEffect(() => {
@@ -47,6 +55,22 @@ export default function TaskForm(props: TaskFormProps) {
 			reset(convertToTaskSchema(props.original));
 		}
 	}, [props.original, props.controls, reset]);
+
+	// Carregar anexos se for edição de tarefa
+	useEffect(() => {
+		async function fetchAttachments() {
+			if (props.original?.id) {
+				const res = await fetch(
+					`/api/(entities)/attachments/fromTask/${props.original.id}`
+				);
+				if (res.ok) {
+					const data = await res.json();
+					setAttachments(data.data || []);
+				}
+			}
+		}
+		fetchAttachments();
+	}, [props.original?.id]);
 
 	function closeForm() {
 		if (props.finally) props.finally(() => reset(DEFAULT_TASK));
@@ -104,6 +128,58 @@ export default function TaskForm(props: TaskFormProps) {
 		closeForm();
 	}
 
+	async function handleDeleteAttachment(id: string) {
+		const res = await fetch(`/api/(entities)/attachments/${id}`, {
+			method: "DELETE"
+		});
+		if (res.ok) {
+			setAttachments((prev) => prev.filter((a) => a.id !== id));
+			toast.success("Anexo deletado com sucesso!");
+		} else {
+			toast.error("Erro ao deletar anexo");
+		}
+	}
+
+	async function handleAddAttachment(e: React.ChangeEvent<HTMLInputElement>) {
+		const file = e.target.files?.[0];
+		if (!file) return;
+		if (file.size > 3 * 1024 * 1024) {
+			setUploadError("O anexo deve ter no máximo 3MB");
+			return;
+		}
+		setIsUploading(true);
+		setUploadError(null);
+		try {
+			const fileData = await file.arrayBuffer();
+			const buffer = Buffer.from(fileData).toString("base64");
+			const res = await fetch(
+				`/api/(entities)/attachments/fromTask/${props.original?.id}`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						file: {
+							originalname: file.name,
+							mimetype: file.type,
+							buffer
+						}
+					})
+				}
+			);
+			if (res.ok) {
+				const data = await res.json();
+				setAttachments((prev) => [...prev, data.data]);
+				toast.success("Anexo adicionado!");
+			} else {
+				setUploadError("Erro ao enviar anexo");
+			}
+		} catch (err) {
+			setUploadError("Erro ao processar anexo");
+		} finally {
+			setIsUploading(false);
+		}
+	}
+
 	const subjectOptions = props.controls
 		.getAllSubjects()
 		.sort((a, b) => a.name.localeCompare(b.name))
@@ -152,6 +228,58 @@ export default function TaskForm(props: TaskFormProps) {
 					<Button onClick={handleDelete}>Deletar</Button>
 				)}
 			</FormRow>
+			{props.original && (
+				<div id="attachments-section" style={{ marginTop: 24 }}>
+					<hr />
+					<h2>Anexos</h2>
+					{attachments.length === 0 && <p>Nenhum anexo.</p>}
+					<ul style={{ listStyle: "none", padding: 0 }}>
+						{attachments.map((a) => (
+							<li
+								key={a.id}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									marginBottom: 8
+								}}
+							>
+								<a
+									href={`/api/(entities)/attachments/${a.id}`}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{a.filename}
+								</a>
+								<Button
+									style={{ marginLeft: 8 }}
+									onClick={() => handleDeleteAttachment(a.id)}
+								>
+									Deletar
+								</Button>
+							</li>
+						))}
+					</ul>
+					{attachments.length < 3 && (
+						<div style={{ marginTop: 8 }}>
+							<input
+								type="file"
+								accept="*"
+								onChange={handleAddAttachment}
+								disabled={isUploading}
+							/>
+							{isUploading && <span>Enviando...</span>}
+							{uploadError && (
+								<span style={{ color: "red" }}>
+									{uploadError}
+								</span>
+							)}
+						</div>
+					)}
+					{attachments.length >= 3 && (
+						<p>Limite de 3 anexos atingido.</p>
+					)}
+				</div>
+			)}
 			<ConfirmDeleteModal
 				isOpen={deleteModalOpen}
 				onCancel={() => setDeleteModalOpen(false)}

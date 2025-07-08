@@ -1,7 +1,8 @@
 import {
 	FaNotesMedical as AddNoteIcon,
 	FaRegTrashCan as RemoveNoteIcon,
-	FaRegFloppyDisk as EditNoteIcon
+	FaRegFloppyDisk as EditNoteIcon,
+	FaPaperclip as ClipIcon
 } from "react-icons/fa6";
 import { toast } from "react-hot-toast";
 
@@ -84,6 +85,15 @@ export default function TaskCard({
 		toast.success("Anotação atualizada com sucesso!");
 	}
 
+	function handleClipClick(e: React.MouseEvent) {
+		e.stopPropagation();
+		handleTaskClick(task.subjectId, task.id);
+		setTimeout(() => {
+			const el = document.getElementById("attachments-section");
+			if (el) el.scrollIntoView({ behavior: "smooth" });
+		}, 400); // tempo para o modal abrir
+	}
+
 	return (
 		<CardContainer
 			key={task.id}
@@ -96,7 +106,33 @@ export default function TaskCard({
 					<p className="subject">{subject?.name}</p>
 					<p className="task">{task.name}</p>
 				</div>
-				<div onClick={(event) => event.stopPropagation()}>
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						flexDirection: "row",
+						gap: 0
+					}}
+					onClick={(event) => event.stopPropagation()}
+				>
+					<button
+						style={{
+							background: "none",
+							border: "none",
+							cursor: "pointer",
+							padding: 0,
+							marginRight: 8,
+							color: "inherit",
+							display: "flex",
+							alignItems: "center"
+						}}
+						title="Ver anexos"
+						onClick={handleClipClick}
+					>
+						<ClipIcon
+							style={{ fontSize: "1rem", color: "inherit" }}
+						/>
+					</button>
 					<Checkbox
 						label=""
 						checked={task.finished}
