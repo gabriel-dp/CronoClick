@@ -61,8 +61,8 @@ model Task {
     subjectId String  @db.ObjectId
     subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
-    notes        Note[]
-    attachements Attachment[]
+    notes       Note[]
+    attachments Attachment[]
 }
 
 model Note {

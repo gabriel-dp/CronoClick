@@ -14,7 +14,8 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 						times: true,
 						tasks: {
 							include: {
-								notes: true
+								notes: true,
+								attachments: true
 							}
 						}
 					}

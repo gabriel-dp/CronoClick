@@ -3,6 +3,7 @@ import {
 	Schedule,
 	Subject,
 	SubjectTask,
+	SubjectTaskAttachment,
 	SubjectTaskNote
 } from "@/types/schedules";
 
@@ -21,6 +22,8 @@ export interface ScheduleControlI {
 	addNote: (newNote: SubjectTaskNote) => void;
 	editNote: (newNote: SubjectTaskNote) => void;
 	removeNote: (oldNote: SubjectTaskNote) => void;
+	addAttachment: (newAttachment: SubjectTaskAttachment) => void;
+	removeAttachment: (oldAttachment: SubjectTaskAttachment) => void;
 }
 
 interface controlScheduleReturn extends ScheduleControlI {
@@ -222,6 +225,54 @@ export function controlSchedule(
 		}));
 	};
 
+	const addAttachment = (newAttachment: SubjectTaskAttachment) => {
+		setSchedule((prev) => ({
+			...prev,
+			subjects: prev.subjects.map((subject) => {
+				if (subject.id == newAttachment.subjectId)
+					return {
+						...subject,
+						tasks: subject.tasks.map((task) => {
+							if (task.id == newAttachment.taskId)
+								return {
+									...task,
+									attachments: [
+										...task.attachments,
+										newAttachment
+									]
+								};
+							return task;
+						})
+					};
+				return subject;
+			})
+		}));
+	};
+
+	const removeAttachment = (oldAttachment: SubjectTaskAttachment) => {
+		setSchedule((prev) => ({
+			...prev,
+			subjects: prev.subjects.map((subject) => {
+				if (subject.id == oldAttachment.subjectId)
+					return {
+						...subject,
+						tasks: subject.tasks.map((task) => {
+							if (task.id == oldAttachment.taskId) {
+								return {
+									...task,
+									attachments: task.attachments.filter(
+										(note) => note.id != oldAttachment.id
+									)
+								};
+							}
+							return task;
+						})
+					};
+				return subject;
+			})
+		}));
+	};
+
 	return {
 		schedule,
 		editName,
@@ -237,6 +288,8 @@ export function controlSchedule(
 		toggleFinished,
 		addNote,
 		editNote,
-		removeNote
+		removeNote,
+		addAttachment,
+		removeAttachment
 	};
 }

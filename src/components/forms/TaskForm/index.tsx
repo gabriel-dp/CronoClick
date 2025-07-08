@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
 
-import { SubjectTask } from "@/types/schedules";
+import { Attachment, SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -13,11 +13,6 @@ import Dropdown from "@/components/ui/Dropdown";
 import Checkbox from "@/components/ui/Checkbox";
 import { FormContainer, FormRow } from "@/components/forms/styles";
 import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
-type Attachment = {
-	id: string;
-	filename: string;
-	contentType: string;
-};
 
 import {
 	convertToTaskSchema,
@@ -25,6 +20,7 @@ import {
 	TaskSchema,
 	taskZodSchema
 } from "./types";
+import { apiRequest } from "@/hooks/useApiRequest";
 
 interface TaskFormProps {
 	controls: ScheduleControlI;
@@ -38,14 +34,14 @@ export default function TaskForm(props: TaskFormProps) {
 		register,
 		reset,
 		setError,
-		formState: { errors }
+		formState: { errors },
+		getValues
 	} = useForm<TaskSchema>({
 		defaultValues: DEFAULT_TASK,
 		resolver: zodResolver(taskZodSchema)
 	});
 
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-	const [attachments, setAttachments] = useState<Attachment[]>([]); // Corrigindo o tipo de any para Attachment[]
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadError, setUploadError] = useState<string | null>(null);
 
@@ -55,22 +51,6 @@ export default function TaskForm(props: TaskFormProps) {
 			reset(convertToTaskSchema(props.original));
 		}
 	}, [props.original, props.controls, reset]);
-
-	// Carregar anexos se for edição de tarefa
-	useEffect(() => {
-		async function fetchAttachments() {
-			if (props.original?.id) {
-				const res = await fetch(
-					`/api/(entities)/attachments/fromTask/${props.original.id}`
-				);
-				if (res.ok) {
-					const data = await res.json();
-					setAttachments(data.data || []);
-				}
-			}
-		}
-		fetchAttachments();
-	}, [props.original?.id]);
 
 	function closeForm() {
 		if (props.finally) props.finally(() => reset(DEFAULT_TASK));
@@ -101,7 +81,8 @@ export default function TaskForm(props: TaskFormProps) {
 		const newTask: SubjectTask = {
 			id: props.original?.id ?? data.name,
 			...data,
-			notes: props.original?.notes ?? []
+			notes: props.original?.notes ?? [],
+			attachments: props.original?.attachments ?? []
 		};
 
 		if (!props.original) {
@@ -128,20 +109,22 @@ export default function TaskForm(props: TaskFormProps) {
 		closeForm();
 	}
 
-	async function handleDeleteAttachment(id: string) {
-		const res = await fetch(`/api/(entities)/attachments/${id}`, {
-			method: "DELETE"
+	async function handleDeleteAttachment(attachment: Attachment) {
+		props.controls.removeAttachment({
+			...attachment,
+			taskId: props.original!.id,
+			subjectId: props.original!.subjectId
 		});
-		if (res.ok) {
-			setAttachments((prev) => prev.filter((a) => a.id !== id));
-			toast.success("Anexo deletado com sucesso!");
-		} else {
-			toast.error("Erro ao deletar anexo");
-		}
+		// if (res.ok) {
+		// 	toast.success("Anexo deletado com sucesso!");
+		// } else {
+		// 	toast.error("Erro ao deletar anexo");
+		// }
 	}
 
 	async function handleAddAttachment(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
+		console.log(file);
 		if (!file) return;
 		if (file.size > 3 * 1024 * 1024) {
 			setUploadError("O anexo deve ter no máximo 3MB");
@@ -149,35 +132,32 @@ export default function TaskForm(props: TaskFormProps) {
 		}
 		setIsUploading(true);
 		setUploadError(null);
+
+		const formData = new FormData();
+		formData.append("file", file);
 		try {
-			const fileData = await file.arrayBuffer();
-			const buffer = Buffer.from(fileData).toString("base64");
-			const res = await fetch(
-				`/api/(entities)/attachments/fromTask/${props.original?.id}`,
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						file: {
-							originalname: file.name,
-							mimetype: file.type,
-							buffer
-						}
-					})
-				}
-			);
-			if (res.ok) {
-				const data = await res.json();
-				setAttachments((prev) => [...prev, data.data]);
-				toast.success("Anexo adicionado!");
-			} else {
-				setUploadError("Erro ao enviar anexo");
-			}
+			props.controls.addAttachment({
+				id: file.name,
+				file: formData,
+				taskId: props.original!.id,
+				subjectId: getValues("subjectId")
+			});
+			// if (res.ok) {
+			// 	const data = await res.json();
+			// 	setAttachments((prev) => [...prev, data.data]);
+			// 	toast.success("Anexo adicionado!");
+			// } else {
+			// 	setUploadError("Erro ao enviar anexo");
+			// }
 		} catch (err) {
 			setUploadError("Erro ao processar anexo");
 		} finally {
 			setIsUploading(false);
 		}
+	}
+
+	async function handleAttachmentDownload(attachment: Attachment) {
+		await apiRequest(`attachmets/${attachment.id}`, "GET", {}, {});
 	}
 
 	const subjectOptions = props.controls
@@ -228,38 +208,42 @@ export default function TaskForm(props: TaskFormProps) {
 					<Button onClick={handleDelete}>Deletar</Button>
 				)}
 			</FormRow>
+			<hr />
 			{props.original && (
-				<div id="attachments-section" style={{ marginTop: 24 }}>
-					<hr />
+				<div id="attachments-section">
 					<h2>Anexos</h2>
-					{attachments.length === 0 && <p>Nenhum anexo.</p>}
+					{props.original.attachments.length === 0 && (
+						<p>Nenhum anexo.</p>
+					)}
 					<ul style={{ listStyle: "none", padding: 0 }}>
-						{attachments.map((a) => (
+						{props.original.attachments.map((attachment) => (
 							<li
-								key={a.id}
+								key={attachment.id}
 								style={{
 									display: "flex",
 									alignItems: "center",
 									marginBottom: 8
 								}}
 							>
-								<a
-									href={`/api/(entities)/attachments/${a.id}`}
-									target="_blank"
-									rel="noopener noreferrer"
+								<button
+									onClick={() =>
+										handleAttachmentDownload(attachment)
+									}
 								>
-									{a.filename}
-								</a>
+									{attachment.file.get("name")?.toString()}
+								</button>
 								<Button
 									style={{ marginLeft: 8 }}
-									onClick={() => handleDeleteAttachment(a.id)}
+									onClick={() =>
+										handleDeleteAttachment(attachment)
+									}
 								>
 									Deletar
 								</Button>
 							</li>
 						))}
 					</ul>
-					{attachments.length < 3 && (
+					{props.original.attachments.length < 3 ? (
 						<div style={{ marginTop: 8 }}>
 							<input
 								type="file"
@@ -274,8 +258,7 @@ export default function TaskForm(props: TaskFormProps) {
 								</span>
 							)}
 						</div>
-					)}
-					{attachments.length >= 3 && (
+					) : (
 						<p>Limite de 3 anexos atingido.</p>
 					)}
 				</div>
