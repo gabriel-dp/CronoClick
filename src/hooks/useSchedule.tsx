@@ -25,7 +25,7 @@ export function useSchedule(
 		updateScheduleState: (newId?: Id) => void,
 		path: string,
 		method: RequestType,
-		body: Partial<T>
+		body: Partial<T> | FormData
 	) {
 		const previousState = { ...schedule };
 		updateScheduleState();
@@ -145,26 +145,29 @@ export function useSchedule(
 		);
 	};
 
-	const addAttachment = (newAttachment: SubjectTaskAttachment) =>
+	const addAttachment = (
+		newAttachment: FormData,
+		data: { id: Id; taskId: Id; subjectId: Id }
+	) => {
 		optimisticSafeUpdate<Attachment>(
 			(newId) =>
-				controls.addAttachment({
-					...newAttachment,
-					id: newId ?? newAttachment.id
+				controls.addAttachment(newAttachment, {
+					...data,
+					id: newId ?? data.id
 				}),
-			`attachments/fromTask/${newAttachment.taskId}`,
+			`attachments/fromTask/${data.taskId}`,
 			"POST",
-			{ ...newAttachment }
+			newAttachment
 		);
+	};
 
-	const removeAttachment = (oldAttachment: SubjectTaskAttachment) => {
+	const removeAttachment = (oldAttachment: SubjectTaskAttachment) =>
 		optimisticSafeUpdate<Attachment>(
 			() => controls.removeAttachment(oldAttachment),
 			`attachments/${oldAttachment.id}`,
 			"DELETE",
 			{}
 		);
-	};
 
 	return {
 		editName,

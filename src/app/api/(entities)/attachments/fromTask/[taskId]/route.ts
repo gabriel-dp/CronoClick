@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { response, success } from "@/utils/response";
+import { response, success, fail } from "@/utils/response";
 import { attachmentSchema, validateFields } from "@/utils/validations";
 
 type paramsRequest = { params: { taskId: string } };
@@ -16,13 +16,24 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 
 export const POST = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const file = (await request.json()).file;
+		const file = (await request.formData()).get("file");
+
+		if (!file || !(file instanceof File)) {
+			return fail(400, "File invalid");
+		}
+
+		const MAX_SIZE = 3 * 1024 * 1024;
+		if (file.size > MAX_SIZE) {
+			return fail(400, "File too large");
+		}
 
 		const validatedAttachment = validateFields(
 			{
-				filename: file?.originalname,
-				contentType: file?.mimetype,
-				base64Data: file?.buffer.toString("base64")
+				filename: file.name,
+				contentType: file.type,
+				base64Data: Buffer.from(await file.arrayBuffer()).toString(
+					"base64"
+				)
 			},
 			attachmentSchema
 		);

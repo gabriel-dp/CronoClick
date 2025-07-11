@@ -27,16 +27,22 @@ interface useApiReturn<Data> {
 export async function apiRequest<Body extends object = object, T = object>(
 	path: string,
 	method: RequestType,
-	body: Partial<Body>,
+	body: Partial<Body> | FormData,
 	callbacks: {
 		actionSuccess?: () => void;
 		actionError?: (message: string) => void;
 		actionResponse?: (data: T) => void;
 	}
 ) {
+	const isFormData = body instanceof FormData;
+	console.log(isFormData, body);
 	const response = await fetch(`/api/${path}`, {
 		method: method,
-		body: Object.keys(body).length > 0 ? JSON.stringify(body) : undefined,
+		body: isFormData
+			? body
+			: Object.keys(body).length > 0
+				? JSON.stringify(body)
+				: undefined,
 		headers: {
 			Accept: "application/json",
 			Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`

@@ -124,7 +124,6 @@ export default function TaskForm(props: TaskFormProps) {
 
 	async function handleAddAttachment(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
-		console.log(file);
 		if (!file) return;
 		if (file.size > 3 * 1024 * 1024) {
 			setUploadError("O anexo deve ter no máximo 3MB");
@@ -134,11 +133,10 @@ export default function TaskForm(props: TaskFormProps) {
 		setUploadError(null);
 
 		const formData = new FormData();
-		formData.append("file", file);
+		formData.set("file", file);
 		try {
-			props.controls.addAttachment({
+			props.controls.addAttachment(formData, {
 				id: file.name,
-				file: formData,
 				taskId: props.original!.id,
 				subjectId: getValues("subjectId")
 			});

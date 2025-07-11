@@ -22,7 +22,10 @@ export interface ScheduleControlI {
 	addNote: (newNote: SubjectTaskNote) => void;
 	editNote: (newNote: SubjectTaskNote) => void;
 	removeNote: (oldNote: SubjectTaskNote) => void;
-	addAttachment: (newAttachment: SubjectTaskAttachment) => void;
+	addAttachment: (
+		newAttachment: FormData,
+		data: { id: Id; taskId: Id; subjectId: Id }
+	) => void;
 	removeAttachment: (oldAttachment: SubjectTaskAttachment) => void;
 }
 
@@ -225,20 +228,26 @@ export function controlSchedule(
 		}));
 	};
 
-	const addAttachment = (newAttachment: SubjectTaskAttachment) => {
+	const addAttachment = (
+		newAttachment: FormData,
+		data: { id: Id; taskId: Id; subjectId: Id }
+	) => {
 		setSchedule((prev) => ({
 			...prev,
 			subjects: prev.subjects.map((subject) => {
-				if (subject.id == newAttachment.subjectId)
+				if (subject.id == data.subjectId)
 					return {
 						...subject,
 						tasks: subject.tasks.map((task) => {
-							if (task.id == newAttachment.taskId)
+							if (task.id == data.taskId)
 								return {
 									...task,
 									attachments: [
 										...task.attachments,
-										newAttachment
+										{
+											id: data.id,
+											file: newAttachment
+										}
 									]
 								};
 							return task;
