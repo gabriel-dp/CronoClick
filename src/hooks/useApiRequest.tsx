@@ -35,7 +35,6 @@ export async function apiRequest<Body extends object = object, T = object>(
 	}
 ) {
 	const isFormData = body instanceof FormData;
-	console.log(isFormData, body);
 	const response = await fetch(`/api/${path}`, {
 		method: method,
 		body: isFormData

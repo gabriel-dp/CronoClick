@@ -6,10 +6,15 @@ type paramsRequest = { params: { taskId: string } };
 
 export const GET = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const attachments = await prisma.attachment.findMany({
+		const attachmentsData = await prisma.attachment.findMany({
 			where: { taskId: params.taskId },
-			omit: { base64Data: true }
+			omit: { base64Data: true, taskId: true }
 		});
+
+		const attachments = attachmentsData.map(({ id, ...data }) => ({
+			id,
+			file: data
+		}));
 
 		return success(attachments);
 	});

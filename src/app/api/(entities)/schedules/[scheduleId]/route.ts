@@ -15,7 +15,12 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 						tasks: {
 							include: {
 								notes: true,
-								attachments: true
+								attachments: {
+									select: {
+										id: true,
+										filename: true
+									}
+								}
 							}
 						}
 					}

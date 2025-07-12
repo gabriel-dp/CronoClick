@@ -146,18 +146,21 @@ export function useSchedule(
 	};
 
 	const addAttachment = (
-		newAttachment: FormData,
-		data: { id: Id; taskId: Id; subjectId: Id }
+		newAttachment: SubjectTaskAttachment,
+		data: FormData
 	) => {
 		optimisticSafeUpdate<Attachment>(
 			(newId) =>
-				controls.addAttachment(newAttachment, {
-					...data,
-					id: newId ?? data.id
-				}),
-			`attachments/fromTask/${data.taskId}`,
+				controls.addAttachment(
+					{
+						...newAttachment,
+						id: newId ?? newAttachment.id
+					},
+					data
+				),
+			`attachments/fromTask/${newAttachment.taskId}`,
 			"POST",
-			newAttachment
+			data
 		);
 	};
 

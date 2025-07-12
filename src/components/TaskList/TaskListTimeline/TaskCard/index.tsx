@@ -11,8 +11,6 @@ import { ScheduleControlI } from "@/utils/scheduleUtils";
 import Checkbox from "@/components/ui/Checkbox";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
-import React from "react";
-import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
 
 import {
 	AddNoteButton,
@@ -35,13 +33,8 @@ export default function TaskCard({
 	handleTaskClick,
 	controls
 }: TaskCardI) {
-	const [deleteModalOpen, setDeleteModalOpen] = React.useState<null | string>(
-		null
-	);
-
 	function handleNewNoteClick() {
 		if (!subject) return;
-
 		controls.addNote({
 			id: "",
 			description: "",
@@ -53,18 +46,12 @@ export default function TaskCard({
 
 	function handleRemoveNoteClick(id: Id) {
 		if (!subject) return;
-		setDeleteModalOpen(id);
-	}
-
-	function confirmDeleteNote() {
-		if (!subject || !deleteModalOpen) return;
 		controls.removeNote({
-			id: deleteModalOpen,
+			id: id,
 			taskId: task.id,
 			subjectId: subject?.id,
 			description: ""
 		});
-		setDeleteModalOpen(null);
 		toast.success("Anotação removida com sucesso!");
 	}
 
@@ -83,15 +70,6 @@ export default function TaskCard({
 			description: text
 		});
 		toast.success("Anotação atualizada com sucesso!");
-	}
-
-	function handleClipClick(e: React.MouseEvent) {
-		e.stopPropagation();
-		handleTaskClick(task.subjectId, task.id);
-		setTimeout(() => {
-			const el = document.getElementById("attachments-section");
-			if (el) el.scrollIntoView({ behavior: "smooth" });
-		}, 400); // tempo para o modal abrir
 	}
 
 	return (
@@ -127,7 +105,6 @@ export default function TaskCard({
 							alignItems: "center"
 						}}
 						title="Ver anexos"
-						onClick={handleClipClick}
 					>
 						<ClipIcon
 							style={{ fontSize: "1rem", color: "inherit" }}
@@ -169,19 +146,6 @@ export default function TaskCard({
 			<AddNoteButton stopPropagation onClick={handleNewNoteClick}>
 				<AddNoteIcon />
 			</AddNoteButton>
-			<ConfirmDeleteModal
-				isOpen={!!deleteModalOpen}
-				onCancel={() => setDeleteModalOpen(null)}
-				onConfirm={confirmDeleteNote}
-				title="Deletar anexo?"
-				description={
-					<>
-						Tem certeza que deseja deletar este anexo?
-						<br />
-						Esta ação não poderá ser desfeita.
-					</>
-				}
-			/>
 		</CardContainer>
 	);
 }

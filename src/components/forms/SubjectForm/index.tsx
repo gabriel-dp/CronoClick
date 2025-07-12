@@ -4,23 +4,24 @@ import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
-import React from "react";
 
 import { Subject } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { encodeDays } from "@/utils/daysUtils";
 import { formatTimeToMinutes } from "@/utils/timeUtils";
+import { useModal } from "@/hooks/useModal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
 import ColorPicker from "@/components/ui/ColorPicker";
+import Modal from "@/components/ui/Modal";
 import {
 	FormContainer,
 	FormGroup,
 	FormHead,
 	FormRow
 } from "@/components/forms/styles";
-import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
+import ConfirmDeleteForm from "@/components/forms/ConfirmDeleteForm";
 
 import {
 	DEFAULT_SUBJECT,
@@ -39,6 +40,8 @@ interface SubjectFormProps {
 }
 
 export default function SubjectForm(props: SubjectFormProps) {
+	const confirmDeleteSubjectModal = useModal();
+
 	const {
 		control,
 		register,
@@ -57,8 +60,6 @@ export default function SubjectForm(props: SubjectFormProps) {
 		control,
 		name: "occurrences"
 	});
-
-	const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
 
 	// Set initial values if exists
 	useEffect(() => {
@@ -115,15 +116,10 @@ export default function SubjectForm(props: SubjectFormProps) {
 	}
 
 	function handleDelete() {
-		setDeleteModalOpen(true);
-	}
-
-	function confirmDelete() {
 		if (props.original) {
 			props.controls.removeSubject(props.original.id);
 			toast.success("Disciplina removida com sucesso!");
 		}
-		setDeleteModalOpen(false);
 		closeForm();
 	}
 
@@ -200,22 +196,28 @@ export default function SubjectForm(props: SubjectFormProps) {
 				</Button>
 				<Button onClick={closeForm}>Cancelar</Button>
 				{props.original && (
-					<Button onClick={handleDelete}>Deletar</Button>
+					<Button onClick={confirmDeleteSubjectModal.open}>
+						Deletar
+					</Button>
 				)}
 			</FormRow>
-			<ConfirmDeleteModal
-				isOpen={deleteModalOpen}
-				onCancel={() => setDeleteModalOpen(false)}
-				onConfirm={confirmDelete}
-				title="Deletar disciplina?"
-				description={
-					<>
-						Tem certeza que deseja deletar esta disciplina?
-						<br />
-						Esta ação não poderá ser desfeita.
-					</>
-				}
-			/>
+			<Modal {...confirmDeleteSubjectModal}>
+				<ConfirmDeleteForm
+					onCancel={confirmDeleteSubjectModal.close}
+					onConfirm={() => {
+						confirmDeleteSubjectModal.close();
+						handleDelete();
+					}}
+					title="Deletar disciplina?"
+					description={
+						<>
+							Tem certeza que deseja deletar esta disciplina?
+							<br />
+							Esta ação não poderá ser desfeita.
+						</>
+					}
+				/>
+			</Modal>
 		</FormContainer>
 	);
 }

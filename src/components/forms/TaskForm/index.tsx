@@ -4,19 +4,22 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
-
-import { Attachment, SubjectTask } from "@/types/schedules";
-import { ScheduleControlI } from "@/utils/scheduleUtils";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
-import Checkbox from "@/components/ui/Checkbox";
-import { FormContainer, FormRow } from "@/components/forms/styles";
-import ConfirmDeleteModal from "@/components/ui/Modal/ConfirmDeleteModal";
 import {
 	FaRegTrashCan as TrashIcon,
 	FaDownload as DownloadIcon
 } from "react-icons/fa6";
+
+import { Attachment, SubjectTask } from "@/types/schedules";
+import { ScheduleControlI } from "@/utils/scheduleUtils";
+import { apiRequest } from "@/hooks/useApiRequest";
+import { useModal } from "@/hooks/useModal";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import Dropdown from "@/components/ui/Dropdown";
+import Checkbox from "@/components/ui/Checkbox";
+import Modal from "@/components/ui/Modal";
+import { FormContainer, FormRow } from "@/components/forms/styles";
+import ConfirmDeleteForm from "@/components/forms/ConfirmDeleteForm";
 
 import {
 	convertToTaskSchema,
@@ -24,7 +27,7 @@ import {
 	TaskSchema,
 	taskZodSchema
 } from "./types";
-import { apiRequest } from "@/hooks/useApiRequest";
+import { AttachmentsList } from "./styles";
 
 interface TaskFormProps {
 	controls: ScheduleControlI;
@@ -33,6 +36,13 @@ interface TaskFormProps {
 }
 
 export default function TaskForm(props: TaskFormProps) {
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadError, setUploadError] = useState<string | null>(null);
+	const [attachmentToDelete, setAttachmentToDelete] =
+		useState<Attachment | null>(null);
+	const confirmDeleteAttachmentModal = useModal();
+	const confirmDeleteTaskModal = useModal();
+
 	const {
 		handleSubmit,
 		register,
@@ -45,19 +55,12 @@ export default function TaskForm(props: TaskFormProps) {
 		resolver: zodResolver(taskZodSchema)
 	});
 
-	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-	const [isUploading, setIsUploading] = useState(false);
-	const [uploadError, setUploadError] = useState<string | null>(null);
-	const [deleteAttachmentModal, setDeleteAttachmentModal] =
-		useState<null | Attachment>(null);
-	const [taskVersion, setTaskVersion] = useState(0);
-
 	// Set initial values if exists
 	useEffect(() => {
 		if (props.original) {
 			reset(convertToTaskSchema(props.original));
 		}
-	}, [props.original, props.controls, reset, taskVersion]);
+	}, [props.original, props.controls, reset]);
 
 	function closeForm() {
 		if (props.finally) props.finally(() => reset(DEFAULT_TASK));
@@ -104,25 +107,18 @@ export default function TaskForm(props: TaskFormProps) {
 	}
 
 	function handleDelete() {
-		setDeleteModalOpen(true);
-	}
-
-	function confirmDelete() {
 		if (props.original) {
 			props.controls.removeTask(props.original);
 			toast.success("Tarefa removida com sucesso!");
 		}
-		setDeleteModalOpen(false);
-		closeForm();
 	}
 
 	async function handleDeleteAttachment(attachment: Attachment) {
-		await props.controls.removeAttachment({
+		props.controls.removeAttachment({
 			...attachment,
 			taskId: props.original!.id,
 			subjectId: props.original!.subjectId
 		});
-		setTaskVersion((v) => v + 1); // Força refresh após deletar
 	}
 
 	async function handleAddAttachment(e: React.ChangeEvent<HTMLInputElement>) {
@@ -138,15 +134,18 @@ export default function TaskForm(props: TaskFormProps) {
 		const formData = new FormData();
 		formData.set("file", file);
 		try {
-			await props.controls.addAttachment(formData, {
-				id: file.name,
-				taskId: props.original!.id,
-				subjectId: getValues("subjectId")
-			});
-			// Força refresh da tarefa após upload
-			setTaskVersion((v) => v + 1);
+			props.controls.addAttachment(
+				{
+					id: file.name,
+					filename: file.name,
+					taskId: props.original!.id,
+					subjectId: getValues("subjectId")
+				},
+				formData
+			);
 		} catch (err) {
 			setUploadError("Erro ao processar anexo");
+			console.log(err);
 		} finally {
 			setIsUploading(false);
 		}
@@ -201,7 +200,7 @@ export default function TaskForm(props: TaskFormProps) {
 				</Button>
 				<Button onClick={closeForm}>Cancelar</Button>
 				{props.original && (
-					<Button onClick={handleDelete}>Deletar</Button>
+					<Button onClick={() => void 0}>Deletar</Button>
 				)}
 			</FormRow>
 			<hr />
@@ -211,54 +210,37 @@ export default function TaskForm(props: TaskFormProps) {
 					{props.original.attachments.length === 0 && (
 						<p>Nenhum anexo.</p>
 					)}
-					<ul style={{ listStyle: "none", padding: 0 }}>
+					<AttachmentsList>
 						{props.original.attachments.map((attachment) => (
-							<li
-								key={attachment.id}
-								style={{
-									display: "flex",
-									alignItems: "center",
-									marginBottom: 8
-								}}
-							>
-								<span style={{ flex: 1 }}>
-									{attachment.filename ||
-										attachment.file
-											?.get?.("name")
-											?.toString() ||
-										"Anexo"}
-								</span>
-								<button
-									style={{
-										background: "none",
-										border: "none",
-										cursor: "pointer",
-										marginRight: 8
-									}}
-									title="Baixar anexo"
-									onClick={() =>
-										handleAttachmentDownload(attachment)
-									}
-								>
-									<DownloadIcon />
-								</button>
-								<button
-									style={{
-										background: "none",
-										border: "none",
-										cursor: "pointer",
-										color: "#ff4444"
-									}}
-									title="Deletar anexo"
-									onClick={() =>
-										setDeleteAttachmentModal(attachment)
-									}
-								>
-									<TrashIcon />
-								</button>
+							<li key={attachment.id}>
+								<div className="filename">
+									<p className="filename">
+										{attachment.filename}
+									</p>
+								</div>
+								<div>
+									<Button
+										title="Baixar anexo"
+										onClick={() =>
+											handleAttachmentDownload(attachment)
+										}
+									>
+										<DownloadIcon />
+									</Button>
+									<Button
+										style={{ background: "#ff4444" }}
+										title="Deletar anexo"
+										onClick={() => {
+											setAttachmentToDelete(attachment);
+											confirmDeleteAttachmentModal.open();
+										}}
+									>
+										<TrashIcon />
+									</Button>
+								</div>
 							</li>
 						))}
-					</ul>
+					</AttachmentsList>
 					{props.original.attachments.length < 3 ? (
 						<div style={{ marginTop: 8 }}>
 							<input
@@ -279,36 +261,40 @@ export default function TaskForm(props: TaskFormProps) {
 					)}
 				</div>
 			)}
-			<ConfirmDeleteModal
-				isOpen={!!deleteAttachmentModal}
-				onCancel={() => setDeleteAttachmentModal(null)}
-				onConfirm={() => {
-					if (deleteAttachmentModal)
-						handleDeleteAttachment(deleteAttachmentModal);
-					setDeleteAttachmentModal(null);
-				}}
-				title="Deletar anexo?"
-				description={
-					<>
-						Tem certeza que deseja deletar este anexo?
-						<br />
-						Esta ação não poderá ser desfeita.
-					</>
-				}
-			/>
-			<ConfirmDeleteModal
-				isOpen={deleteModalOpen}
-				onCancel={() => setDeleteModalOpen(false)}
-				onConfirm={confirmDelete}
-				title="Deletar tarefa?"
-				description={
-					<>
-						Tem certeza que deseja deletar esta tarefa?
-						<br />
-						Esta ação não poderá ser desfeita.
-					</>
-				}
-			/>
+			<Modal {...confirmDeleteAttachmentModal}>
+				<ConfirmDeleteForm
+					onCancel={confirmDeleteAttachmentModal.close}
+					onConfirm={() => {
+						confirmDeleteAttachmentModal.close();
+						handleDeleteAttachment(attachmentToDelete!);
+					}}
+					title="Deletar anexo?"
+					description={
+						<>
+							Tem certeza que deseja deletar este anexo?
+							<br />
+							Esta ação não poderá ser desfeita.
+						</>
+					}
+				/>
+			</Modal>
+			<Modal {...confirmDeleteTaskModal}>
+				<ConfirmDeleteForm
+					onCancel={confirmDeleteTaskModal.close}
+					onConfirm={() => {
+						confirmDeleteTaskModal.close();
+						handleDelete();
+					}}
+					title="Deletar tarefa?"
+					description={
+						<>
+							Tem certeza que deseja deletar esta tarefa?
+							<br />
+							Esta ação não poderá ser desfeita.
+						</>
+					}
+				/>
+			</Modal>
 		</FormContainer>
 	);
 }

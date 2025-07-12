@@ -37,7 +37,7 @@ export interface Note {
 
 export interface Attachment {
 	id: Id;
-	file: FormData;
+	filename: string;
 }
 
 export type SubjectTask = Task & { subjectId: Id };
