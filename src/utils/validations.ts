@@ -29,7 +29,7 @@ export const timeSchema = z.object({
 export type timeType = z.TypeOf<typeof timeSchema>;
 
 export const subjectSchema = z.object({
-	name: z.string().trim().min(1),
+	name: z.string().trim().min(1).max(100),
 	teacher: z.string().trim().optional(),
 	color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
 	times: z.array(timeSchema).min(1)
@@ -37,7 +37,7 @@ export const subjectSchema = z.object({
 export type subjectType = z.TypeOf<typeof subjectSchema>;
 
 export const taskSchema = z.object({
-	name: z.string().trim().min(1),
+	name: z.string().trim().min(1).max(100),
 	submission: z
 		.string()
 		.regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),

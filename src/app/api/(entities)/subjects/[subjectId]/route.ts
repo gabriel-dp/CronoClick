@@ -23,6 +23,6 @@ export const PUT = (request: Request, { params }: paramsRequest) =>
 
 export const DELETE = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const deletedSchedule = await SubjectService.delete(params.subjectId);
-		return success(deletedSchedule);
+		await SubjectService.delete(params.subjectId);
+		return success({}, 204);
 	});

@@ -14,6 +14,7 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 export const PUT = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
 		const { subjectId, ...taskData } = await request.json();
+		if (!subjectId) return fail(400);
 		const data = validateFields(taskData, taskSchema);
 		const updatedTask = await TaskService.update(
 			params.taskId,
@@ -25,6 +26,6 @@ export const PUT = (request: Request, { params }: paramsRequest) =>
 
 export const DELETE = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const deletedTask = await TaskService.delete(params.taskId);
-		return success(deletedTask);
+		await TaskService.delete(params.taskId);
+		return success({}, 204);
 	});
