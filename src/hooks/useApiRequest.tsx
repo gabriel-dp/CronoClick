@@ -52,9 +52,11 @@ export async function apiRequest<Body extends object = object, T = object>(
 		if (callbacks.actionSuccess) {
 			callbacks.actionSuccess();
 		}
-		response.json().then((data: T) => {
-			if (callbacks.actionResponse) callbacks.actionResponse(data);
-		});
+		if (response.status != 204) {
+			response.json().then((data: T) => {
+				if (callbacks.actionResponse) callbacks.actionResponse(data);
+			});
+		}
 	} else {
 		if (callbacks.actionError) {
 			callbacks.actionError(response.statusText);
