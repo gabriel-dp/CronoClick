@@ -72,7 +72,7 @@ describe("/notes/", () => {
 
 		it("should not create a note with invalid data - 400", async () => {
 			await expectRequestFail(400, () =>
-				api.post(`/notes/fromTask/${taskId}`)
+				api.post(`/notes/fromTask/${taskId}`, {})
 			);
 		});
 	});
