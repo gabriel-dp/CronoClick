@@ -34,7 +34,11 @@ export default class SubjectService {
 		const newSubject = await prisma.subject.create({
 			data: {
 				...dataObject,
-				scheduleId,
+				schedule: {
+					connect: {
+						id: scheduleId
+					}
+				},
 				times: { createMany: { data: times } }
 			},
 			include: {

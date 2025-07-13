@@ -22,8 +22,12 @@ export default class TaskService {
 	static async create(data: taskType, subjectId: string) {
 		const newTask = await prisma.task.create({
 			data: {
-				subjectId,
-				...data
+				...data,
+				subject: {
+					connect: {
+						id: subjectId
+					}
+				}
 			},
 			include: { notes: true },
 			omit: { subjectId: false }
@@ -33,7 +37,7 @@ export default class TaskService {
 
 	static async update(id: string, data: taskType, subjectId: string) {
 		const updatedTask = await prisma.task.update({
-			data: { subjectId, ...data },
+			data: { ...data, subject: { connect: { id: subjectId } } },
 			where: { id },
 			include: { notes: true },
 			omit: { subjectId: false }

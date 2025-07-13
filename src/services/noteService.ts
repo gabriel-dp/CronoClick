@@ -20,8 +20,12 @@ export default class NoteService {
 	static async create(data: noteType, taskId: string) {
 		const newNote = await prisma.note.create({
 			data: {
-				taskId,
-				...data
+				...data,
+				task: {
+					connect: {
+						id: taskId
+					}
+				}
 			}
 		});
 		return newNote;

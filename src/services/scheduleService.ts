@@ -36,8 +36,10 @@ export default class ScheduleService {
 	static async create(data: scheduleType, userId: string) {
 		const newSchedule = await prisma.schedule.create({
 			data: {
-				userId,
-				...data
+				...data,
+				user: {
+					connect: { id: userId }
+				}
 			},
 			include: {
 				subjects: true
