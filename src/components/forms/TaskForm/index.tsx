@@ -11,7 +11,6 @@ import {
 
 import { Attachment, SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
-import { apiRequest } from "@/hooks/useApiRequest";
 import { useModal } from "@/hooks/useModal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -28,6 +27,7 @@ import {
 	taskZodSchema
 } from "./types";
 import { AttachmentsList } from "./styles";
+import { apiDownload } from "@/hooks/useApiRequest";
 
 interface TaskFormProps {
 	controls: ScheduleControlI;
@@ -152,7 +152,7 @@ export default function TaskForm(props: TaskFormProps) {
 	}
 
 	async function handleAttachmentDownload(attachment: Attachment) {
-		await apiRequest(`attachmets/${attachment.id}`, "GET", {}, {});
+		await apiDownload(`attachments/${attachment.id}`);
 	}
 
 	const subjectOptions = props.controls

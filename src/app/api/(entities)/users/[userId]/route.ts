@@ -1,5 +1,6 @@
-import prisma from "@/lib/prisma";
-import { encrypt } from "@/utils/userUtils";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import UserService from "@/services/userService";
 import { fail, response, success } from "@/utils/response";
 import { userSchema, validateFields } from "@/utils/validations";
 
@@ -7,37 +8,24 @@ type paramsRequest = { params: { userId: string } };
 
 export const GET = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const user = await prisma.user.findUnique({
-			where: { id: params.userId }
-		});
-
-		if (!user) return fail(404);
+		const foundUser = await UserService.readOne(params.userId);
+		if (!foundUser) return fail(404);
+		const { password, ...user } = foundUser;
 		return success(user);
 	});
 
 export const PUT = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const { password, ...userWithoutPassword } = validateFields(
-			await request.json(),
-			userSchema
+		const data = validateFields(await request.json(), userSchema);
+		const { password, ...updatedUser } = await UserService.update(
+			params.userId,
+			data
 		);
-
-		const updated = await prisma.user.update({
-			where: { id: params.userId },
-			data: {
-				password: await encrypt(password),
-				...userWithoutPassword
-			}
-		});
-
-		return success(updated);
+		return success(updatedUser, 201);
 	});
 
 export const DELETE = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		const deleted = await prisma.user.delete({
-			where: { id: params.userId }
-		});
-
-		return success(deleted);
+		await UserService.delete(params.userId);
+		return success({}, 204);
 	});

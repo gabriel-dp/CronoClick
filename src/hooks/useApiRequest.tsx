@@ -52,9 +52,11 @@ export async function apiRequest<Body extends object = object, T = object>(
 		if (callbacks.actionSuccess) {
 			callbacks.actionSuccess();
 		}
-		response.json().then((data: T) => {
-			if (callbacks.actionResponse) callbacks.actionResponse(data);
-		});
+		if (response.status != 204) {
+			response.json().then((data: T) => {
+				if (callbacks.actionResponse) callbacks.actionResponse(data);
+			});
+		}
 	} else {
 		if (callbacks.actionError) {
 			callbacks.actionError(response.statusText);
@@ -62,6 +64,46 @@ export async function apiRequest<Body extends object = object, T = object>(
 	}
 
 	return response;
+}
+
+export async function apiDownload(path: string) {
+	let filename = "attachment";
+	fetch(`/api/${path}`, {
+		headers: {
+			Accept: "application/json",
+			Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
+		}
+	})
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+
+			const contentDisposition = response.headers.get(
+				"Content-Disposition"
+			);
+			if (contentDisposition) {
+				const match = contentDisposition.match(/filename="(.+)"/);
+				if (match) {
+					filename = match[1];
+				}
+			}
+
+			return response.blob();
+		})
+		.then((blob) => {
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+			URL.revokeObjectURL(url);
+		})
+		.catch((error) => {
+			console.error("Download failed:", error);
+		});
 }
 
 export function useApiRequest<Data, Body extends object = object>(
