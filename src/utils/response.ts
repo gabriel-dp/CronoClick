@@ -3,13 +3,14 @@ import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 
 type SuccessCode = 200 | 201 | 204;
-type ErrorCode = 400 | 401 | 404 | 409 | 500;
+type ErrorCode = 400 | 401 | 404 | 409 | 413 | 500;
 
 const ERRORS_MESSAGES: { [E in ErrorCode]: string } = {
 	400: "Bad Request",
 	401: "Unauthorized",
 	404: "Resource not found",
 	409: "Conflict",
+	413: "Payload too large",
 	500: "Internal Error"
 };
 

@@ -22,7 +22,8 @@ export default class ScheduleService {
 						times: true,
 						tasks: {
 							include: {
-								notes: true
+								notes: true,
+								attachments: true
 							}
 						}
 					}

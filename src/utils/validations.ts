@@ -55,6 +55,7 @@ export const attachmentSchema = z.object({
 	contentType: z.string().min(1),
 	base64Data: z.string().min(1)
 });
+export type attachmentType = z.TypeOf<typeof attachmentSchema>;
 
 export function validateFields<F extends ZodRawShape>(
 	body: unknown,
