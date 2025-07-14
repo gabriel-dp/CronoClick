@@ -14,7 +14,7 @@ export const GET = (request: Request, { params }: paramsRequest) =>
 
 export const POST = (request: Request, { params }: paramsRequest) =>
 	response(async () => {
-		if (process.env.NEXT_PUBLIC_FLAG_ATTACHMENTS)
+		if (!process.env.NEXT_PUBLIC_FLAG_ATTACHMENTS)
 			return fail(400, "Unavaliable resource");
 
 		const filesAlreadyAttached = await AttachmentService.readAllByTask(
