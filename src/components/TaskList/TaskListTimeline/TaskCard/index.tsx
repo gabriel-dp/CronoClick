@@ -93,23 +93,25 @@ export default function TaskCard({
 					}}
 					onClick={(event) => event.stopPropagation()}
 				>
-					<button
-						style={{
-							background: "none",
-							border: "none",
-							cursor: "pointer",
-							padding: 0,
-							marginRight: 8,
-							color: "inherit",
-							display: "flex",
-							alignItems: "center"
-						}}
-						title="Ver anexos"
-					>
-						<ClipIcon
-							style={{ fontSize: "1rem", color: "inherit" }}
-						/>
-					</button>
+					{task.attachments && task.attachments.length > 0 && (
+						<button
+							style={{
+								background: "none",
+								border: "none",
+								cursor: "pointer",
+								padding: 0,
+								marginRight: 8,
+								color: "inherit",
+								display: "flex",
+								alignItems: "center"
+							}}
+							title="Ver anexos"
+						>
+							<ClipIcon
+								style={{ fontSize: "1rem", color: "inherit" }}
+							/>
+						</button>
+					)}
 					<Checkbox
 						label=""
 						checked={task.finished}

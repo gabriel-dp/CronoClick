@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
 import {
 	FaRegTrashCan as TrashIcon,
-	FaDownload as DownloadIcon
+	FaDownload as DownloadIcon,
+	FaPaperclip as ClipIcon
 } from "react-icons/fa6";
 
 import { Attachment, SubjectTask } from "@/types/schedules";
@@ -42,6 +43,9 @@ export default function TaskForm(props: TaskFormProps) {
 		useState<Attachment | null>(null);
 	const confirmDeleteAttachmentModal = useModal();
 	const confirmDeleteTaskModal = useModal();
+	const [fileInputRef, setFileInputRef] = useState<HTMLInputElement | null>(
+		null
+	);
 
 	const {
 		handleSubmit,
@@ -114,11 +118,17 @@ export default function TaskForm(props: TaskFormProps) {
 	}
 
 	async function handleDeleteAttachment(attachment: Attachment) {
-		props.controls.removeAttachment({
-			...attachment,
-			taskId: props.original!.id,
-			subjectId: props.original!.subjectId
-		});
+		try {
+			props.controls.removeAttachment({
+				...attachment,
+				taskId: props.original!.id,
+				subjectId: props.original!.subjectId
+			});
+			toast.success("Anexo deletado com sucesso!");
+		} catch (error) {
+			toast.error("Erro ao deletar anexo");
+			console.error("Erro ao deletar anexo:", error);
+		}
 	}
 
 	async function handleAddAttachment(e: React.ChangeEvent<HTMLInputElement>) {
@@ -143,8 +153,10 @@ export default function TaskForm(props: TaskFormProps) {
 				},
 				formData
 			);
+			toast.success("Anexo enviado com sucesso!");
 		} catch (err) {
 			setUploadError("Erro ao processar anexo");
+			toast.error("Erro ao enviar anexo");
 			console.log(err);
 		} finally {
 			setIsUploading(false);
@@ -152,7 +164,13 @@ export default function TaskForm(props: TaskFormProps) {
 	}
 
 	async function handleAttachmentDownload(attachment: Attachment) {
-		await apiDownload(`attachments/${attachment.id}`);
+		try {
+			await apiDownload(`attachments/${attachment.id}`);
+			toast.success("Download iniciado!");
+		} catch (error) {
+			toast.error("Erro ao baixar anexo");
+			console.error("Erro ao baixar anexo:", error);
+		}
 	}
 
 	const subjectOptions = props.controls
@@ -242,16 +260,44 @@ export default function TaskForm(props: TaskFormProps) {
 						))}
 					</AttachmentsList>
 					{props.original.attachments.length < 3 ? (
-						<div style={{ marginTop: 8 }}>
+						<div
+							style={{
+								marginTop: 8,
+								display: "flex",
+								justifyContent: "center"
+							}}
+						>
 							<input
+								ref={setFileInputRef}
 								type="file"
 								accept="*"
 								onChange={handleAddAttachment}
 								disabled={isUploading}
+								style={{ display: "none" }}
 							/>
-							{isUploading && <span>Enviando...</span>}
+							<Button
+								onClick={() => fileInputRef?.click()}
+								disabled={isUploading}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									gap: "0.5rem"
+								}}
+							>
+								<ClipIcon />
+								{isUploading
+									? "Enviando..."
+									: "Adicionar anexo"}
+							</Button>
 							{uploadError && (
-								<span style={{ color: "red" }}>
+								<span
+									style={{
+										color: "red",
+										display: "block",
+										marginTop: "0.5rem"
+									}}
+								>
 									{uploadError}
 								</span>
 							)}
