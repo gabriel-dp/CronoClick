@@ -9,16 +9,19 @@ import { Subject } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
 import { encodeDays } from "@/utils/daysUtils";
 import { formatTimeToMinutes } from "@/utils/timeUtils";
+import { useModal } from "@/hooks/useModal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
 import ColorPicker from "@/components/ui/ColorPicker";
+import Modal from "@/components/ui/Modal";
 import {
 	FormContainer,
 	FormGroup,
 	FormHead,
 	FormRow
 } from "@/components/forms/styles";
+import ConfirmDeleteForm from "@/components/forms/ConfirmDeleteForm";
 
 import {
 	DEFAULT_SUBJECT,
@@ -37,6 +40,8 @@ interface SubjectFormProps {
 }
 
 export default function SubjectForm(props: SubjectFormProps) {
+	const confirmDeleteSubjectModal = useModal();
+
 	const {
 		control,
 		register,
@@ -115,7 +120,6 @@ export default function SubjectForm(props: SubjectFormProps) {
 			props.controls.removeSubject(props.original.id);
 			toast.success("Disciplina removida com sucesso!");
 		}
-
 		closeForm();
 	}
 
@@ -192,9 +196,28 @@ export default function SubjectForm(props: SubjectFormProps) {
 				</Button>
 				<Button onClick={closeForm}>Cancelar</Button>
 				{props.original && (
-					<Button onClick={handleDelete}>Deletar</Button>
+					<Button onClick={confirmDeleteSubjectModal.open}>
+						Deletar
+					</Button>
 				)}
 			</FormRow>
+			<Modal {...confirmDeleteSubjectModal}>
+				<ConfirmDeleteForm
+					onCancel={confirmDeleteSubjectModal.close}
+					onConfirm={() => {
+						confirmDeleteSubjectModal.close();
+						handleDelete();
+					}}
+					title="Deletar disciplina?"
+					description={
+						<>
+							Tem certeza que deseja deletar esta disciplina?
+							<br />
+							Esta ação não poderá ser desfeita.
+						</>
+					}
+				/>
+			</Modal>
 		</FormContainer>
 	);
 }

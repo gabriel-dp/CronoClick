@@ -27,6 +27,7 @@ export interface Task {
 	submission: string;
 	finished: boolean;
 	notes: Note[];
+	attachments: Attachment[];
 }
 
 export interface Note {
@@ -34,6 +35,13 @@ export interface Note {
 	description: string;
 }
 
+export interface Attachment {
+	id: Id;
+	filename: string;
+}
+
 export type SubjectTask = Task & { subjectId: Id };
 
 export type SubjectTaskNote = Note & { taskId: Id; subjectId: Id };
+
+export type SubjectTaskAttachment = Attachment & { taskId: Id; subjectId: Id };

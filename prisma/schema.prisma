@@ -61,12 +61,24 @@ model Task {
     subjectId String  @db.ObjectId
     subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
-    notes Note[]
+    notes       Note[]
+    attachments Attachment[]
 }
 
 model Note {
     id          String @id @default(auto()) @map("_id") @db.ObjectId
     description String
+
+    taskId String @db.ObjectId
+    task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Attachment {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    filename    String
+    contentType String
+    base64Data  String
+    uploadedAt  DateTime @default(now())
 
     taskId String @db.ObjectId
     task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
