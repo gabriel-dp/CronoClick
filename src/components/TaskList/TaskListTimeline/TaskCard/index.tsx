@@ -1,8 +1,10 @@
 import {
 	FaNotesMedical as AddNoteIcon,
 	FaRegTrashCan as RemoveNoteIcon,
-	FaRegFloppyDisk as EditNoteIcon
+	FaRegFloppyDisk as EditNoteIcon,
+	FaPaperclip as ClipIcon
 } from "react-icons/fa6";
+import { toast } from "react-hot-toast";
 
 import { Id, Subject, SubjectTask } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
@@ -33,24 +35,24 @@ export default function TaskCard({
 }: TaskCardI) {
 	function handleNewNoteClick() {
 		if (!subject) return;
-
 		controls.addNote({
 			id: "",
 			description: "",
 			taskId: task.id,
 			subjectId: subject?.id
 		});
+		toast.success("Anotação adicionada com sucesso!");
 	}
 
 	function handleRemoveNoteClick(id: Id) {
 		if (!subject) return;
-
 		controls.removeNote({
-			id,
+			id: id,
 			taskId: task.id,
 			subjectId: subject?.id,
 			description: ""
 		});
+		toast.success("Anotação removida com sucesso!");
 	}
 
 	function handleEditNoteClick(id: Id) {
@@ -67,6 +69,7 @@ export default function TaskCard({
 			subjectId: subject?.id,
 			description: text
 		});
+		toast.success("Anotação atualizada com sucesso!");
 	}
 
 	return (
@@ -81,7 +84,34 @@ export default function TaskCard({
 					<p className="subject">{subject?.name}</p>
 					<p className="task">{task.name}</p>
 				</div>
-				<div onClick={(event) => event.stopPropagation()}>
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						flexDirection: "row",
+						gap: 0
+					}}
+					onClick={(event) => event.stopPropagation()}
+				>
+					{task.attachments && task.attachments.length > 0 && (
+						<button
+							style={{
+								background: "none",
+								border: "none",
+								cursor: "pointer",
+								padding: 0,
+								marginRight: 8,
+								color: "inherit",
+								display: "flex",
+								alignItems: "center"
+							}}
+							title="Ver anexos"
+						>
+							<ClipIcon
+								style={{ fontSize: "1rem", color: "inherit" }}
+							/>
+						</button>
+					)}
 					<Checkbox
 						label=""
 						checked={task.finished}

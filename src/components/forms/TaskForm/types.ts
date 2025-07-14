@@ -4,7 +4,7 @@ import { SubjectTask } from "@/types/schedules";
 import { formatDateToString } from "@/utils/timeUtils";
 
 export const taskZodSchema = z.object({
-	name: z.string().trim().min(1),
+	name: z.string().trim().min(1, "O nome da tarefa é obrigatório"),
 	submission: z.string(),
 	finished: z.boolean(),
 	subjectId: z.string()

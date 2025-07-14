@@ -1,11 +1,13 @@
 "use client";
 
 import {
+	Attachment,
 	Id,
 	Note,
 	Schedule,
 	Subject,
 	SubjectTask,
+	SubjectTaskAttachment,
 	SubjectTaskNote,
 	Task
 } from "@/types/schedules";
@@ -23,7 +25,7 @@ export function useSchedule(
 		updateScheduleState: (newId?: Id) => void,
 		path: string,
 		method: RequestType,
-		body: Partial<T>
+		body: Partial<T> | FormData
 	) {
 		const previousState = { ...schedule };
 		updateScheduleState();
@@ -143,6 +145,33 @@ export function useSchedule(
 		);
 	};
 
+	const addAttachment = (
+		newAttachment: SubjectTaskAttachment,
+		data: FormData
+	) => {
+		optimisticSafeUpdate<Attachment>(
+			(newId) =>
+				controls.addAttachment(
+					{
+						...newAttachment,
+						id: newId ?? newAttachment.id
+					},
+					data
+				),
+			`attachments/fromTask/${newAttachment.taskId}`,
+			"POST",
+			data
+		);
+	};
+
+	const removeAttachment = (oldAttachment: SubjectTaskAttachment) =>
+		optimisticSafeUpdate<Attachment>(
+			() => controls.removeAttachment(oldAttachment),
+			`attachments/${oldAttachment.id}`,
+			"DELETE",
+			{}
+		);
+
 	return {
 		editName,
 		getAllSubjects: controls.getAllSubjects,
@@ -157,6 +186,8 @@ export function useSchedule(
 		toggleFinished,
 		addNote,
 		editNote,
-		removeNote
+		removeNote,
+		addAttachment,
+		removeAttachment
 	};
 }

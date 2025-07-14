@@ -2,14 +2,15 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 
-type SuccessCode = 200 | 201;
-type ErrorCode = 400 | 401 | 404 | 409 | 500;
+type SuccessCode = 200 | 201 | 204;
+type ErrorCode = 400 | 401 | 404 | 409 | 413 | 500;
 
 const ERRORS_MESSAGES: { [E in ErrorCode]: string } = {
 	400: "Bad Request",
 	401: "Unauthorized",
 	404: "Resource not found",
 	409: "Conflict",
+	413: "Payload too large",
 	500: "Internal Error"
 };
 
@@ -44,5 +45,6 @@ export function fail(
 }
 
 export function success<T>(res: T, code: SuccessCode = 200): NextResponse {
+	if (code === 204) return new NextResponse(null, { status: 204 });
 	return NextResponse.json(res, { status: code });
 }

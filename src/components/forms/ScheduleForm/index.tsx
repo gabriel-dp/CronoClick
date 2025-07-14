@@ -1,13 +1,18 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { FaTrash as DeleteIcon } from "react-icons/fa6";
 
 import { Id, Schedule } from "@/types/schedules";
 import { ScheduleControlI } from "@/utils/scheduleUtils";
+import { useModal } from "@/hooks/useModal";
 import { apiRequest, useApiRequest } from "@/hooks/useApiRequest";
-import { FormContainer, FormRow } from "@/components/forms/styles";
+import ConfirmDeleteForm from "@/components/forms/ConfirmDeleteForm";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Modal from "@/components/ui/Modal";
+import { FormContainer, FormRow } from "@/components/forms/styles";
 
 import { ScheduleData } from "./styles";
 
@@ -21,6 +26,9 @@ interface ScheduleFormProps {
 export default function ScheduleForm(props: ScheduleFormProps) {
 	const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 	const [scheduleName, setScheduleName] = useState(props.current.name);
+
+	const confirmDeleteScheduleModal = useModal();
+	const [scheduleToDelete, setScheduleToDelete] = useState<Id | null>(null);
 
 	const session = useSession();
 
@@ -114,9 +122,10 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 							</span>
 							{schedule.id != props.current.id && (
 								<Button
-									onClick={() =>
-										handleDeleteSchedule(schedule.id)
-									}
+									onClick={() => {
+										setScheduleToDelete(schedule.id);
+										confirmDeleteScheduleModal.open();
+									}}
 									stopPropagation
 								>
 									<DeleteIcon className="icon" />
@@ -129,6 +138,23 @@ export default function ScheduleForm(props: ScheduleFormProps) {
 			<Button onClick={handleCreateNewSchedule}>Criar novo</Button>
 			<hr />
 			<Button onClick={props.finally}>Fechar</Button>
+			<Modal {...confirmDeleteScheduleModal}>
+				<ConfirmDeleteForm
+					onCancel={confirmDeleteScheduleModal.close}
+					onConfirm={() => {
+						handleDeleteSchedule(scheduleToDelete!);
+						confirmDeleteScheduleModal.close();
+					}}
+					title="Deletar cronograma?"
+					description={
+						<>
+							Tem certeza que deseja deletar este cronograma?
+							<br />
+							Esta ação não poderá ser desfeita.
+						</>
+					}
+				/>
+			</Modal>
 		</FormContainer>
 	);
 }
