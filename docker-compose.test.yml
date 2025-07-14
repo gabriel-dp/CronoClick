@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  web-test:
+    container_name: web-test
+    env_file:
+      - .env.test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - ./docker:/docker
+    depends_on:
+      - mongo-test
+    command: "sh ./docker/run-test.sh"
+
+  mongo-test:
+    container_name: mongo-test
+    image: mongo:8
+    logging:
+      driver: "none"
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_DATABASE: cronoclick-test
+    volumes:
+      - ./docker:/docker
+    command: >
+      bash -c " 
+        mongod --replSet rs0 --bind_ip_all &
+        bash ./docker/mongo-replica-test.sh 
+        tail -f /dev/null 
+      "

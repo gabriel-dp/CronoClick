@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Id, Subject, SubjectTask } from "@/types/schedules";
 import { Configs } from "@/types/configs";
@@ -46,10 +46,17 @@ export default function TaskListTimeline(props: TaskListTimelineI) {
 	);
 
 	const handleTaskClick = (subjectId: Id, taskId: Id) => {
-		const subject = props.controls.getTask(subjectId, taskId);
-		setSelectedTask(subject ?? null);
+		const task = props.controls.getTask(subjectId, taskId);
+		setSelectedTask(task ?? null);
 		editTaskModal.open();
 	};
+
+	useEffect(() => {
+		setSelectedTask((prev) => {
+			if (!prev) return prev;
+			return props.controls.getTask(prev.subjectId, prev.id) ?? null;
+		});
+	}, [props.subjects, props.controls]);
 
 	return (
 		<CardList>

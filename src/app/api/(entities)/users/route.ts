@@ -1,32 +1,18 @@
-import prisma from "@/lib/prisma";
-import { encrypt } from "@/utils/userUtils";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import UserService from "@/services/userService";
 import { response, success } from "@/utils/response";
 import { userSchema, validateFields } from "@/utils/validations";
 
 export const GET = () =>
 	response(async () => {
-		const users = await prisma.user.findMany();
-		return success(users);
+		const allUsers = await UserService.readAll();
+		return success(allUsers);
 	});
 
 export const POST = (request: Request) =>
 	response(async () => {
-		const { password, ...user } = validateFields(
-			await request.json(),
-			userSchema
-		);
-
-		const newUser = await prisma.user.create({
-			data: {
-				password: await encrypt(password),
-				...user,
-				schedules: {
-					create: {
-						name: "Cronograma"
-					}
-				}
-			}
-		});
-
+		const data = validateFields(await request.json(), userSchema);
+		const { password, ...newUser } = await UserService.create(data);
 		return success(newUser, 201);
 	});

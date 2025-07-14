@@ -1,24 +1,22 @@
-import React from "react";
-import Modal from ".";
+"use client";
+
 import Button from "@/components/ui/Button";
 
-interface ConfirmDeleteModalProps {
-	isOpen: boolean;
+interface ConfirmDeleteFormProps {
 	onConfirm: () => void;
 	onCancel: () => void;
 	title?: string;
-	description?: string;
+	description?: React.ReactNode;
 }
 
-export default function ConfirmDeleteModal({
-	isOpen,
+export default function ConfirmDeleteForm({
 	onConfirm,
 	onCancel,
 	title = "Confirmar deleção",
 	description = "Tem certeza que deseja deletar? Esta ação não poderá ser desfeita."
-}: ConfirmDeleteModalProps) {
+}: ConfirmDeleteFormProps) {
 	return (
-		<Modal isOpen={isOpen} close={onCancel}>
+		<div>
 			<h2>{title}</h2>
 			<p style={{ margin: "1rem 0" }}>{description}</p>
 			<div
@@ -36,6 +34,6 @@ export default function ConfirmDeleteModal({
 					Deletar
 				</Button>
 			</div>
-		</Modal>
+		</div>
 	);
 }
