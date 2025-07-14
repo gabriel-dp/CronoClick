@@ -224,98 +224,104 @@ export default function TaskForm(props: TaskFormProps) {
 					</Button>
 				)}
 			</FormRow>
-			<hr />
-			{props.original && (
-				<div id="attachments-section">
-					<h2>Anexos</h2>
-					{props.original.attachments.length === 0 && (
-						<p
-							style={{
-								marginTop: "0.75rem",
-								textAlign: "center"
-							}}
-						>
-							Nenhum anexo
-						</p>
-					)}
-					<AttachmentsList>
-						{props.original.attachments.map((attachment) => (
-							<li key={attachment.id}>
-								<div className="filename">
-									<p className="filename">
-										{attachment.filename}
-									</p>
-								</div>
-								<div>
-									<Button
-										title="Baixar anexo"
-										onClick={() =>
-											handleAttachmentDownload(attachment)
-										}
-									>
-										<DownloadIcon />
-									</Button>
-									<Button
-										style={{ background: "#ff4444" }}
-										title="Deletar anexo"
-										onClick={() => {
-											setAttachmentToDelete(attachment);
-											confirmDeleteAttachmentModal.open();
-										}}
-									>
-										<TrashIcon />
-									</Button>
-								</div>
-							</li>
-						))}
-					</AttachmentsList>
-					{props.original.attachments.length < 3 ? (
-						<div
-							style={{
-								marginTop: 8,
-								display: "flex",
-								justifyContent: "center"
-							}}
-						>
-							<input
-								ref={setFileInputRef}
-								type="file"
-								accept="*"
-								onChange={handleAddAttachment}
-								disabled={isUploading}
-								style={{ display: "none" }}
-							/>
-							<Button
-								onClick={() => fileInputRef?.click()}
-								disabled={isUploading}
+			{props.original && process.env.NEXT_PUBLIC_FLAG_ATTACHMENTS && (
+				<>
+					<hr />
+					<div id="attachments-section">
+						<h2>Anexos</h2>
+						{props.original.attachments.length === 0 && (
+							<p
 								style={{
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-									gap: "0.5rem"
+									marginTop: "0.75rem",
+									textAlign: "center"
 								}}
 							>
-								<ClipIcon />
-								{isUploading
-									? "Enviando..."
-									: "Adicionar anexo"}
-							</Button>
-							{uploadError && (
-								<span
+								Nenhum anexo
+							</p>
+						)}
+						<AttachmentsList>
+							{props.original.attachments.map((attachment) => (
+								<li key={attachment.id}>
+									<div className="filename">
+										<p className="filename">
+											{attachment.filename}
+										</p>
+									</div>
+									<div>
+										<Button
+											title="Baixar anexo"
+											onClick={() =>
+												handleAttachmentDownload(
+													attachment
+												)
+											}
+										>
+											<DownloadIcon />
+										</Button>
+										<Button
+											style={{ background: "#ff4444" }}
+											title="Deletar anexo"
+											onClick={() => {
+												setAttachmentToDelete(
+													attachment
+												);
+												confirmDeleteAttachmentModal.open();
+											}}
+										>
+											<TrashIcon />
+										</Button>
+									</div>
+								</li>
+							))}
+						</AttachmentsList>
+						{props.original.attachments.length < 3 ? (
+							<div
+								style={{
+									marginTop: 8,
+									display: "flex",
+									justifyContent: "center"
+								}}
+							>
+								<input
+									ref={setFileInputRef}
+									type="file"
+									accept="*"
+									onChange={handleAddAttachment}
+									disabled={isUploading}
+									style={{ display: "none" }}
+								/>
+								<Button
+									onClick={() => fileInputRef?.click()}
+									disabled={isUploading}
 									style={{
-										color: "red",
-										display: "block",
-										marginTop: "0.5rem"
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										gap: "0.5rem"
 									}}
 								>
-									{uploadError}
-								</span>
-							)}
-						</div>
-					) : (
-						<p>Limite de 3 anexos atingido.</p>
-					)}
-				</div>
+									<ClipIcon />
+									{isUploading
+										? "Enviando..."
+										: "Adicionar anexo"}
+								</Button>
+								{uploadError && (
+									<span
+										style={{
+											color: "red",
+											display: "block",
+											marginTop: "0.5rem"
+										}}
+									>
+										{uploadError}
+									</span>
+								)}
+							</div>
+						) : (
+							<p>Limite de 3 anexos atingido.</p>
+						)}
+					</div>
+				</>
 			)}
 			<Modal {...confirmDeleteAttachmentModal}>
 				<ConfirmDeleteForm
