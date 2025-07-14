@@ -115,6 +115,7 @@ export default function TaskForm(props: TaskFormProps) {
 			props.controls.removeTask(props.original);
 			toast.success("Tarefa removida com sucesso!");
 		}
+		closeForm();
 	}
 
 	async function handleDeleteAttachment(attachment: Attachment) {
@@ -218,7 +219,9 @@ export default function TaskForm(props: TaskFormProps) {
 				</Button>
 				<Button onClick={closeForm}>Cancelar</Button>
 				{props.original && (
-					<Button onClick={() => void 0}>Deletar</Button>
+					<Button onClick={confirmDeleteTaskModal.open}>
+						Deletar
+					</Button>
 				)}
 			</FormRow>
 			<hr />
