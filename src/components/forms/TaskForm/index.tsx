@@ -229,7 +229,14 @@ export default function TaskForm(props: TaskFormProps) {
 				<div id="attachments-section">
 					<h2>Anexos</h2>
 					{props.original.attachments.length === 0 && (
-						<p>Nenhum anexo.</p>
+						<p
+							style={{
+								marginTop: "0.75rem",
+								textAlign: "center"
+							}}
+						>
+							Nenhum anexo
+						</p>
 					)}
 					<AttachmentsList>
 						{props.original.attachments.map((attachment) => (
