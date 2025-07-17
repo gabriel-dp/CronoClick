@@ -91,6 +91,6 @@ docker-compose up
 
 ## 👥 Authors
 
-| _Bárbara Assis_ | _Bernardo Detomi_ | _Gabriel de Paula_ | _Gabriel Souza_ | _Henrique Azevedo_ |
-| :-: | :-: | :-: | :-: | :-: |
-|[![Bárbara](https://avatars.githubusercontent.com/u/81807439?v=4)](https://github.com/bahdias) | [![Bernardo](https://avatars.githubusercontent.com/u/78918455?v=4)](https://github.com/BernardoDetomi) | [![Gabriel de Paula](https://avatars.githubusercontent.com/u/66735014?v=4)](https://github.com/gabriel-dp) | [![Gabriel Souza](https://avatars.githubusercontent.com/u/111782319?v=4)](https://github.com/GSOliveira1) | [![Henrique](https://avatars.githubusercontent.com/u/83303066?v=4)](https://github.com/henrique589) |
+| _Bárbara Assis_ | _Bernardo Detomi_ | _Dilvonei Lacerda_ | _Gabriel de Paula_ | _Gabriel Souza_ | _Henrique Azevedo_ |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+|[![Bárbara](https://avatars.githubusercontent.com/u/81807439?v=4)](https://github.com/bahdias) | [![Bernardo](https://avatars.githubusercontent.com/u/78918455?v=4)](https://github.com/BernardoDetomi) | [![Dilvonei](https://avatars.githubusercontent.com/u/103136614?v=4)](https://github.com/DilvoneiL) | [![Gabriel de Paula](https://avatars.githubusercontent.com/u/66735014?v=4)](https://github.com/gabriel-dp) | [![Gabriel Souza](https://avatars.githubusercontent.com/u/111782319?v=4)](https://github.com/GSOliveira1) | [![Henrique](https://avatars.githubusercontent.com/u/83303066?v=4)](https://github.com/henrique589) |
